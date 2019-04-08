@@ -4,6 +4,14 @@ const schedule = require('node-schedule');
 const moment = require('moment');
 moment.locale('pt');
 const client = new Discord.Client();
+var Twitter = require('twitter');
+
+var client_twitter = new Twitter({
+	consumer_key: '',
+	consumer_secret: '',
+	access_token_key: '',
+	access_token_secret: ''
+});
 
 client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -118,21 +126,111 @@ client.on('ready', () => {
 		axios.get('https://api.wazepce.tech/getAvisos.php', {
 		}).then(res => {
 			var respnovos = "";
-			var respatualizados = "";
+			var resptwitter = "";
 			res.data.forEach(function (element) {
-				element['alertas'].forEach(function (alerta) {
-					respnovos = respnovos + ":information_source: :warning: " + alerta['icon'] + " #" + element['local'] + " - ";
-					respnovos = respnovos + "#Aviso" + alerta['nivel'] + " devido a ";
-					respnovos = respnovos + "#"  + alerta['tipo'].replace(" ", '') + " entre ";
-					respnovos = respnovos + alerta['inicio'] + " até ";
-					respnovos = respnovos + alerta['fim'] + alerta['icon'] + " :warning: :information_source:\n";
+				var primeiro = 0;
+				resptwitter = "";
+				var iconTipo = "";
+
+				if (element['icon'] == ":dash:")
+					iconTipo = "🌬";
+				else if (element['icon'] == ":sunny:️:thermometer:")
+					iconTipo = "☀🌡";
+				else if (element['icon'] == ":snowflake:️:thermometer:")
+					iconTipo = "❄🌡";
+				else if (element['icon'] == ":cloud_rain:")
+					iconTipo = "🌧";
+				else if (element['icon'] == ":fog:")
+					iconTipo = "🌫";
+				else if (element['icon'] == ":snowflake:")
+					iconTipo = "❄";
+				else if (element['icon'] == ":ocean:")
+					iconTipo = "🌊";
+				else if (element['icon'] == ":thunder_cloud_rain:")
+					iconTipo = "⛈";
+
+				var tipo = "";
+
+				if (element['tipo'] == "Precipitação")
+					tipo = "Chuva";
+				else
+					tipo = element['tipo'].replace(" ", '');
+
+
+
+				var inicio = "";
+				var fim = "";
+				var mesmodia = 0;
+
+				if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD")) {
+					mesmodia = 1;
+					if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD")) {
+						inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h";
+						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje";
+					}
+					else if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD")) {
+						inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h";
+						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã";
+					}
+				}
+
+				if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD"))
+					inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje";
+				else if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD"))
+					inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã";
+				else
+					inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD HH:mm");
+
+				if (moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD"))
+					fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje";
+				else if (moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD"))
+					fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã";
+				else
+					fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD HH:mm");
+
+
+
+				respnovos = respnovos + ":information_source: :warning: " + element['icon'] + " ";
+				respnovos = respnovos + "#Aviso" + element['nivel'] + " devido a ";
+				respnovos = respnovos + "#" + tipo + " desde as ";
+				if (mesmodia == 1)
+					respnovos = respnovos + inicio + " e as ";
+				else
+					respnovos = respnovos + inicio + " às ";
+				respnovos = respnovos + fim + " para os distritos de ";
+
+				resptwitter = resptwitter + "ℹ️⚠️" + iconTipo + " ";
+				resptwitter = resptwitter + "#Aviso" + element['nivel'] + " devido a ";
+				resptwitter = resptwitter + "#" + tipo + " desde as ";
+				if (mesmodia == 1)
+					resptwitter = resptwitter + inicio + " e as ";
+				else
+					resptwitter = resptwitter + inicio + " às ";
+				resptwitter = resptwitter + fim + " para os distritos de ";
+
+				element['locais'].forEach(function (local) {
+					if (primeiro == 0) {
+						respnovos = respnovos + "#" + local['local'];
+						resptwitter = resptwitter + "#" + local['local'];
+					}
+					else if ((element['locais'].length - 1) == primeiro) {
+						respnovos = respnovos + ", e #" + local['local'];
+						resptwitter = resptwitter + ", e #" + local['local'];
+					}
+					else {
+						respnovos = respnovos + ", #" + local['local'];
+						resptwitter = resptwitter + ", #" + local['local'];
+					}
+					primeiro = primeiro + 1;
 				})
-				respnovos = respnovos + "\n";
-			});
+				respnovos = respnovos + " " + element['icon'] + " :warning: :information_source:\n\n";
+				resptwitter = resptwitter + " " + iconTipo + "⚠️ℹ️";
+				client_twitter.post('statuses/update', { status: resptwitter }, function (error, tweet, response) {
+				});
+			})
 			if (respnovos != "")
 				client.channels.get("501056125802905601").send("***Novos Alertas:***\n" + respnovos)
-		})
-
+		});
 	});
 
 
@@ -144,23 +242,23 @@ client.on('ready', () => {
 		}).then(res => {
 			res.data.forEach(function (element) {
 				if (moment(element['time']).format('L') == date) {
-						if (element['sensed'] == true) {
-							respsentido = respsentido + moment(element['time']).format('LT') + "h - ";
-							respsentido = respsentido + "M" + element['magType'] + " ";
-							respsentido = respsentido + "**" + element['magnitud'] + "** em ";
-							respsentido = respsentido + element['obsRegion'] + " a ";
-							respsentido = respsentido + element['depth'] + "Km prof. ";
-							respsentido = respsentido + "**Sentido em " + element['local'] + " com Int. " + element['degree'] + "** " + element['shakemapref'];
-							respsentido = respsentido + " // " + element['lat'] + "," + element['lon'] + "\n";
-						}
-						else {
-							resp = resp + moment(element['time']).format('LT') + "h - ";
-							resp = resp + "M" + element['magType'] + " ";
-							resp = resp + "**" + element['magnitud'] + "** em ";
-							resp = resp + element['obsRegion'] + " a ";
-							resp = resp + element['depth'] + "Km prof. // ";
-							resp = resp + element['lat'] + "," + element['lon'] + "\n";
-						}
+					if (element['sensed'] == true) {
+						respsentido = respsentido + moment(element['time']).format('LT') + "h - ";
+						respsentido = respsentido + "M" + element['magType'] + " ";
+						respsentido = respsentido + "**" + element['magnitud'] + "** em ";
+						respsentido = respsentido + element['obsRegion'] + " a ";
+						respsentido = respsentido + element['depth'] + "Km prof. ";
+						respsentido = respsentido + "**Sentido em " + element['local'] + " com Int. " + element['degree'] + "** " + element['shakemapref'];
+						respsentido = respsentido + " // " + element['lat'] + "," + element['lon'] + "\n";
+					}
+					else {
+						resp = resp + moment(element['time']).format('LT') + "h - ";
+						resp = resp + "M" + element['magType'] + " ";
+						resp = resp + "**" + element['magnitud'] + "** em ";
+						resp = resp + element['obsRegion'] + " a ";
+						resp = resp + element['depth'] + "Km prof. // ";
+						resp = resp + element['lat'] + "," + element['lon'] + "\n";
+					}
 				}
 			})
 			if (respsentido != "")
@@ -742,7 +840,7 @@ client.on('message', msg => {
 					resp = resp + element['local'] + "\n";
 					element['alertas'].forEach(function (alerta) {
 						resp = resp + "**" + alerta['nivel'] + "** // ";
-						resp = resp + alerta['icon'] + alerta['tipo'] + " // ";
+						resp = resp + alerta['icon'] + alerta['tipo'] == "Precipitação" ? "Chuva" : alerta['tipo'] + " // ";
 						resp = resp + alerta['inicio'] + " :arrow_right: ";
 						resp = resp + alerta['fim'] + "\n";
 					})
@@ -755,4 +853,4 @@ client.on('message', msg => {
 	}
 });
 
-client.login('token_discord'); // teste
+client.login(''); 
