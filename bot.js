@@ -5,12 +5,13 @@ const moment = require('moment');
 moment.locale('pt');
 const client = new Discord.Client();
 var Twitter = require('twitter');
+require('dotenv').config();
 
 var client_twitter = new Twitter({
-	consumer_key: '',
-	consumer_secret: '',
-	access_token_key: '',
-	access_token_secret: ''
+	consumer_key: process.env.CONSUMER_KEY,
+	consumer_secret: process.env.CONSUMER_SECRET,
+	access_token_key: process.env.ACCESS_TOKEN_KEY,
+	access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
 client.on('ready', () => {
@@ -861,4 +862,4 @@ client.on('message', msg => {
 	}
 });
 
-client.login(''); 
+client.login(process.env.KEY_DISCORD);
