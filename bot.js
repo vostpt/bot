@@ -161,52 +161,44 @@ client.on('ready', () => {
 
 				var inicio = "";
 				var fim = "";
-				var mesmodia = 0;
 
 				if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD")) {
-					mesmodia = 1;
 					if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD")) {
 						inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h";
-						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje";
+						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje,";
 					}
 					else if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD")) {
 						inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h";
-						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã";
+						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã,";
 					}
 				}
+				else {
+					if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD"))
+						inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje";
+					else if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD"))
+						inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã";
+					else
+						inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD HH:mm");
 
-				if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD"))
-					inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje";
-				else if (moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD"))
-					inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã";
-				else
-					inicio = moment(element['inicio'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD HH:mm");
-
-				if (moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD"))
-					fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje";
-				else if (moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD"))
-					fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã";
-				else
-					fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD HH:mm");
-
+					if (moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().format("YYYY-MM-DD"))
+						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de hoje,";
+					else if (moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD") == moment().add(1, 'days').format("YYYY-MM-DD"))
+						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("HH:mm") + "h de amanhã,";
+					else
+						fim = moment(element['fim'], "YYYY-MM-DD H:mm").format("YYYY-MM-DD HH:mm");
+				}
 
 
 				respnovos = respnovos + ":information_source: :warning: " + element['icon'] + " ";
 				respnovos = respnovos + "#Aviso" + element['nivel'] + " devido a ";
-				respnovos = respnovos + "#" + tipo + " desde as ";
-				if (mesmodia == 1)
-					respnovos = respnovos + inicio + " e as ";
-				else
-					respnovos = respnovos + inicio + " às ";
+				respnovos = respnovos + "#" + tipo + " entre as ";
+				respnovos = respnovos + inicio + " e as ";
 				respnovos = respnovos + fim + " para os distritos de ";
 
 				resptwitter = resptwitter + "ℹ️⚠️" + iconTipo + " ";
 				resptwitter = resptwitter + "#Aviso" + element['nivel'] + " devido a ";
-				resptwitter = resptwitter + "#" + tipo + " desde as ";
-				if (mesmodia == 1)
-					resptwitter = resptwitter + inicio + " e as ";
-				else
-					resptwitter = resptwitter + inicio + " às ";
+				resptwitter = resptwitter + "#" + tipo + " entre as ";
+				resptwitter = resptwitter + inicio + " e as ";
 				resptwitter = resptwitter + fim + " para os distritos de ";
 
 				element['locais'].forEach(function (local) {
@@ -275,15 +267,38 @@ client.on('message', msg => {
 	var prefix_help = "?";
 
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
-		msg.channel.send(`Bom Dia ${msg.author}, trago-lhe o seu café! :coffee:`)
+		msgString = `Bom Dia ${msg.author}, `;
+		switch (msg.author.discriminator) {
+			case '1318':
+				msgString = msgString + "aqui tens o teu chá verde :tea:";
+				break;
+			case '5850':
+				msgString = msgString + "aqui tens o teu chá verde quentinho :tea:";
+				break;
+			case '2458':
+				msgString = msgString + "já sei que não bebes café. Aceita antes um chá :tea:";
+				break;
+			case '7744':
+				msgString = msgString + "aqui está o teu chá! :tea:";
+				break;
+			case '2908':
+				msgString = msgString + "duplo curto, como gostas, certo? :coffee:";
+				break;
+			default:
+				msgString = msgString + "aqui tens o teu café :coffee:";
+				break;
+		}
+
+		msg.channel.send(msgString)
 	}
 
+
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
-			msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
+		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
 	}
 
 	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
-			msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
+		msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
 	}
 
 	if (msg.content === "!coffee") {
