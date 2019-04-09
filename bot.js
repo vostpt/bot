@@ -277,6 +277,14 @@ client.on('message', msg => {
 		msg.channel.send(`Bom Dia ${msg.author}, trago-lhe o seu café! :coffee:`)
 	}
 
+	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
+			msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
+	}
+
+	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
+			msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
+	}
+
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
 	}
