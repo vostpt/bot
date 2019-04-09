@@ -292,7 +292,9 @@ client.on('message', msg => {
 		msg.channel.send(msgString)
 	}
 
-
+	if (msg.content.toLowerCase().indexOf("merda") != -1 && !msg.author.bot) {
+		msg.channel.send(`Hey ${msg.ahtor} https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`)
+	}
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
 		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
 	}
