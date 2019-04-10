@@ -299,8 +299,8 @@ client.on('message', msg => {
 		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
 	}
 
-	if (msg.content.toLowerCase().indexOf("Benfica") != -1 && !msg.author.bot) {
-		msg.channel.send(`${msg.author} :eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`)
+	if (msg.content.toLowerCase().indexOf("benfica") != -1 && !msg.author.bot) {
+		msg.channel.send(`:eagle: ${msg.author} :eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`)
 	}
 
 	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
