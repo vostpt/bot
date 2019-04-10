@@ -292,7 +292,9 @@ client.on('message', msg => {
 		msg.channel.send(msgString)
 	}
 
-
+	if (msg.content.toLowerCase().indexOf("merda") != -1 && !msg.author.bot) {
+		msg.channel.send(`Hey ${msg.ahtor} https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`)
+	}
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
 		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
 	}
@@ -305,6 +307,10 @@ client.on('message', msg => {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
 	}
 
+	if (msg.content === "!champagne") {
+		msg.channel.send(`@everyone A pedido de ${msg.author} vamos todos celebrar :champagne: :champagne_glass:`);
+	}
+
 	if (msg.content.startsWith(prefix_help) && !msg.author.bot) {
 		const args = msg.content.slice(prefix_help.length).split(' ');
 		const command = args.shift().toLowerCase();
@@ -313,6 +319,7 @@ client.on('message', msg => {
 			var resp = "\n";
 
 			resp = resp + "**!coffee** - *Manda vir café para todos.*\n";
+			resp = resp + "**!champagne** - *Se há algo para festejar, serve champagne a todos*\n";
 			resp = resp + "**!all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*\n";
 			resp = resp + "**!all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*\n";
 			resp = resp + "**!all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*\n";
@@ -323,6 +330,7 @@ client.on('message', msg => {
 			resp = resp + "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
 			resp = resp + "**!weather** - *Mostra a meteorologia do dia atual.*\n";
 			resp = resp + "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
+
 
 
 			msg.channel.send("***Comandos:***\n" + resp);
