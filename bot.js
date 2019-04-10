@@ -323,7 +323,7 @@ client.on('message', msg => {
 		else if (hora > 17 && hora <= 19) {
 			msgString = `Vai um lanchinho ${msg.author}? :milk: :cake:`;
 		}
-		else {
+		else if (hora > 19) {
 			msgString = `Boa tarde ${msg.author}?, `;
 			switch (msg.author.discriminator) {
 				case '1318':
