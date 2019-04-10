@@ -327,7 +327,7 @@ client.on('message', msg => {
 		msg.channel.send(`Desculpa interromper, ${msg.author}, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência`)
 	}
 
-	if (msg.content.toLowerCase().indexOf(":muscle:") != -1 && !msg.author.bot) {
+	if (msg.content.toLowerCase().indexOf(:muscle:) != -1 && !msg.author.bot) {
 		msg.channel.send(`Muito vai esta gente ao ginásio, graças a Deus :rolling_eyes: `)
 	}
 	
