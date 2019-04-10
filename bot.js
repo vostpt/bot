@@ -325,7 +325,7 @@ client.on('message', msg => {
 	msg.channel.send(msgString)
 
 	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
-	// console.log(msg);
+		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
 		if (hora <= 20) {
 		msgString = `Boa noite, ${msg.author}, deves estar com pressa de ir para a cama! Ainda nem sequer são horas de jantar!`
 		}
