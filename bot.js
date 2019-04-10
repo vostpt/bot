@@ -303,6 +303,18 @@ client.on('message', msg => {
 		msg.channel.send(`:eagle: ${msg.author} :eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`)
 	}
 
+	if (msg.content.toLowerCase().indexOf("sporting") != -1 && !msg.author.bot) {
+		msg.channel.send(`:lion_face: ${msg.author} :lion_face: **Todo o mundo sabe porque não fico em casa!** :lion_face:`)
+	}
+
+	if (msg.content.toLowerCase().indexOf("fcp") != -1 && !msg.author.bot) {
+		msg.channel.send(`:dragon: ${msg.author} :dragon: **E salta Porto! E salta Porto! Allez! Allez!** :dragon:`)
+	}
+
+	if (msg.content.toLowerCase().indexOf("fc porto") != -1 && !msg.author.bot) {
+		msg.channel.send(`:dragon: ${msg.author} :dragon: **E salta Porto! E salta Porto! Allez! Allez!** :dragon:`)
+	}
+
 	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
 		msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
 	}
@@ -334,7 +346,7 @@ client.on('message', msg => {
 			resp += "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
 			resp += "**!weather** - *Mostra a meteorologia do dia atual.*\n";
 			resp += "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
-			resp +=  "**!acronimo acronimo** - *Mostra a definição de qualquer acronimo na base de dados, por ex. ANPC*\n";
+			resp +=  "**!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*\n";
 
 			msg.channel.send("***Comandos:***\n" + resp);
 		}
