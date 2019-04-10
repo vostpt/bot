@@ -24,7 +24,7 @@ client.on('ready', () => {
 
 	schedule.scheduleJob(rule, function () {
 
-		axios.get('https://api.wazepce.tech/getIF.php', {
+		axios.get('https://bot-api.vost.pt/getIF.php', {
 		}).then(res => {
 			var respnovos = "";
 			var respatualizados = "";
@@ -124,7 +124,7 @@ client.on('ready', () => {
 	rule_alerts.minute = new schedule.Range(0, 59, 10);
 
 	schedule.scheduleJob(rule_alerts, function () {
-		axios.get('https://api.wazepce.tech/getAvisos.php', {
+		axios.get('https://bot-api.vost.pt/getAvisos.php', {
 		}).then(res => {
 			var respnovos = "";
 			var resptwitter = "";
@@ -231,7 +231,7 @@ client.on('ready', () => {
 		var date = moment().subtract(1, 'days').format('L');
 		var resp = "";
 		var respsentido = "";
-		axios.get('https://api.wazepce.tech/getSismos.php', {
+		axios.get('https://bot-api.vost.pt/getSismos.php', {
 		}).then(res => {
 			res.data.forEach(function (element) {
 				if (moment(element['time']).format('L') == date) {
@@ -359,7 +359,7 @@ client.on('message', msg => {
 
 		if (command === 'all') {
 			if (args.length == 0) {
-				axios.get('https://api.wazepce.tech/getAllProciv.php', {
+				axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 				}).then(res => {
 					var resp = "";
 					var respimportantes = "";
@@ -396,7 +396,7 @@ client.on('message', msg => {
 			else {
 				const argumento = args[0].toLowerCase();
 				if (argumento == "links") {
-					axios.get('https://api.wazepce.tech/getAllProciv.php', {
+					axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 					}).then(res => {
 						var resp = "";
 						var respimportantes = "";
@@ -423,7 +423,7 @@ client.on('message', msg => {
 						if (args.length < 2) {
 							return msg.channel.send(`Falta o numero de operacionais, ${msg.author}!`);
 						}
-						axios.get('https://api.wazepce.tech/getAllProciv.php', {
+						axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 						}).then(res => {
 							var resp = "";
 							var respimportantes = "";
@@ -462,7 +462,7 @@ client.on('message', msg => {
 							if (args.length < 2) {
 								return msg.channel.send(`Falta o numero de meios terrestres, ${msg.author}!`);
 							}
-							axios.get('https://api.wazepce.tech/getAllProciv.php', {
+							axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 							}).then(res => {
 								var resp = "";
 								var respimportantes = "";
@@ -501,7 +501,7 @@ client.on('message', msg => {
 								if (args.length < 2) {
 									return msg.channel.send(`Falta o numero de meios aereos, ${msg.author}!`);
 								}
-								axios.get('https://api.wazepce.tech/getAllProciv.php', {
+								axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 								}).then(res => {
 									var resp = "";
 									var respimportantes = "";
@@ -536,7 +536,7 @@ client.on('message', msg => {
 								})
 							}
 				if (argumento == "important") {
-					axios.get('https://api.wazepce.tech/getImportantIF.php', {
+					axios.get('https://bot-api.vost.pt/getImportantIF.php', {
 					}).then(res => {
 						var resp = "";
 						res.data.forEach(function (element) {
@@ -562,7 +562,7 @@ client.on('message', msg => {
 			}
 			const argumento = args[0].toLowerCase();
 			if (argumento == "id") {
-				axios.get('https://api.wazepce.tech/getAllProciv.php', {
+				axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 				}).then(res => {
 					var resp = "";
 					var respimportantes = "";
@@ -597,7 +597,7 @@ client.on('message', msg => {
 				})
 			}
 			if (argumento == "if") {
-				axios.get('https://api.wazepce.tech/getAllProciv.php', {
+				axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 				}).then(res => {
 					var resp = "";
 					var respimportantes = "";
@@ -633,7 +633,7 @@ client.on('message', msg => {
 			}
 			if (argumento == "vento") {
 				const id = args[1].toLowerCase();
-				axios.get('https://api.wazepce.tech/getWindy.php?id=' + id, {
+				axios.get('https://bot-api.vost.pt/getWindy.php?id=' + id, {
 				}).then(res => {
 					var resp = "";
 					resp += "\n";
@@ -648,7 +648,7 @@ client.on('message', msg => {
 				})
 			}
 			if (argumento == "status") {
-				axios.get('https://api.wazepce.tech/getAllProciv.php', {
+				axios.get('https://bot-api.vost.pt/getAllProciv.php', {
 				}).then(res => {
 					var resp = "";
 					var respimportantes = "";
@@ -771,7 +771,7 @@ client.on('message', msg => {
 		else if (command === 'weather') {
 			if (args.length == 0) {
 				var resp = "***Meteorologia:***";
-				axios.get('https://api.wazepce.tech/getIPMA.php?day=0', {
+				axios.get('https://bot-api.vost.pt/getIPMA.php?day=0', {
 				}).then(res => {
 					var count = 0;
 					res.data.forEach(function (element) {
@@ -799,7 +799,7 @@ client.on('message', msg => {
 				const argumento = args[0].toLowerCase();
 				if (argumento === 'tomorrow') {
 					var resp = "***Meteorologia:***";
-					axios.get('https://api.wazepce.tech/getIPMA.php?day=1', {
+					axios.get('https://bot-api.vost.pt/getIPMA.php?day=1', {
 					}).then(res => {
 						var count = 0;
 						res.data.forEach(function (element) {
@@ -833,7 +833,7 @@ client.on('message', msg => {
 			var date = moment(argumento).format('L');
 			var resp = "";
 			var respsentido = "";
-			axios.get('https://api.wazepce.tech/getSismos.php', {
+			axios.get('https://bot-api.vost.pt/getSismos.php', {
 			}).then(res => {
 				res.data.forEach(function (element) {
 					if (moment(element['time']).format('L') == date) {
@@ -864,7 +864,7 @@ client.on('message', msg => {
 		}
 		else if (command === 'alerts') {
 			var resp = "";
-			axios.get('https://api.wazepce.tech/getAlertas.php', {
+			axios.get('https://bot-api.vost.pt/getAlertas.php', {
 			}).then(res => {
 				res.data.forEach(function (element) {
 					resp += element['local'] + "\n";
