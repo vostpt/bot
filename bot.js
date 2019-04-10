@@ -322,6 +322,9 @@ client.on('message', msg => {
 	}
 	// End 
 
+	// Teaching 
+	if (msg.content.toLowerCase().indexOf("voluntários") != -1 && !msg.author.bot) {
+		msg.channel.send(`Desculpa interromper, ${msg.author}, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência`)
 
 	// Football? No problem! (If you are in the US reading this code we mean real football, not the thing you play with pads and helmets)
 	if (msg.content.toLowerCase().indexOf("benfica") != -1 && !msg.author.bot) {
