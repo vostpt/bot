@@ -262,9 +262,13 @@ client.on('ready', () => {
 	});
 });
 
+
+// Here starts the fun part. 
+
 client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
+//catering 
 
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
 		msgString = `Bom Dia ${msg.author}, `;
@@ -292,13 +296,34 @@ client.on('message', msg => {
 		msg.channel.send(msgString)
 	}
 
+	if (msg.content === "!coffee") {
+		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
+	}
+
+	if (msg.content === "!champagne") {
+		msg.channel.send(`@everyone A pedido de ${msg.author} vamos todos celebrar :champagne: :champagne_glass:`);
+	}
+
+	// End Catering
+
+	// Foul Language
 	if (msg.content.toLowerCase().indexOf("merda") != -1 && !msg.author.bot) {
 		msg.channel.send(`Hey ${msg.author} https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`)
 	}
+	// End Foul Language
+
+	// Is it afternoon or night? We've got you covered! 
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
 		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
 	}
 
+	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
+		msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
+	}
+	// End 
+
+
+	// Football? No problem! (If you are in the US reading this code we mean real football, not the thing you play with pads and helmets)
 	if (msg.content.toLowerCase().indexOf("benfica") != -1 && !msg.author.bot) {
 		msg.channel.send(`:eagle: ${msg.author} :eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`)
 	}
@@ -315,17 +340,11 @@ client.on('message', msg => {
 		msg.channel.send(`:dragon: ${msg.author} :dragon: **E salta Porto! E salta Porto! Allez! Allez!** :dragon:`)
 	}
 
-	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
-		msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
+	if (msg.content.toLowerCase().indexOf("senhorim") != -1 && !msg.author.bot) {
+		msg.channel.send(`:bear: ${msg.author} :bear: **SENHORIM! SENHORIM! QUEM AQUI VEM NÃO MANDA AQUI!** :bear:`)
 	}
-
-	if (msg.content === "!coffee") {
-		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
-	}
-
-	if (msg.content === "!champagne") {
-		msg.channel.send(`@everyone A pedido de ${msg.author} vamos todos celebrar :champagne: :champagne_glass:`);
-	}
+	// End Football
+//End just for fun 
 
 	if (msg.content.startsWith(prefix_help) && !msg.author.bot) {
 		const args = msg.content.slice(prefix_help.length).split(' ');
@@ -353,7 +372,7 @@ client.on('message', msg => {
 
 		if (command === 'acronimo') {
 			if (args.length < 1) {
-				return msg.channel.send(`Falta dados!, ${msg.author}!`);
+				return msg.channel.send(`*Give me more data* para eu poder trabalhar, ${msg.author}!`);
 			}
 			const argumento = args[0].toLowerCase();
 			axios.get('https://vost.mariosantos.net/api/acronym/' + argumento, {
@@ -365,7 +384,7 @@ client.on('message', msg => {
 				msg.channel.send(resp);
 			})
 				.catch(error => {
-					msg.reply("O acrónimo não consta na base de dados!");
+					msg.reply("Esse acrónimo não consta na base de dados!");
 				});
 		}
 	}
