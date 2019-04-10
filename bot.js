@@ -273,13 +273,13 @@ client.on('message', msg => {
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
 		if (hora >= 13 && hora < 20) {
-			msgString = `Para mim já é boa tarde, ${msg.author}! `;
+			msgString = `Para mim já é Boa Tarde, ${msg.author}! `;
 		}
 		else if (hora >= 20) {
-			msgString = `Para mim já é boa noite, ${msg.author}! `;
+			msgString = `Para mim já é Boa Noite, ${msg.author}! `;
 		}
 		else if (hora < 6) {
-			msgString = `Para mim ainda é boa madrugada, ${msg.author}! `;
+			msgString = `Já de pé a estas horas, ${msg.author}? `;
 		}
 		else {
 			msgString = `Bom Dia ${msg.author}, `;
