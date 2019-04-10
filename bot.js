@@ -353,11 +353,11 @@ client.on('message', msg => {
 	}
 
 	if (msg.content.toLowerCase().indexOf("scb") != -1 && !msg.author.bot) {
-		msg.channel.send(`${msg.author} **Arsenalistas até morrer!!**`)
+		msg.channel.send(`${msg.author} **Braga Braga Braga, vamos para a frente!**`)
 	}
 
 	if (msg.content.toLowerCase().indexOf("sc braga") != -1 && !msg.author.bot) {
-		msg.channel.send(`${msg.author} **Arsenalistas até morrer!!**`)
+		msg.channel.send(`${msg.author} **Braga Braga Braga, vamos para a frente!**`)
 	}
 	// End Football
 //End just for fun 
