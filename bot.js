@@ -268,8 +268,10 @@ client.on('ready', () => {
 client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
-	//catering 
 
+	//catering 
+	// Morning Routine
+	
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
 		if (hora >= 13 && hora < 20) {
@@ -433,7 +435,7 @@ client.on('message', msg => {
 			resp += "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
 			resp += "**!weather** - *Mostra a meteorologia do dia atual.*\n";
 			resp += "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
-			resp += "**!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*\n";
+			resp += "**?acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*\n";
 
 			msg.channel.send("***Comandos:***\n" + resp);
 		}
