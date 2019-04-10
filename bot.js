@@ -343,6 +343,14 @@ client.on('message', msg => {
 	if (msg.content.toLowerCase().indexOf("senhorim") != -1 && !msg.author.bot) {
 		msg.channel.send(`:bear: ${msg.author} :bear: **SENHORIM! SENHORIM! QUEM AQUI VEM NÃO MANDA AQUI!** :bear:`)
 	}
+
+	if (msg.content.toLowerCase().indexOf("scb") != -1 && !msg.author.bot) {
+		msg.channel.send(`${msg.author} **Arsenalistas até morrer!!**`)
+	}
+
+	if (msg.content.toLowerCase().indexOf("sc braga") != -1 && !msg.author.bot) {
+		msg.channel.send(`${msg.author} **Arsenalistas até morrer!!**`)
+	}
 	// End Football
 //End just for fun 
 
