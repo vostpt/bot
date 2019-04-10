@@ -268,7 +268,10 @@ client.on('ready', () => {
 client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
-	//catering 
+
+
+//catering 
+	// Morning Routine
 
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
@@ -276,7 +279,7 @@ client.on('message', msg => {
 			msgString = `Para mim já é boa Tarde, ${msg.author}! `;
 		}
 		else if (hora >= 20) {
-			msgString = `Para mim já é boa Noite, ${msg.author}! **Estás bem?`;
+			msgString = `Para mim já é boa Noite, ${msg.author}! **Estás bem?**`;
 		}
 		else if (hora < 6) {
 			msgString = `Já de pé a estas horas, ${msg.author}? **ALVORADA!!!!!!**`;
@@ -308,6 +311,56 @@ client.on('message', msg => {
 		msg.channel.send(msgString)
 	}
 	
+	// Good Afternoon routine 
+
+	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
+		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
+		if (hora >= 12 && hora < 15) {
+			msgString = `Boa tarde, ${msg.author}! Já almoçaste?`;
+		}
+		else if (hora >= 15 && hora <= 17) {
+			msgString = `Muito boa tarde, ${msg.author}! Tudo bem contigo?`;
+		}
+		else if (hora > 17 && hora <= 19) {
+			msgString = `Vai um lanchinho ${msg.author}? :milk: :cake:`;
+		}
+		else {
+			msgString = `Boa tarde ${msg.author}, `;
+			switch (msg.author.discriminator) {
+				case '1318':
+					msgString += "os voluntários estão a portar-se bem?";
+					break;
+				case '2908':
+					msgString += "não me mandes abaixo outra vez, pá!";
+					break;
+				default:
+					msgString += "como está o tempo por aí?";
+					break;
+			}
+		}
+		msg.channel.send(msgString)
+	}
+
+
+	// Good Night routine
+	if (msgContent.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
+		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
+		if (hora < 19) {
+			msgString = `Boa noite, ${msg.author}? Estás em que fuso horário?`
+		}
+		else if (hora >= 20 && hora <=23) {
+			msgString = `Boa noite ${msg.author}, Já jantaste?`
+		}
+		else if (hora >23 && hora < 01) {
+			msgString = `Boa noite ${msg.author}, como é que vai isso?`
+		}
+		else {
+			msgString = `Por aqui a estas horas? Deves ser developer ou estamos activados e ninguém me disse :thinking:`
+		}
+		msg.channel.send(msgString)
+	}	
+
+
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
 	}
