@@ -331,7 +331,7 @@ client.on('message', msg => {
 					msgString += "não me mandes abaixo outra vez, pá! E não é boa tarde nem aqui nem na China!";
 					break;
 				default:
-					msgString += "Tens a certeza de que é boa tarde?";
+					msgString += "Tens mesmo a certeza de que é **boa tarde**?";
 					break;
 			}
 		}
