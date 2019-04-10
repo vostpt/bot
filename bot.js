@@ -319,11 +319,11 @@ client.on('message', msg => {
 			else if (hora < 6) {
 				msgString = `É tarde é, não sei é se é boa, ${msg.author}? `;
 			}
-			else if (hora >= 16 && hora <= 18)
+			else (hora >= 16 && hora <= 18) {
 			msgString = `Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`
 			}
 	msg.channel.send(msgString)
-
+	}
 	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
 		if (hora <= 20) {
@@ -332,7 +332,7 @@ client.on('message', msg => {
 		else if (hora >=21 && hora <= 00) {
 			msgString = `Boa noite, ${msg.author}. Já jantaste?`
 		}
-		else if (hora >=0 && hora < 07) {
+		else (hora >=0 && hora < 07) {
 			msgString = `Boa noite, ${msg.author}. Estamos activados ou estás com insónias?`
 		}
 	msg.channel.send(msgString)
