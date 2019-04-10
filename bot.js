@@ -268,29 +268,41 @@ client.on('ready', () => {
 client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
-//catering 
+	//catering 
 
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
-		msgString = `Bom Dia ${msg.author}, `;
-		switch (msg.author.discriminator) {
-			case '1318':
-				msgString += "aqui tens o teu chá verde :tea:";
-				break;
-			case '5850':
-				msgString += "aqui tens o teu chá verde quentinho :tea:";
-				break;
-			case '2458':
-				msgString += "já sei que não bebes café. Aceita antes um chá :tea:";
-				break;
-			case '7744':
-				msgString += "aqui está o teu chá! :tea:";
-				break;
-			case '2908':
-				msgString += "duplo curto, como gostas, certo? :coffee:";
-				break;
-			default:
-				msgString += "aqui tens o teu café :coffee:";
-				break;
+		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
+		if (hora >= 13 && hora < 20) {
+			msgString = `Para mim já é boa tarde, ${msg.author}! `;
+		}
+		else if (hora >= 20) {
+			msgString = `Para mim já é boa noite, ${msg.author}! `;
+		}
+		else if (hora < 6) {
+			msgString = `Para mim ainda é boa madrugada, ${msg.author}! `;
+		}
+		else {
+			msgString = `Bom Dia ${msg.author}, `;
+			switch (msg.author.discriminator) {
+				case '1318':
+					msgString += "aqui tens o teu chá verde :tea:";
+					break;
+				case '5850':
+					msgString += "aqui tens o teu chá verde quentinho :tea:";
+					break;
+				case '2458':
+					msgString += "já sei que não bebes café. Aceita antes um chá :tea:";
+					break;
+				case '7744':
+					msgString += "aqui está o teu chá! :tea:";
+					break;
+				case '2908':
+					msgString += "duplo curto, como gostas, certo? :coffee:";
+					break;
+				default:
+					msgString += "aqui tens o teu café :coffee:";
+					break;
+			}
 		}
 
 		msg.channel.send(msgString)
@@ -318,6 +330,7 @@ client.on('message', msg => {
 	}
 
 	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
+		console.log(msg);
 		msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
 	}
 	// End 
@@ -327,10 +340,10 @@ client.on('message', msg => {
 		msg.channel.send(`Desculpa interromper, ${msg.author}, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência`)
 	}
 
-	if (msg.content.toLowerCase().indexOf(":muscle:") != -1 && !msg.author.bot) {
+	if (msg.content.toLowerCase().indexOf("💪") != -1 && !msg.author.bot) {
 		msg.channel.send(`Muito vai esta gente ao ginásio, graças a Deus :rolling_eyes: `)
 	}
-	
+
 	// Football? No problem! (If you are in the US reading this code we mean real football, not the thing you play with pads and helmets)
 	if (msg.content.toLowerCase().indexOf("benfica") != -1 && !msg.author.bot) {
 		msg.channel.send(`:eagle: ${msg.author} :eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`)
@@ -360,7 +373,7 @@ client.on('message', msg => {
 		msg.channel.send(`${msg.author} **Braga Braga Braga, vamos para a frente!**`)
 	}
 	// End Football
-//End just for fun 
+	//End just for fun 
 
 	if (msg.content.startsWith(prefix_help) && !msg.author.bot) {
 		const args = msg.content.slice(prefix_help.length).split(' ');
@@ -381,7 +394,7 @@ client.on('message', msg => {
 			resp += "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
 			resp += "**!weather** - *Mostra a meteorologia do dia atual.*\n";
 			resp += "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
-			resp +=  "**!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*\n";
+			resp += "**!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*\n";
 
 			msg.channel.send("***Comandos:***\n" + resp);
 		}
