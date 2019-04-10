@@ -299,6 +299,10 @@ client.on('message', msg => {
 		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
 	}
 
+	if (msg.content.toLowerCase().indexOf("Benfica") != -1 && !msg.author.bot) {
+		msg.channel.send(`${msg.author} :eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`)
+	}
+
 	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
 		msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
 	}
@@ -330,6 +334,7 @@ client.on('message', msg => {
 			resp += "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
 			resp += "**!weather** - *Mostra a meteorologia do dia atual.*\n";
 			resp += "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
+			resp +=  "**!acronimo acronimo - Mostra a definição de qualquer acronimo na base de dados, por ex. ANPC\n";
 
 			msg.channel.send("***Comandos:***\n" + resp);
 		}
