@@ -307,36 +307,7 @@ client.on('message', msg => {
 
 		msg.channel.send(msgString)
 	}
-	// Is it afternoon or night? We've got you covered! 
-	var hora = parseInt(moment(msg.createdTimestamp).format('H'));
-	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
-			if (hora <= 12) {
-			msgString = `Ainda não passou do meio-dia, digo eu, que *só* tenho a capacidade de raciocínio de mlhões de humanos, ${msg.author}! `;
-			}
-			else if (hora >= 20) {
-				msgString = `Para mim já é boa noite, ${msg.author}! `;
-			}		
-			else if (hora < 6) {
-				msgString = `É tarde é, não sei é se é boa, ${msg.author}? `;
-			}
-			else (hora >= 16 && hora <= 18) {
-			msgString = `Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`
-			}
-	msg.channel.send(msgString)
-	}
-	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
-		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
-		if (hora <= 20) {
-		msgString = `Boa noite, ${msg.author}, deves estar com pressa de ir para a cama! Ainda nem sequer são horas de jantar!`
-		}
-		else if (hora >=21 && hora <= 00) {
-			msgString = `Boa noite, ${msg.author}. Já jantaste?`
-		}
-		else (hora >=0 && hora < 07) {
-			msgString = `Boa noite, ${msg.author}. Estamos activados ou estás com insónias?`
-		}
-	msg.channel.send(msgString)
-
+	
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
 	}
