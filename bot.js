@@ -33,80 +33,80 @@ client.on('ready', () => {
 			res.data.forEach(function (element) {
 				if (element['tipo'] == "1") {
 					if (element['o'] > 20 || (element['t'] + element['a']) > 5) {
-						respnovosimportantes = respnovosimportantes + "\n";
-						respnovosimportantes = respnovosimportantes + "__**" + element['d'] + " - ";
-						respnovosimportantes = respnovosimportantes + element['id'] + " - ";
-						respnovosimportantes = respnovosimportantes + "#IF" + element['l'] + "," + element['s'] + " - ";
-						respnovosimportantes = respnovosimportantes + element['o'] + ":man_with_gua_pi_mao: ";
-						respnovosimportantes = respnovosimportantes + element['t'] + ":fire_engine: ";
-						respnovosimportantes = respnovosimportantes + element['a'] + ":helicopter:";
-						respnovosimportantes = respnovosimportantes + element['e'] + "**__";
+						respnovosimportantes += "\n";
+						respnovosimportantes += "__**" + element['d'] + " - ";
+						respnovosimportantes += element['id'] + " - ";
+						respnovosimportantes += "#IF" + element['l'] + "," + element['s'] + " - ";
+						respnovosimportantes += element['o'] + ":man_with_gua_pi_mao: ";
+						respnovosimportantes += element['t'] + ":fire_engine: ";
+						respnovosimportantes += element['a'] + ":helicopter:";
+						respnovosimportantes += element['e'] + "**__";
 					}
 					else {
-						respnovos = respnovos + "\n";
-						respnovos = respnovos + element['d'] + " - ";
-						respnovos = respnovos + element['id'] + " - ";
-						respnovos = respnovos + "#IF" + element['l'] + "," + element['s'] + " - ";
-						respnovos = respnovos + element['o'] + ":man_with_gua_pi_mao: ";
-						respnovos = respnovos + element['t'] + ":fire_engine: ";
-						respnovos = respnovos + element['a'] + ":helicopter: - ";
-						respnovos = respnovos + element['e'];
+						respnovos += "\n";
+						respnovos += element['d'] + " - ";
+						respnovos += element['id'] + " - ";
+						respnovos += "#IF" + element['l'] + "," + element['s'] + " - ";
+						respnovos += element['o'] + ":man_with_gua_pi_mao: ";
+						respnovos += element['t'] + ":fire_engine: ";
+						respnovos += element['a'] + ":helicopter: - ";
+						respnovos += element['e'];
 					}
 				}
 				else if (element['tipo'] == "2") {
-					respatualizados = respatualizados + "\n";
-					respatualizados = respatualizados + element['id'] + " - ";
-					respatualizados = respatualizados + "#IF" + element['l'] + "," + element['s'] + " - ";
-					respatualizados = respatualizados + element['ea'] + " :track_next: " + element['e'];
+					respatualizados += "\n";
+					respatualizados += element['id'] + " - ";
+					respatualizados += "#IF" + element['l'] + "," + element['s'] + " - ";
+					respatualizados += element['ea'] + " :track_next: " + element['e'];
 				}
 				else if (element['tipo'] == "3") {
-					respatualizadosimportantes = respatualizadosimportantes + "\n";
-					respatualizadosimportantes = respatualizadosimportantes + "__**" + element['id'] + " - ";
-					respatualizadosimportantes = respatualizadosimportantes + "#IF" + element['l'] + "," + element['s'] + " - ";
-					respatualizadosimportantes = respatualizadosimportantes + element['ea'] + " :track_next: " + element['e'] + "**__";
+					respatualizadosimportantes += "\n";
+					respatualizadosimportantes += "__**" + element['id'] + " - ";
+					respatualizadosimportantes += "#IF" + element['l'] + "," + element['s'] + " - ";
+					respatualizadosimportantes += element['ea'] + " :track_next: " + element['e'] + "**__";
 				}
 				else if (element['tipo'] == "4") {
-					respatualizadosimportantes = respatualizadosimportantes + "\n";
-					respatualizadosimportantes = respatualizadosimportantes + "__**" + element['id'] + " - ";
-					respatualizadosimportantes = respatualizadosimportantes + "#IF" + element['l'] + "," + element['s'] + " - Subiu para ";
-					respatualizadosimportantes = respatualizadosimportantes + element['o'] + ":man_with_gua_pi_mao: ";
-					respatualizadosimportantes = respatualizadosimportantes + element['t'] + ":fire_engine: ";
-					respatualizadosimportantes = respatualizadosimportantes + element['a'] + ":helicopter:" + "**__";
+					respatualizadosimportantes += "\n";
+					respatualizadosimportantes += "__**" + element['id'] + " - ";
+					respatualizadosimportantes += "#IF" + element['l'] + "," + element['s'] + " - Subiu para ";
+					respatualizadosimportantes += element['o'] + ":man_with_gua_pi_mao: ";
+					respatualizadosimportantes += element['t'] + ":fire_engine: ";
+					respatualizadosimportantes += element['a'] + ":helicopter:" + "**__";
 				}
 				else if (element['tipo'] == "5") {
-					respatualizadosimportantes = respatualizadosimportantes + "\n";
-					respatualizadosimportantes = respatualizadosimportantes + "__**" + element['id'] + " - ";
-					respatualizadosimportantes = respatualizadosimportantes + "#IF" + element['l'] + "," + element['s'] + " - Desceu para ";
-					respatualizadosimportantes = respatualizadosimportantes + element['o'] + ":man_with_gua_pi_mao: ";
-					respatualizadosimportantes = respatualizadosimportantes + element['t'] + ":fire_engine: ";
-					respatualizadosimportantes = respatualizadosimportantes + element['a'] + ":helicopter:" + "**__";
+					respatualizadosimportantes += "\n";
+					respatualizadosimportantes += "__**" + element['id'] + " - ";
+					respatualizadosimportantes += "#IF" + element['l'] + "," + element['s'] + " - Desceu para ";
+					respatualizadosimportantes += element['o'] + ":man_with_gua_pi_mao: ";
+					respatualizadosimportantes += element['t'] + ":fire_engine: ";
+					respatualizadosimportantes += element['a'] + ":helicopter:" + "**__";
 				}
 				else if (element['tipo'] == "6") {
 					var respatualizarimportancia = "";
-					respatualizarimportancia = respatualizarimportancia + "\n";
-					respatualizarimportancia = respatualizarimportancia + "__**" + element['id'] + " - ";
-					respatualizarimportancia = respatualizarimportancia + "#IF" + element['l'] + "," + element['s'] + " -  ";
-					respatualizarimportancia = respatualizarimportancia + element['o'] + ":man_with_gua_pi_mao: ";
-					respatualizarimportancia = respatualizarimportancia + element['t'] + ":fire_engine: ";
-					respatualizarimportancia = respatualizarimportancia + element['a'] + ":helicopter:" + "**__";
+					respatualizarimportancia += "\n";
+					respatualizarimportancia += "__**" + element['id'] + " - ";
+					respatualizarimportancia += "#IF" + element['l'] + "," + element['s'] + " -  ";
+					respatualizarimportancia += element['o'] + ":man_with_gua_pi_mao: ";
+					respatualizarimportancia += element['t'] + ":fire_engine: ";
+					respatualizarimportancia += element['a'] + ":helicopter:" + "**__";
 					client.channels.get("559054697944580098").send(":warning: :fire: ***Ocorrência importante:***\n" + respatualizarimportancia)
 				}
 				else if (element['tipo'] == "7") {
 					var respatualizarimportancia = "";
-					respatualizarimportancia = respatualizarimportancia + "\n";
-					respatualizarimportancia = respatualizarimportancia + "__**" + element['id'] + " - ";
-					respatualizarimportancia = respatualizarimportancia + "#IF" + element['l'] + "," + element['s'] + " - ";
-					respatualizarimportancia = respatualizarimportancia + element['o'] + ":man_with_gua_pi_mao: ";
-					respatualizarimportancia = respatualizarimportancia + element['t'] + ":fire_engine: ";
-					respatualizarimportancia = respatualizarimportancia + element['a'] + ":helicopter:" + "**__";
+					respatualizarimportancia += "\n";
+					respatualizarimportancia += "__**" + element['id'] + " - ";
+					respatualizarimportancia += "#IF" + element['l'] + "," + element['s'] + " - ";
+					respatualizarimportancia += element['o'] + ":man_with_gua_pi_mao: ";
+					respatualizarimportancia += element['t'] + ":fire_engine: ";
+					respatualizarimportancia += element['a'] + ":helicopter:" + "**__";
 					client.channels.get("559054697944580098").send("@here :warning: :fire: ***Ocorrência importante:***\n" + respatualizarimportancia)
 				}
 				else if (element['tipo'] == "8") {
 					var respatualizarimportancia = "";
-					respatualizarimportancia = respatualizarimportancia + "\n";
-					respatualizarimportancia = respatualizarimportancia + "__**" + element['id'] + " - ";
-					respatualizarimportancia = respatualizarimportancia + "#IF" + element['l'] + "," + element['s'] + " - ";
-					respatualizarimportancia = respatualizarimportancia + element['ea'] + " :track_next: " + element['e'] + "**__";
+					respatualizarimportancia += "\n";
+					respatualizarimportancia += "__**" + element['id'] + " - ";
+					respatualizarimportancia += "#IF" + element['l'] + "," + element['s'] + " - ";
+					respatualizarimportancia += element['ea'] + " :track_next: " + element['e'] + "**__";
 					client.channels.get("559054697944580098").send("@here :warning: :fire: ***Atualização importante:***\n" + respatualizarimportancia)
 				}
 
@@ -189,35 +189,35 @@ client.on('ready', () => {
 				}
 
 
-				respnovos = respnovos + ":information_source: :warning: " + element['icon'] + " ";
-				respnovos = respnovos + "#Aviso" + element['nivel'] + " devido a ";
-				respnovos = respnovos + "#" + tipo + " entre as ";
-				respnovos = respnovos + inicio + " e as ";
-				respnovos = respnovos + fim + " para os distritos de ";
+				respnovos += ":information_source: :warning: " + element['icon'] + " ";
+				respnovos += "#Aviso" + element['nivel'] + " devido a ";
+				respnovos += "#" + tipo + " entre as ";
+				respnovos += inicio + " e as ";
+				respnovos += fim + " para os distritos de ";
 
-				resptwitter = resptwitter + "ℹ️⚠️" + iconTipo + " ";
-				resptwitter = resptwitter + "#Aviso" + element['nivel'] + " devido a ";
-				resptwitter = resptwitter + "#" + tipo + " entre as ";
-				resptwitter = resptwitter + inicio + " e as ";
-				resptwitter = resptwitter + fim + " para os distritos de ";
+				resptwitter += "ℹ️⚠️" + iconTipo + " ";
+				resptwitter += "#Aviso" + element['nivel'] + " devido a ";
+				resptwitter += "#" + tipo + " entre as ";
+				resptwitter += inicio + " e as ";
+				resptwitter += fim + " para os distritos de ";
 
 				element['locais'].forEach(function (local) {
 					if (primeiro == 0) {
-						respnovos = respnovos + "#" + local['local'];
-						resptwitter = resptwitter + "#" + local['local'];
+						respnovos += "#" + local['local'];
+						resptwitter += "#" + local['local'];
 					}
 					else if ((element['locais'].length - 1) == primeiro) {
-						respnovos = respnovos + ", e #" + local['local'];
-						resptwitter = resptwitter + ", e #" + local['local'];
+						respnovos += ", e #" + local['local'];
+						resptwitter += ", e #" + local['local'];
 					}
 					else {
-						respnovos = respnovos + ", #" + local['local'];
-						resptwitter = resptwitter + ", #" + local['local'];
+						respnovos += ", #" + local['local'];
+						resptwitter += ", #" + local['local'];
 					}
 					primeiro = primeiro + 1;
 				})
-				respnovos = respnovos + " " + element['icon'] + " :warning: :information_source:\n\n";
-				resptwitter = resptwitter + " " + iconTipo + "⚠️ℹ️";
+				respnovos += " " + element['icon'] + " :warning: :information_source:\n\n";
+				resptwitter += " " + iconTipo + "⚠️ℹ️";
 				client_twitter.post('statuses/update', { status: resptwitter }, function (error, tweet, response) {
 				});
 			})
@@ -236,21 +236,21 @@ client.on('ready', () => {
 			res.data.forEach(function (element) {
 				if (moment(element['time']).format('L') == date) {
 					if (element['sensed'] == true) {
-						respsentido = respsentido + moment(element['time']).format('LT') + "h - ";
-						respsentido = respsentido + "M" + element['magType'] + " ";
-						respsentido = respsentido + "**" + element['magnitud'] + "** em ";
-						respsentido = respsentido + element['obsRegion'] + " a ";
-						respsentido = respsentido + element['depth'] + "Km prof. ";
-						respsentido = respsentido + "**Sentido em " + element['local'] + " com Int. " + element['degree'] + "** " + element['shakemapref'];
-						respsentido = respsentido + " // " + element['lat'] + "," + element['lon'] + "\n";
+						respsentido += moment(element['time']).format('LT') + "h - ";
+						respsentido += "M" + element['magType'] + " ";
+						respsentido += "**" + element['magnitud'] + "** em ";
+						respsentido += element['obsRegion'] + " a ";
+						respsentido += element['depth'] + "Km prof. ";
+						respsentido += "**Sentido em " + element['local'] + " com Int. " + element['degree'] + "** " + element['shakemapref'];
+						respsentido += " // " + element['lat'] + "," + element['lon'] + "\n";
 					}
 					else {
-						resp = resp + moment(element['time']).format('LT') + "h - ";
-						resp = resp + "M" + element['magType'] + " ";
-						resp = resp + "**" + element['magnitud'] + "** em ";
-						resp = resp + element['obsRegion'] + " a ";
-						resp = resp + element['depth'] + "Km prof. // ";
-						resp = resp + element['lat'] + "," + element['lon'] + "\n";
+						resp += moment(element['time']).format('LT') + "h - ";
+						resp += "M" + element['magType'] + " ";
+						resp += "**" + element['magnitud'] + "** em ";
+						resp += element['obsRegion'] + " a ";
+						resp += element['depth'] + "Km prof. // ";
+						resp += element['lat'] + "," + element['lon'] + "\n";
 					}
 				}
 			})
@@ -312,17 +312,17 @@ client.on('message', msg => {
 		if (command === 'commands') {
 			var resp = "\n";
 
-			resp = resp + "**!coffee** - *Manda vir café para todos.*\n";
-			resp = resp + "**!all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*\n";
-			resp = resp + "**!all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*\n";
-			resp = resp + "**!all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*\n";
-			resp = resp + "**!all important** - *Mostra todas as ocorrências marcadas como importantes na ProCiv.*\n";
-			resp = resp + "**!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*\n";
-			resp = resp + "**!op if [#IFConcelho]** - *Mostra os dados relativos à ocorrência com esse #IF.*\n";
-			resp = resp + "**!op status [Despacho|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*\n";
-			resp = resp + "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
-			resp = resp + "**!weather** - *Mostra a meteorologia do dia atual.*\n";
-			resp = resp + "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
+			resp += "**!coffee** - *Manda vir café para todos.*\n";
+			resp += "**!all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*\n";
+			resp += "**!all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*\n";
+			resp += "**!all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*\n";
+			resp += "**!all important** - *Mostra todas as ocorrências marcadas como importantes na ProCiv.*\n";
+			resp += "**!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*\n";
+			resp += "**!op if [#IFConcelho]** - *Mostra os dados relativos à ocorrência com esse #IF.*\n";
+			resp += "**!op status [Despacho|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*\n";
+			resp += "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
+			resp += "**!weather** - *Mostra a meteorologia do dia atual.*\n";
+			resp += "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
 
 
 			msg.channel.send("***Comandos:***\n" + resp);
@@ -336,9 +336,9 @@ client.on('message', msg => {
 			axios.get('https://vost.mariosantos.net/api/acronym/' + argumento, {
 			}).then(res => {
 				var resp = "";
-				resp = resp + "\n";
-				resp = resp + res.data['acronym'] + " - ";
-				resp = resp + res.data['description'];
+				resp += "\n";
+				resp += res.data['acronym'] + " - ";
+				resp += res.data['description'];
 				msg.channel.send(resp);
 			})
 				.catch(error => {
@@ -369,14 +369,14 @@ client.on('message', msg => {
 							respimportantes = respimportantes + element['e'] + "**__";
 						}
 						else {
-							resp = resp + "\n";
-							resp = resp + element['d'] + " - ";
-							resp = resp + element['id'] + " - ";
-							resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-							resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-							resp = resp + element['t'] + ":fire_engine: ";
-							resp = resp + element['a'] + ":helicopter: - ";
-							resp = resp + element['e'];
+							resp += "\n";
+							resp += element['d'] + " - ";
+							resp += element['id'] + " - ";
+							resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+							resp += element['o'] + ":man_with_gua_pi_mao: ";
+							resp += element['t'] + ":fire_engine: ";
+							resp += element['a'] + ":helicopter: - ";
+							resp += element['e'];
 						}
 					});
 					if (respimportantes != "")
@@ -401,9 +401,9 @@ client.on('message', msg => {
 								respimportantes = respimportantes + "https://fogos.pt/fogo/2019" + element['id'] + "**__";
 							}
 							else {
-								resp = resp + "\n";
-								resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-								resp = resp + "https://fogos.pt/fogo/2019" + element['id'];
+								resp += "\n";
+								resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+								resp += "https://fogos.pt/fogo/2019" + element['id'];
 							}
 						});
 						if (resp != "" || respimportantes != "")
@@ -434,14 +434,14 @@ client.on('message', msg => {
 										respimportantes = respimportantes + element['e'] + "**__";
 									}
 									else {
-										resp = resp + "\n";
-										resp = resp + element['d'] + " - ";
-										resp = resp + element['id'] + " - ";
-										resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-										resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-										resp = resp + element['t'] + ":fire_engine: ";
-										resp = resp + element['a'] + ":helicopter: - ";
-										resp = resp + element['e'];
+										resp += "\n";
+										resp += element['d'] + " - ";
+										resp += element['id'] + " - ";
+										resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+										resp += element['o'] + ":man_with_gua_pi_mao: ";
+										resp += element['t'] + ":fire_engine: ";
+										resp += element['a'] + ":helicopter: - ";
+										resp += element['e'];
 									}
 								}
 							});
@@ -473,14 +473,14 @@ client.on('message', msg => {
 											respimportantes = respimportantes + element['e'] + "**__";
 										}
 										else {
-											resp = resp + "\n";
-											resp = resp + element['d'] + " - ";
-											resp = resp + element['id'] + " - ";
-											resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-											resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-											resp = resp + element['t'] + ":fire_engine: ";
-											resp = resp + element['a'] + ":helicopter: - ";
-											resp = resp + element['e'];
+											resp += "\n";
+											resp += element['d'] + " - ";
+											resp += element['id'] + " - ";
+											resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+											resp += element['o'] + ":man_with_gua_pi_mao: ";
+											resp += element['t'] + ":fire_engine: ";
+											resp += element['a'] + ":helicopter: - ";
+											resp += element['e'];
 										}
 									}
 								});
@@ -512,14 +512,14 @@ client.on('message', msg => {
 												respimportantes = respimportantes + element['e'] + "**__";
 											}
 											else {
-												resp = resp + "\n";
-												resp = resp + element['d'] + " - ";
-												resp = resp + element['id'] + " - ";
-												resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-												resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-												resp = resp + element['t'] + ":fire_engine: ";
-												resp = resp + element['a'] + ":helicopter: - ";
-												resp = resp + element['e'];
+												resp += "\n";
+												resp += element['d'] + " - ";
+												resp += element['id'] + " - ";
+												resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+												resp += element['o'] + ":man_with_gua_pi_mao: ";
+												resp += element['t'] + ":fire_engine: ";
+												resp += element['a'] + ":helicopter: - ";
+												resp += element['e'];
 											}
 										}
 									});
@@ -534,13 +534,13 @@ client.on('message', msg => {
 					}).then(res => {
 						var resp = "";
 						res.data.forEach(function (element) {
-							resp = resp + "\n__**";
-							resp = resp + element['id'] + " - ";
-							resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-							resp = resp + element['i'];
+							resp += "\n__**";
+							resp += element['id'] + " - ";
+							resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+							resp += element['i'];
 							if (element['ps'] != "")
-								resp = resp + " - " + element['ps'];
-							resp = resp + "**__";
+								resp += " - " + element['ps'];
+							resp += "**__";
 						});
 						if (resp != "")
 							msg.channel.send(":fire: ***Ocorrências:***\n" + resp);
@@ -573,14 +573,14 @@ client.on('message', msg => {
 								respimportantes = respimportantes + element['e'] + "**__";
 							}
 							else {
-								resp = resp + "\n";
-								resp = resp + element['d'] + " - ";
-								resp = resp + element['id'] + " - ";
-								resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-								resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-								resp = resp + element['t'] + ":fire_engine: ";
-								resp = resp + element['a'] + ":helicopter: - ";
-								resp = resp + element['e'];
+								resp += "\n";
+								resp += element['d'] + " - ";
+								resp += element['id'] + " - ";
+								resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+								resp += element['o'] + ":man_with_gua_pi_mao: ";
+								resp += element['t'] + ":fire_engine: ";
+								resp += element['a'] + ":helicopter: - ";
+								resp += element['e'];
 							}
 						}
 					});
@@ -608,14 +608,14 @@ client.on('message', msg => {
 								respimportantes = respimportantes + element['e'] + "**__";
 							}
 							else {
-								resp = resp + "\n";
-								resp = resp + element['d'] + " - ";
-								resp = resp + element['id'] + " - ";
-								resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-								resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-								resp = resp + element['t'] + ":fire_engine: ";
-								resp = resp + element['a'] + ":helicopter: - ";
-								resp = resp + element['e'];
+								resp += "\n";
+								resp += element['d'] + " - ";
+								resp += element['id'] + " - ";
+								resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+								resp += element['o'] + ":man_with_gua_pi_mao: ";
+								resp += element['t'] + ":fire_engine: ";
+								resp += element['a'] + ":helicopter: - ";
+								resp += element['e'];
 							}
 						}
 					});
@@ -630,11 +630,11 @@ client.on('message', msg => {
 				axios.get('https://api.wazepce.tech/getWindy.php?id=' + id, {
 				}).then(res => {
 					var resp = "";
-					resp = resp + "\n";
-					resp = resp + res.data['id'] + " - ";
-					resp = resp + "#IF" + res.data['l'] + "," + res.data['s'] + " - ";
-					resp = resp + res.data['velocidade'] + " KM/H ";
-					resp = resp + res.data['sentido'];
+					resp += "\n";
+					resp += res.data['id'] + " - ";
+					resp += "#IF" + res.data['l'] + "," + res.data['s'] + " - ";
+					resp += res.data['velocidade'] + " KM/H ";
+					resp += res.data['sentido'];
 					if (resp != "")
 						msg.channel.send(":wind_blowing_face: :fire: ***Ocorrência:***\n" + resp);
 					else
@@ -670,14 +670,14 @@ client.on('message', msg => {
 								respimportantes = respimportantes + element['e'] + "**__";
 							}
 							else {
-								resp = resp + "\n";
-								resp = resp + element['d'] + " - ";
-								resp = resp + element['id'] + " - ";
-								resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-								resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-								resp = resp + element['t'] + ":fire_engine: ";
-								resp = resp + element['a'] + ":helicopter: - ";
-								resp = resp + element['e'];
+								resp += "\n";
+								resp += element['d'] + " - ";
+								resp += element['id'] + " - ";
+								resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+								resp += element['o'] + ":man_with_gua_pi_mao: ";
+								resp += element['t'] + ":fire_engine: ";
+								resp += element['a'] + ":helicopter: - ";
+								resp += element['e'];
 							}
 						}
 					});
@@ -745,14 +745,14 @@ client.on('message', msg => {
 							respimportantes = respimportantes + element['e'] + "**__";
 						}
 						else {
-							resp = resp + "\n";
-							resp = resp + element['d'] + " - ";
-							resp = resp + element['id'] + " - ";
-							resp = resp + "#IF" + element['l'] + "," + element['s'] + " - ";
-							resp = resp + element['o'] + ":man_with_gua_pi_mao: ";
-							resp = resp + element['t'] + ":fire_engine: ";
-							resp = resp + element['a'] + ":helicopter: - ";
-							resp = resp + element['e'];
+							resp += "\n";
+							resp += element['d'] + " - ";
+							resp += element['id'] + " - ";
+							resp += "#IF" + element['l'] + "," + element['s'] + " - ";
+							resp += element['o'] + ":man_with_gua_pi_mao: ";
+							resp += element['t'] + ":fire_engine: ";
+							resp += element['a'] + ":helicopter: - ";
+							resp += element['e'];
 						}
 					});
 					if (resp != "" || respimportantes != "")
@@ -770,13 +770,13 @@ client.on('message', msg => {
 					var count = 0;
 					res.data.forEach(function (element) {
 						count = count + 1;
-						resp = resp + "\n";
-						resp = resp + "**" + element['local'] + "** ";
-						resp = resp + ":thermometer:" + element['tMin'] + "-";
-						resp = resp + element['tMax'] + "ºC / ";
-						resp = resp + element['descIdWeatherTypePT'] + " / ";
-						resp = resp + ":umbrella: " + element['precipitaProb'] + "% / ";
-						resp = resp + ":dash: " + element['vento'] + " " + element['predWindDir'];
+						resp += "\n";
+						resp += "**" + element['local'] + "** ";
+						resp += ":thermometer:" + element['tMin'] + "-";
+						resp += element['tMax'] + "ºC / ";
+						resp += element['descIdWeatherTypePT'] + " / ";
+						resp += ":umbrella: " + element['precipitaProb'] + "% / ";
+						resp += ":dash: " + element['vento'] + " " + element['predWindDir'];
 						if (count >= 15) {
 							msg.channel.send(resp);
 							count = 0;
@@ -798,13 +798,13 @@ client.on('message', msg => {
 						var count = 0;
 						res.data.forEach(function (element) {
 							count = count + 1;
-							resp = resp + "\n";
-							resp = resp + "**" + element['local'] + "** ";
-							resp = resp + ":thermometer:" + element['tMin'] + "-";
-							resp = resp + element['tMax'] + "ºC / ";
-							resp = resp + element['descIdWeatherTypePT'] + " / ";
-							resp = resp + ":umbrella: " + element['precipitaProb'] + "% / ";
-							resp = resp + ":dash: " + element['vento'] + " " + element['predWindDir'];
+							resp += "\n";
+							resp += "**" + element['local'] + "** ";
+							resp += ":thermometer:" + element['tMin'] + "-";
+							resp += element['tMax'] + "ºC / ";
+							resp += element['descIdWeatherTypePT'] + " / ";
+							resp += ":umbrella: " + element['precipitaProb'] + "% / ";
+							resp += ":dash: " + element['vento'] + " " + element['predWindDir'];
 							if (count >= 15) {
 								msg.channel.send(resp);
 								count = 0;
@@ -832,21 +832,21 @@ client.on('message', msg => {
 				res.data.forEach(function (element) {
 					if (moment(element['time']).format('L') == date) {
 						if (element['sensed'] == true) {
-							respsentido = respsentido + moment(element['time']).format('LT') + "h - ";
-							respsentido = respsentido + "M" + element['magType'] + " ";
-							respsentido = respsentido + "**" + element['magnitud'] + "** em ";
-							respsentido = respsentido + element['obsRegion'] + " a ";
-							respsentido = respsentido + element['depth'] + "Km prof. ";
-							respsentido = respsentido + "**Sentido em " + element['local'] + " com Int. " + element['degree'] + "** " + element['shakemapref'];
-							respsentido = respsentido + " // " + element['lat'] + "," + element['lon'] + "\n";
+							respsentido += moment(element['time']).format('LT') + "h - ";
+							respsentido += "M" + element['magType'] + " ";
+							respsentido += "**" + element['magnitud'] + "** em ";
+							respsentido += element['obsRegion'] + " a ";
+							respsentido += element['depth'] + "Km prof. ";
+							respsentido += "**Sentido em " + element['local'] + " com Int. " + element['degree'] + "** " + element['shakemapref'];
+							respsentido += " // " + element['lat'] + "," + element['lon'] + "\n";
 						}
 						else {
-							resp = resp + moment(element['time']).format('LT') + "h - ";
-							resp = resp + "M" + element['magType'] + " ";
-							resp = resp + "**" + element['magnitud'] + "** em ";
-							resp = resp + element['obsRegion'] + " a ";
-							resp = resp + element['depth'] + "Km prof. // ";
-							resp = resp + element['lat'] + "," + element['lon'] + "\n";
+							resp += moment(element['time']).format('LT') + "h - ";
+							resp += "M" + element['magType'] + " ";
+							resp += "**" + element['magnitud'] + "** em ";
+							resp += element['obsRegion'] + " a ";
+							resp += element['depth'] + "Km prof. // ";
+							resp += element['lat'] + "," + element['lon'] + "\n";
 						}
 					}
 				})
@@ -861,14 +861,14 @@ client.on('message', msg => {
 			axios.get('https://api.wazepce.tech/getAlertas.php', {
 			}).then(res => {
 				res.data.forEach(function (element) {
-					resp = resp + element['local'] + "\n";
+					resp += element['local'] + "\n";
 					element['alertas'].forEach(function (alerta) {
-						resp = resp + "**" + alerta['nivel'] + "** // ";
-						resp = resp + alerta['icon'] + alerta['tipo'] == "Precipitação" ? "Chuva" : alerta['tipo'] + " // ";
-						resp = resp + alerta['inicio'] + " :arrow_right: ";
-						resp = resp + alerta['fim'] + "\n";
+						resp += "**" + alerta['nivel'] + "** // ";
+						resp += alerta['icon'] + alerta['tipo'] == "Precipitação" ? "Chuva" : alerta['tipo'] + " // ";
+						resp += alerta['inicio'] + " :arrow_right: ";
+						resp += alerta['fim'] + "\n";
 					})
-					resp = resp + "\n";
+					resp += "\n";
 				})
 				if (resp != "")
 					msg.channel.send("***Alertas:***\n" + resp);
