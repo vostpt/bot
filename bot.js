@@ -268,10 +268,7 @@ client.on('ready', () => {
 client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
-
-
-//catering 
-	// Morning Routine
+	//catering 
 
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
@@ -310,6 +307,7 @@ client.on('message', msg => {
 
 		msg.channel.send(msgString)
 	}
+
 	// Good Afternoon routine 
 
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
@@ -359,6 +357,7 @@ client.on('message', msg => {
 		msg.channel.send(msgString)
 	}	
 
+	
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
 	}
@@ -434,7 +433,7 @@ client.on('message', msg => {
 			resp += "**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n";
 			resp += "**!weather** - *Mostra a meteorologia do dia atual.*\n";
 			resp += "**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n";
-			resp += "**?acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. ?acronimo ANPC*\n";
+			resp += "**!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*\n";
 
 			msg.channel.send("***Comandos:***\n" + resp);
 		}
@@ -840,7 +839,7 @@ client.on('message', msg => {
 					estado = "18";
 				if (distritos == "viseu")
 					estado = "19";
-				axios.get('http://api.wazepce.tech/getIFDistrito.php?distrito=' + estado, {
+				axios.get('https://bot-api.vost.pt/getIFDistrito.php?distrito=' + estado, {
 				}).then(res => {
 					var resp = "";
 					var respimportantes = "";
