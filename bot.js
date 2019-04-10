@@ -347,7 +347,7 @@ client.on('message', msg => {
 		if (hora < 19) {
 			msgString = `Boa noite, ${msg.author}? Estás em que fuso horário?`
 		}
-		else if (hora >= 20 && hora <=23) {
+		else if (hora >= 20 && hora <= 23) {
 			msgString = `Boa noite ${msg.author}, Já jantaste?`
 		}
 		else if (hora > 00) {
