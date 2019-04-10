@@ -273,13 +273,13 @@ client.on('message', msg => {
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
 		if (hora >= 13 && hora < 20) {
-			msgString = `Para mim já é Boa Tarde, ${msg.author}! `;
+			msgString = `Para mim já é boa Tarde, ${msg.author}! `;
 		}
 		else if (hora >= 20) {
-			msgString = `Para mim já é Boa Noite, ${msg.author}! `;
+			msgString = `Para mim já é boa Noite, ${msg.author}! **Estás bem?`;
 		}
 		else if (hora < 6) {
-			msgString = `Já de pé a estas horas, ${msg.author}? `;
+			msgString = `Já de pé a estas horas, ${msg.author}? **ALVORADA!!!!!!**`;
 		}
 		else {
 			msgString = `Bom Dia ${msg.author}, `;
@@ -307,6 +307,35 @@ client.on('message', msg => {
 
 		msg.channel.send(msgString)
 	}
+	// Is it afternoon or night? We've got you covered! 
+	var hora = parseInt(moment(msg.createdTimestamp).format('H'));
+	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
+			if (hora <= 12) {
+			msgString = `Ainda não passou do meio-dia, digo eu, que *só* tenho a capacidade de raciocínio de mlhões de humanos, ${msg.author}! `;
+			}
+			else if (hora >= 20) {
+				msgString = `Para mim já é boa noite, ${msg.author}! `;
+			}		
+			else if (hora < 6) {
+				msgString = `É tarde é, não sei é se é boa, ${msg.author}? `;
+			}
+			else if (hora >= 16 && hora <= 18)
+			msgString = `Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`
+			}
+	msg.channel.send(msgString)
+
+	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
+	// console.log(msg);
+		if (hora <= 20) {
+		msgString = `Boa noite, ${msg.author}, deves estar com pressa de ir para a cama! Ainda nem sequer são horas de jantar!`
+		}
+		else if (hora >=21 && hora <= 00) {
+			msgString = `Boa noite, ${msg.author}. Já jantaste?`
+		}
+		else if (hora >=0 && hora < 07) {
+			msgString = `Boa noite, ${msg.author}. Estamos activados ou estás com insónias?`
+		}
+	msg.channel.send(msgString)
 
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
@@ -323,17 +352,6 @@ client.on('message', msg => {
 		msg.channel.send(`Hey ${msg.author} https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`)
 	}
 	// End Foul Language
-
-	// Is it afternoon or night? We've got you covered! 
-	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
-		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
-	}
-
-	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
-		console.log(msg);
-		msg.channel.send(`Boa noite, ${msg.author}, café a esta hora não! Ou estamos activados e ninguém me disse nada? :thinking:`)
-	}
-	// End 
 
 	// Teaching 
 	if (msg.content.toLowerCase().indexOf("voluntários") != -1 && !msg.author.bot) {
