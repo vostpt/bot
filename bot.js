@@ -350,7 +350,7 @@ client.on('message', msg => {
 		else if (hora >= 20 && hora <= 23) {
 			msgString = `Boa noite ${msg.author}, já jantaste?`
 		}
-		else if (hora > 0 && hora < 19) {
+		else if (hora >= 0 && hora < 19) {
 			msgString = `Por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
 		}
 		msg.channel.send(msgString)
