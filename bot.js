@@ -324,16 +324,16 @@ client.on('message', msg => {
 			msgString = `Vai um lanchinho ${msg.author}? :milk: :cake:`;
 		}
 		else {
-			msgString = `Boa tarde ${msg.author}, `;
+			msgString = `Boa tarde ${msg.author}?, `;
 			switch (msg.author.discriminator) {
 				case '1318':
 					msgString += "os voluntários estão a portar-se bem?";
 					break;
 				case '2908':
-					msgString += "não me mandes abaixo outra vez, pá!";
+					msgString += "não me mandes abaixo outra vez, pá! E não é boa tarde nem aqui nem na China!";
 					break;
 				default:
-					msgString += "como está o tempo por aí?";
+					msgString += "Tens a certeza de que é boa tarde?";
 					break;
 			}
 		}
