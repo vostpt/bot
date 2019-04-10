@@ -270,22 +270,22 @@ client.on('message', msg => {
 		msgString = `Bom Dia ${msg.author}, `;
 		switch (msg.author.discriminator) {
 			case '1318':
-				msgString = msgString + "aqui tens o teu chá verde :tea:";
+				msgString += "aqui tens o teu chá verde :tea:";
 				break;
 			case '5850':
-				msgString = msgString + "aqui tens o teu chá verde quentinho :tea:";
+				msgString += "aqui tens o teu chá verde quentinho :tea:";
 				break;
 			case '2458':
-				msgString = msgString + "já sei que não bebes café. Aceita antes um chá :tea:";
+				msgString += "já sei que não bebes café. Aceita antes um chá :tea:";
 				break;
 			case '7744':
-				msgString = msgString + "aqui está o teu chá! :tea:";
+				msgString += "aqui está o teu chá! :tea:";
 				break;
 			case '2908':
-				msgString = msgString + "duplo curto, como gostas, certo? :coffee:";
+				msgString += "duplo curto, como gostas, certo? :coffee:";
 				break;
 			default:
-				msgString = msgString + "aqui tens o teu café :coffee:";
+				msgString += "aqui tens o teu café :coffee:";
 				break;
 		}
 
@@ -293,7 +293,7 @@ client.on('message', msg => {
 	}
 
 	if (msg.content.toLowerCase().indexOf("merda") != -1 && !msg.author.bot) {
-		msg.channel.send(`Hey ${msg.ahtor} https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`)
+		msg.channel.send(`Hey ${msg.author} https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`)
 	}
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
 		msg.channel.send(`Boa tarde, ${msg.author}, vai um lanchinho? :milk: :cake:`)
