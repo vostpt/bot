@@ -317,8 +317,17 @@ client.on('message', msg => {
 		if (hora < 12 ) {
 			msgString = `Ainda não é boa tarde, ${msg.author}, digo eu que só tenho o cérebro do tamanho do universo.`
 		}
+		else if (hora < 15) {
+			msgString = `Olá boa tarde, ${msg.author}, já almoçaste?`
+		}
+		else if (hora < 17) {
+			msgString = `Olá boa tarde, ${msg.author}, tudo bem contigo?`
+		}
+		else if (hora < 19) {
+			msgString = `Boas, ${msg.author}! Vai um lanchinho? :milk: :cake:`
+		}	
 		else {
-			msgString = `Olá boa tarde, ${msg.author}, tudo bem?`
+			msgString = `Tarde?? Viesses mais cedo, ${msg.author} :thinking:`
 		}
 		msg.channel.send(msgString)
 	}
