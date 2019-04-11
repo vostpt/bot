@@ -269,7 +269,7 @@ client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
 
-	if (message.isMentioned(client.user)) {
+	if (message.isMentioned(client.users.get('559536284947972097'))) {
 		message.reply('Teste');
 	}
 
