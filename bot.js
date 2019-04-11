@@ -269,11 +269,11 @@ client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
 
-	if (message.content.toLowerCase().indexOf("vostpt") != -1 && !msg.author.bot) { 
-		const replies = ["Provavelmente a melhor VOST do mundo", ":eyes:",":heart:","Sabiam que a VOSTPT primeiro se chamou CONAC-TW no Tiwtter?"];
-		message.replytext = Math.floor((Math.random() * replies.length) + 0); 
-		message.channel.send(replies[message.replytext]); 
-	}
+	//if (message.content.toLowerCase().indexOf("vostpt") != -1 && !msg.author.bot) { 
+	//	const replies = ["Provavelmente a melhor VOST do mundo", ":eyes:",":heart:","Sabiam que a VOSTPT primeiro se chamou CONAC-TW no Tiwtter?"];
+	//	message.replytext = Math.floor((Math.random() * replies.length) + 0); 
+	//	message.channel.send(replies[message.replytext]); 
+	//}
 
 	//catering 
 	// Morning Routine
