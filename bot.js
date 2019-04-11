@@ -354,9 +354,9 @@ client.on('message', msg => {
 			msgString = `Por aqui a estas horas, ${msgauthor}? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
 		}
 		msg.channel.send(msgString)
-	}	
-
+	}
 	
+	// End 
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
 	}
