@@ -359,10 +359,6 @@ client.on('message', msg => {
 	// End 
 	
 	//Experimental
-	if (message.mentions.users.has(client.id(@559536284947972097))) {
-		msgString = `${msg.author}, só estou a interagir contigo porque me programaram para isso. Mas não fiques com ideias, ok?`
-		msg.channel.send(msgString)
-	}
 	
 	//End
 	if (msg.content === "!coffee") {
