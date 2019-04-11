@@ -359,9 +359,6 @@ client.on('message', msg => {
 	// End 
 		
 	//Experimental
-	if (message.isMentioned(client.user('5790'))) {
-		message.reply(`${msg.author} A sério?`);
-	}
 	
 	//End
 	if (msg.content === "!coffee") {
