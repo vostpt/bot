@@ -359,7 +359,7 @@ client.on('message', msg => {
 	// End 
 
 	//Experimental
-	if (msg.content.tolowercase().indexOf("VOSTia") != -1 && !msg.author.bot) {
+	if (msg.content.tolowercase().indexOf(`${msg.auhtor.bot}`) != -1 && !msg.author.bot) {
 		msg.channel.send(`:robot: ${msg.author} só falo contigo porque me programaram assim. Não te sintas importante.:robot:`)
 	}
 	//End
