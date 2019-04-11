@@ -314,28 +314,11 @@ client.on('message', msg => {
 
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
-		if (hora >= 0 && hora < 12) {
-			msgString = `Boa tarde, ${msg.author}?? Estás em que fuso horário?`;
+		if (hora < 12 ) {
+			msgString = `Ainda não é boa tarde, ${msg.author}, digo eu que só tenho o cérebro do tamanho do universo.`
 		}
-		else if (hora >= 13 && hora <= 17) {
-			msgString = `Muito boa tarde, ${msg.author}! Tudo bem contigo?`;
-		}
-		else if (hora > 17 && hora <= 19) {
-			msgString = `Vai um lanchinho ${msg.author}? :milk: :cake:`;
-		}
-		else if (hora > 19) {
-			msgString = `Boa tarde ${msg.author}?, `;
-			switch (msg.author.discriminator) {
-				case '1318':
-					msgString += "os voluntários estão a portar-se bem?";
-					break;
-				case '2908':
-					msgString += "não me mandes abaixo outra vez, pá! E não é boa tarde nem aqui nem na China!";
-					break;
-				default:
-					msgString += "Tens mesmo a certeza de que é **boa tarde**?";
-					break;
-			}
+		else {
+			msgString = `Olá boa tarde, ${msg.author}, tudo bem?`
 		}
 		msg.channel.send(msgString)
 	}
