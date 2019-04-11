@@ -351,7 +351,7 @@ client.on('message', msg => {
 			msgString = `Boa noite ${msg.author}, já jantaste?`
 		}
 		else  {
-			msgString = `Por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
+			msgString = `Por aqui a estas horas, ${msgauthor}? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
 		}
 		msg.channel.send(msgString)
 	}	
