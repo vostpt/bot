@@ -342,19 +342,19 @@ client.on('message', msg => {
 
 
 	// Good Night routine
-	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
-		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
-		if (hora >= 7 && hora <= 19) {
-			msgString = `Boa noite, ${msg.author}? Estás em que fuso horário?`
-		}
-		else if (hora >= 20 && hora <= 23) {
-			msgString = `Boa noite ${msg.author}, já jantaste?`
-		}
-		else  {
-			msgString = `Por aqui a estas horas, ${msgauthor}? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
-		}
-		msg.channel.send(msgString)
-	}
+    if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
+        var hora = parseInt(moment(msg.createdTimestamp).format('H'));
+        if (hora >= 7 && hora <= 19) {
+            msgString = `Boa noite, ${msg.author}? Estás em que fuso horário?`
+        }
+        else if (hora >= 20 && hora <= 23) {
+            msgString = `Boa noite ${msg.author}, já jantaste?`
+        }
+        else  {
+            msgString = `Por aqui a estas horas, ${msg.author}? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
+        }
+        msg.channel.send(msgString)
+    }    
 	
 	// End 
 	if (msg.content === "!coffee") {
