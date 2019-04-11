@@ -314,10 +314,10 @@ client.on('message', msg => {
 
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
-		if (hora >= 12 && hora < 15) {
-			msgString = `Boa tarde, ${msg.author}! Já almoçaste?`;
+		if (hora >= 0 && hora < 12) {
+			msgString = `Boa tarde, ${msg.author}?? Estás em que fuso horário?`;
 		}
-		else if (hora >= 15 && hora <= 17) {
+		else if (hora >= 13 && hora <= 17) {
 			msgString = `Muito boa tarde, ${msg.author}! Tudo bem contigo?`;
 		}
 		else if (hora > 17 && hora <= 19) {
