@@ -269,6 +269,10 @@ client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
 
+	if (message.isMentioned(client.user)) {
+		message.reply('Teste');
+	}
+
 	//catering 
 	// Morning Routine
 	
