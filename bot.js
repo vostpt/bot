@@ -357,6 +357,12 @@ client.on('message', msg => {
     }    
 	
 	// End 
+
+	//Experimental
+	if (msg.content.tolowercase().indexOf("VOSTia") != -1 && !msg.author.bot) {
+		msg.channel.send(`:robot: ${msg.author} só falo contigo porque me programaram assim. Não te sintas importante.:robot:`)
+	}
+	//End
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
 	}
