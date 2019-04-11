@@ -359,7 +359,7 @@ client.on('message', msg => {
 	// End 
 		
 	//Experimental
-	if (message.isMentioned(client.users.get('5790'))) {
+	if (message.isMentioned(client.user)) {
 		message.reply(`${msg.author} A sério?`);
 	}
 	
