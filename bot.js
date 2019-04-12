@@ -269,15 +269,15 @@ client.on('message', msg => {
 	var prefix = "!";
 	var prefix_help = "?";
 
-	if (msg.content.toLowerCase().indexOf("vostpt") !== -1 && !msg.author.bot){ 
-		const replies = ["Provavelmente a melhor VOST do mundo", ":eyes:",":heart:","Sabiam que a VOSTPT primeiro se chamou CONAC-TW no Tiwtter?"];
-		msg.replytext = Math.floor((Math.random() * replies.length) + 0); 
-		msg.channel.send(replies[msg.replytext]); 
+	if (msg.content.toLowerCase().indexOf("vostpt") !== -1 && !msg.author.bot) {
+		const replies = ["Provavelmente a melhor VOST do mundo", ":eyes:", ":heart:", "Sabiam que a VOSTPT primeiro se chamou CONAC-TW no Tiwtter?"];
+		msg.replytext = Math.floor((Math.random() * replies.length) + 0);
+		msg.channel.send(replies[msg.replytext]);
 	}
 
 	//catering 
 	// Morning Routine
-	
+
 	if (msg.content.toLowerCase().indexOf("bom dia") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
 		if (hora >= 13 && hora < 20) {
@@ -323,7 +323,7 @@ client.on('message', msg => {
 
 	if (msg.content.toLowerCase().indexOf("boa tarde") != -1 && !msg.author.bot) {
 		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
-		if (hora < 12 ) {
+		if (hora < 12) {
 			msgString = `Ainda não é boa tarde, ${msg.author}, digo eu que só tenho o cérebro do tamanho do universo.`
 		}
 		else if (hora < 15) {
@@ -334,7 +334,7 @@ client.on('message', msg => {
 		}
 		else if (hora < 19) {
 			msgString = `Boas, ${msg.author}! Vai um lanchinho? :milk: :cake:`
-		}	
+		}
 		else {
 			msgString = `Tarde?? Viesses mais cedo, ${msg.author} :thinking:`
 		}
@@ -343,24 +343,24 @@ client.on('message', msg => {
 
 
 	// Good Night routine
-    if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
-        var hora = parseInt(moment(msg.createdTimestamp).format('H'));
-        if (hora >= 7 && hora <= 19) {
-            msgString = `Boa noite, ${msg.author}? Estás em que fuso horário?`
-        }
-        else if (hora >= 20 && hora <= 23) {
-            msgString = `Boa noite ${msg.author}, já jantaste?`
-        }
-        else  {
-            msgString = `Por aqui a estas horas, ${msg.author}? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
-        }
-        msg.channel.send(msgString)
-    }    
-	
+	if (msg.content.toLowerCase().indexOf("boa noite") != -1 && !msg.author.bot) {
+		var hora = parseInt(moment(msg.createdTimestamp).format('H'));
+		if (hora >= 7 && hora <= 19) {
+			msgString = `Boa noite, ${msg.author}? Estás em que fuso horário?`
+		}
+		else if (hora >= 20 && hora <= 23) {
+			msgString = `Boa noite ${msg.author}, já jantaste?`
+		}
+		else {
+			msgString = `Por aqui a estas horas, ${msg.author}? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`
+		}
+		msg.channel.send(msgString)
+	}
+
 	// End 
-	
+
 	//Experimental
-	
+
 	//End
 	if (msg.content === "!coffee") {
 		msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
@@ -460,16 +460,22 @@ client.on('message', msg => {
 				});
 		}
 	}
-	
-	// teste risco de incêndio
-	if (msg.content.toLowerCase().indexOf("risco_de_incendio") != -1 && !msg.author.bot) {
-		msg.channel.send(`http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`)
-	}
-	
+
 
 	if (msg.content.startsWith(prefix) && !msg.author.bot) {
 		const args = msg.content.slice(prefix.length).split(' ');
 		const command = args.shift().toLowerCase();
+
+		// teste risco de incêndio
+		if (command === 'rcm') {
+			if (args.length == 0) {
+				return msg.channel.send(`Falta o dia, ${msg.author}!`);
+			}
+			const argumento = args[0].toLowerCase();
+			if (argumento == "hoje") {
+				msg.channel.send(`http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`)
+			}
+		}
 
 		if (command === 'all') {
 			if (args.length == 0) {
