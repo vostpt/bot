@@ -457,6 +457,12 @@ client.on('message', msg => {
 				});
 		}
 	}
+	
+	// teste risco de incêndio
+	if (msg.content.toLowerCase().indexOf("!RCM") != -1 && !msg.author.bot) {
+		msg.channel.send(`http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`)
+	}
+	
 
 	if (msg.content.startsWith(prefix) && !msg.author.bot) {
 		const args = msg.content.slice(prefix.length).split(' ');
