@@ -459,7 +459,7 @@ client.on('message', msg => {
 	}
 	
 	// teste risco de incêndio
-	if (msg.content.toLowerCase().indexOf("!RCM") != -1 && !msg.author.bot) {
+	if (msg.content.toLowerCase().indexOf("risco_de_incendio") != -1 && !msg.author.bot) {
 		msg.channel.send(`http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`)
 	}
 	
