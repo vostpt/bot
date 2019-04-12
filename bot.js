@@ -118,7 +118,6 @@ client.on('ready', () => {
 		})
 	});
 
-
 	var rule_alerts = new schedule.RecurrenceRule();
 
 	rule_alerts.minute = new schedule.Range(0, 59, 10);
@@ -226,6 +225,10 @@ client.on('ready', () => {
 		});
 	});
 
+
+	schedule.scheduleJob({ hour: 7 }, function () {
+		client.channels.get("559384838306529311").send(`http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`);
+	})
 
 	schedule.scheduleJob({ hour: 0, minute: 0, second: 30 }, function () {
 		var date = moment().subtract(1, 'days').format('L');
@@ -397,7 +400,7 @@ client.on('message', msg => {
 	}
 
 	if (msg.content.toLowerCase().indexOf("fcp") != -1 && !msg.author.bot) {
-		msg.channel.send(`:dragon: ${msg.author} :dragon: **Azul e branco é o croação! E salta Porto! E salta Porto! Allez! Allez!** :dragon:`)
+		msg.channel.send(`:dragon: ${msg.author} :dragon: **Azul e branco é o coração! E salta Porto! E salta Porto! Allez! Allez!** :dragon:`)
 	}
 
 	if (msg.content.toLowerCase().indexOf("fc porto") != -1 && !msg.author.bot) {
