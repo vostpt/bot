@@ -307,6 +307,9 @@ client.on('message', msg => {
 				case '2908':
 					msgString += "duplo curto, como gostas, certo? :coffee:";
 					break;
+				case '6984':
+					msgString += "tu, café? Ainda és uma criança, toma lá um copo de leite :milk:";
+					break;
 				default:
 					msgString += "aqui tens o teu café :coffee:";
 					break;
@@ -394,7 +397,7 @@ client.on('message', msg => {
 	}
 
 	if (msg.content.toLowerCase().indexOf("fcp") != -1 && !msg.author.bot) {
-		msg.channel.send(`:dragon: ${msg.author} :dragon: **E salta Porto! E salta Porto! Allez! Allez!** :dragon:`)
+		msg.channel.send(`:dragon: ${msg.author} :dragon: **Azul e branco é o croação! E salta Porto! E salta Porto! Allez! Allez!** :dragon:`)
 	}
 
 	if (msg.content.toLowerCase().indexOf("fc porto") != -1 && !msg.author.bot) {
