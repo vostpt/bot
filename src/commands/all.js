@@ -131,13 +131,16 @@ module.exports = {
         const events = [];
         const importantEvents = [];
 
-        if (res.data.length === 0) {
-          message.channel.send(':fire: ***Sem Ocorrências***');
+        const filteredEvents = res.data.filter(
+          ({ o: mans }) => mans > amountOfMans,
+        );
 
+        if (filteredEvents.length === 0) {
+          message.channel.send(':fire: ***Sem Ocorrências***');
           return;
         }
 
-        res.data.forEach((element) => {
+        filteredEvents.forEach((element) => {
           const {
             id,
             d: date,
@@ -149,7 +152,7 @@ module.exports = {
             e: status,
           } = element;
 
-          if (amountOfMans <= mans) {
+          if (amountOfMans < 0 || amountOfMans <= mans) {
             return;
           }
 
@@ -190,12 +193,16 @@ module.exports = {
         const events = [];
         const importantEvents = [];
 
-        if (res.data.length === 0) {
+        const filteredEvents = res.data.filter(
+          ({ t: cars }) => cars > amountOfCars,
+        );
+
+        if (filteredEvents === 0) {
           message.channel.send(':fire: ***Sem Ocorrências***');
           return;
         }
 
-        res.data.forEach((element) => {
+        filteredEvents.forEach((element) => {
           const {
             id,
             d: date,
@@ -249,12 +256,16 @@ module.exports = {
         const events = [];
         const importantEvents = [];
 
-        if (res.data.length === 0) {
+        const filteredEvents = res.data.filter(
+          ({ a: helicopters }) => helicopters > amountOfAerials,
+        );
+
+        if (filteredEvents.length === 0) {
           message.channel.send(':fire: ***Sem Ocorrências***');
           return;
         }
 
-        res.data.forEach((element) => {
+        filteredEvents.forEach((element) => {
           const {
             id,
             d: date,

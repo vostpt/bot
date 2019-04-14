@@ -12,10 +12,14 @@ const message = (client, msg) => {
       'Provavelmente a melhor VOST do mundo',
       ':eyes:',
       ':heart:',
-      'Sabiam que a VOSTPT primeiro se chamou CONAC-TW no Tiwtter?',
+      'Sabias que a VOSTPT primeiro se chamou CONAC-TW no Twitter?',
     ];
     const replytext = Math.floor(Math.random() * replies.length + 0);
-    msg.channel.send(replies[replytext]);
+    try {
+      msg.reply(replies[replytext]);
+    } catch (e) {
+      //
+    }
 
     return;
   }
@@ -23,20 +27,18 @@ const message = (client, msg) => {
   // catering
   // Morning Routine
 
-  if (msg.content.toLowerCase().indexOf('bom dia') !== -1 && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('bom dia') && !msg.author.bot) {
     const hora = parseInt(moment(msg.createdTimestamp).format('H'), 10);
     let msgString = '';
 
     if (hora >= 13 && hora < 20) {
-      msgString = `Para mim já é boa tarde, ${
-        msg.author
-      }! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) `;
+      msgString = `Para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) `;
     } else if (hora >= 20) {
-      msgString = `Para mim já é boa Noite, ${msg.author}! **Estás bem?**`;
+      msgString = `Para mim já é boa Noite! **Estás bem?**`;
     } else if (hora < 6) {
-      msgString = `Já de pé a estas horas, ${msg.author}? **ALVORADA!!!!!!**`;
+      msgString = `Já de pé a estas horas? **ALVORADA!!!!!!**`;
     } else {
-      msgString = `Bom Dia ${msg.author}, `;
+      msgString = `Bom Dia, `;
       switch (msg.author.discriminator) {
         case '1318':
           msgString += 'aqui tens o teu chá verde :tea:';
@@ -63,52 +65,54 @@ const message = (client, msg) => {
       }
     }
 
-    msg.channel.send(msgString);
+    try {
+      msg.reply(msgString);
+    } catch (e) {
+      //
+    }
   }
 
   // Good Afternoon routine
 
-  if (
-    msg.content.toLowerCase().indexOf('boa tarde') !== -1 &&
-    !msg.author.bot
-  ) {
-    const hora = parseInt(moment(msg.createdTimestamp).format('H'), 10);
-    let msgString = '';
+  if (msg.content.toLowerCase().includes('boa tarde') && !msg.author.bot) {
+    const hour = parseInt(moment(msg.createdTimestamp).format('H'), 10);
 
-    if (hora < 12) {
-      msgString = `Ainda não é boa tarde, ${
-        msg.author
-      }, digo eu que só tenho o cérebro do tamanho do universo.`;
-    } else if (hora < 15) {
-      msgString = `Olá boa tarde, ${msg.author}, já almoçaste?`;
-    } else if (hora < 17) {
-      msgString = `Olá boa tarde, ${msg.author}, tudo bem contigo?`;
-    } else if (hora < 19) {
-      msgString = `Boas, ${msg.author}! Vai um lanchinho? :milk: :cake:`;
-    } else {
-      msgString = `Tarde?? Viesses mais cedo, ${msg.author} :thinking:`;
+    let msgString = `Tarde?? Viesses mais cedo :thinking:`;
+
+    if (hour < 12) {
+      msgString = `Ainda não é boa tarde, digo eu que só tenho o cérebro do tamanho do universo.`;
+    } else if (hour < 15) {
+      msgString = `Olá boa tarde, já almoçaste?`;
+    } else if (hour < 17) {
+      msgString = `Olá boa tarde, tudo bem contigo?`;
+    } else if (hour < 19) {
+      msgString = `Boas! Vai um lanchinho? :milk: :cake:`;
     }
-    msg.channel.send(msgString);
+
+    try {
+      msg.reply(msgString);
+    } catch (e) {
+      //
+    }
   }
 
   // Good Night routine
-  if (
-    msg.content.toLowerCase().indexOf('boa noite') !== -1 &&
-    !msg.author.bot
-  ) {
-    const hora = parseInt(moment(msg.createdTimestamp).format('H'), 10);
-    let msgString = '';
+  if (msg.content.toLowerCase().includes('boa noite') && !msg.author.bot) {
+    const hour = parseInt(moment(msg.createdTimestamp).format('H'), 10);
 
-    if (hora >= 7 && hora <= 19) {
-      msgString = `Boa noite, ${msg.author}? Estás em que fuso horário?`;
-    } else if (hora >= 20 && hora <= 23) {
-      msgString = `Boa noite ${msg.author}, já jantaste?`;
-    } else {
-      msgString = `Por aqui a estas horas, ${
-        msg.author
-      }? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`;
+    let msgString = `Por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`;
+
+    if (hour >= 7 && hour <= 19) {
+      msgString = `Boa noite? Estás em que fuso horário?`;
+    } else if (hour >= 20 && hour <= 23) {
+      msgString = `Boa noit, já jantaste?`;
     }
-    msg.channel.send(msgString);
+
+    try {
+      msg.reply(msgString);
+    } catch (e) {
+      //
+    }
   }
 
   if (msg.content === '!coffee') {
@@ -128,28 +132,21 @@ const message = (client, msg) => {
   // End Catering
 
   // Foul Language
-  if (msg.content.toLowerCase().indexOf('merda') !== -1 && !msg.author.bot) {
-    msg.channel.send(
-      `Hey ${
-        msg.author
-      } https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`,
+  if (msg.content.toLowerCase().includes('merda') && !msg.author.bot) {
+    msg.reply(
+      `Hey https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`,
     );
   }
   // End Foul Language
 
   // Teaching
-  if (
-    msg.content.toLowerCase().indexOf('voluntários') !== -1 &&
-    !msg.author.bot
-  ) {
-    msg.channel.send(
-      `Desculpa interromper, ${
-        msg.author
-      }, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência`,
+  if (msg.content.toLowerCase().includes('voluntários') && !msg.author.bot) {
+    msg.reply(
+      `Desculpa interromper, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência`,
     );
   }
 
-  if (msg.content.toLowerCase().indexOf('💪') !== -1 && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('💪') && !msg.author.bot) {
     msg.channel.send(
       `Muito vai esta gente ao ginásio, graças a Deus :rolling_eyes: `,
     );
@@ -157,18 +154,14 @@ const message = (client, msg) => {
 
   // Football? No problem! (If you are in the US reading this code we mean real football, not the thing you play with pads and helmets)
   if (msg.content.toLowerCase().includes('benfica') && !msg.author.bot) {
-    msg.channel.send(
-      `:eagle: ${
-        msg.author
-      } :eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`,
+    msg.reply(
+      `:eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`,
     );
   }
 
   if (msg.content.toLowerCase().includes('sporting') && !msg.author.bot) {
-    msg.channel.send(
-      `:lion_face: ${
-        msg.author
-      } :lion_face: **Todo o mundo sabe porque não fico em casa!** :lion_face:`,
+    msg.reply(
+      `:lion_face: **Todo o mundo sabe porque não fico em casa!** :lion_face:`,
     );
   }
 
