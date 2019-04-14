@@ -277,12 +277,10 @@ client.on('ready', () => {
     });
   });
 
-  schedule.scheduleJob({ hour: 7 }, () => {
+  schedule.scheduleJob({ hour: 7, minute: 0, second: 0 }, () => {
     client.channels
       .get('559384838306529311')
-      .send(
-        `http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`,
-      );
+      .send("RCM", {files: ["https://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg"]});
   });
 
   schedule.scheduleJob({ hour: 0, minute: 0, second: 30 }, () => {
@@ -610,9 +608,7 @@ client.on('message', msg => {
       }
       const argumento = args[0].toLowerCase();
       if (argumento === 'hoje') {
-        msg.channel.send(
-          `http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`,
-        );
+        msg.channel.send("RCM", {files: ["https://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg"]});
       }
     }
 
