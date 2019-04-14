@@ -22,7 +22,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src/**/*.js",
-    "start": "node src/bot"
+    "start": "node src/app"
   },
   "repository": {
     "type": "git",
