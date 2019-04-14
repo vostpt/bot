@@ -1,8 +1,8 @@
-const axios = require('axios');
+const api = require('axios');
 const { baseURL } = require('../../config/api');
 
 const getAll = () => {
-  return axios.get(`${baseURL}/getAlertas.php`);
+  return api.get(`${baseURL}/getAlertas.php`);
 };
 
 module.exports = {

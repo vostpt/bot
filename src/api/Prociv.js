@@ -1,8 +1,8 @@
-const axios = require('axios');
+const api = require('axios');
 const { baseURL } = require('../../config/api');
 
 const getAll = () => {
-  return axios.get(`${baseURL}/getAllProciv.php`);
+  return api.get(`${baseURL}/getAllProciv.php`);
 };
 
 module.exports = {

@@ -1,8 +1,8 @@
-const axios = require('axios');
+const api = require('axios');
 const { baseURL } = require('../../config/api');
 
 const getByDay = (day = 0) => {
-  return axios.get(`${baseURL}/getIPMA.php?day=${day}`);
+  return api.get(`${baseURL}/getIPMA.php?day=${day}`);
 };
 
 module.exports = {

@@ -1,16 +1,16 @@
-const axios = require('axios');
+const api = require('axios');
 const { baseURL } = require('../../config/api');
 
 const getIF = () => {
-  return axios.get(`${baseURL}/getIF.php`);
+  return api.get(`${baseURL}/getIF.php`);
 };
 
 const getImportantIF = () => {
-  return axios.get(`${baseURL}/getImportantIF.php`);
+  return api.get(`${baseURL}/getImportantIF.php`);
 };
 
 const getByDistrict = (district) => {
-  return axios.get(`${baseURL}/getIFDistrito.php?distrito=${district}`);
+  return api.get(`${baseURL}/getIFDistrito.php?distrito=${district}`);
 };
 
 module.exports = {
