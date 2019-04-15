@@ -608,7 +608,7 @@ client.on('message', msg => {
       }
       const argumento = args[0].toLowerCase();
       if (argumento === 'hoje') {
-        msg.channel.send("Risco de Incêndio", {files: ["https://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg"]});
+        msg.channel.send("Risco de Incêndio", {files: ["http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/RCM24_conc.jpg"]});
       }
     }
 
