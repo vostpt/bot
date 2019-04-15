@@ -280,7 +280,7 @@ client.on('ready', () => {
   schedule.scheduleJob({ hour: 7, minute: 0, second: 0 }, () => {
     client.channels
       .get('559384838306529311')
-      .send("Risco de Incêndio", {files: ["https://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg"]});
+      .send("Risco de Incêndio", {files: [http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/RCM24_conc.jpg"]});
   });
 
   schedule.scheduleJob({ hour: 0, minute: 0, second: 30 }, () => {
