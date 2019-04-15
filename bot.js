@@ -496,7 +496,7 @@ client.on('message', msg => {
     msg.channel.send(
       `:lion_face: ${
         msg.author
-      } :lion_face: **Todo o mundo sabe porque não fico em casa!** :lion_face:`,
+      } :lion_face: **Rapaziada oiçam bem o que eu vos digo, gritem todos comigo: VIVA O SPORTING!** :lion_face:`,
     );
   }
 
