@@ -7,6 +7,7 @@ const PERSONAL_MESSAGES = {
   7744: 'aqui está o teu chá! :tea:',
   2908: 'duplo curto, como gostas, certo? :coffee:',
   6984: 'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:',
+  8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)'
 };
 
 module.exports = {
@@ -66,9 +67,9 @@ module.exports = {
         if (hour >= 7 && hour <= 19) {
           message.reply('Boa noite? Estás em que fuso horário?');
         } else if (hour >= 20 && hour <= 23) {
-          message.reply('Boa noit, já jantaste?');
+          message.reply('Boa noite, já jantaste?');
         } else {
-          message.reply('Por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:');
+          message.reply(',por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:');
         }
       } catch (e) {
       //
