@@ -32,7 +32,7 @@ const getAll = async () => {
   return warnings;
 };
 
-//Get updated meteo warnings,  data and send response to Discord
+//Get updated meteo warnings, data and send response to Discord
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
@@ -52,6 +52,7 @@ const getWarnings = async (client) => {
     let primeiro = 0;
     resptwitter = '';
 
+    //If warning type is 'Precipitação' (EN: rain), replace by a synonym
     const weatherType = type === 'Precipitação' ? 'Chuva' : type.replace(' ', '');
 
     let inicio = '';
@@ -121,7 +122,7 @@ const getWarnings = async (client) => {
       primeiro += 1;
     });
 
-    //
+    //Add final emojis
     respnovos += ` ${icon} :warning: :information_source:\n\n`;
     resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
 

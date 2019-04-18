@@ -49,12 +49,12 @@ const getEarthquakes = async (client) => {
     //Format time (hh:mm)
     const formattedTime = moment(time).format('LT');
 
-    //Create message with 
+    //Add earthquake to the correct list
     if (sensed) {
-      //Sensed earthquakes list
+      //Add to list of sensed earthquake
       eventsSensed.push(`${formattedTime}h - M${magType} **${magnitud}** em ${obsRegion} a ${depth}Km prof. **Sentido em ${local} com Int. ${degree}** ${shakemapref} // ${lat},${lon}`);
     } else {
-      //Non-sensed earthquakes list
+      //Add to list of non-sensed earthquakes list
       events.push(`${formattedTime}h - M${magType} **${magnitud}** em ${obsRegion} a ${depth}Km prof. // ${lat},${lon}`);
     }
   });
