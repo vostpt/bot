@@ -40,7 +40,7 @@ class Jobs {
       const map = Fires.getMap();
 
       try {
-        this.client.channels.get(channels.FIRE_CHANNEL_ID).send(map);
+        this.client.channels.get(channels.FIRES_CHANNEL_ID).send(map);
       } catch (e) {
         //
       }

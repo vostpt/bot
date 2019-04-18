@@ -6,7 +6,9 @@ module.exports = {
   name: 'rcm',
   args: true,
   description: '!rcm',
-  usage: '!rcm hoje',
+  usage: `
+    **!rcm hoje**
+  `,
   execute(message, args) {
     if (args && args.length === 0) {
       try {

@@ -3,7 +3,9 @@ const { WarningsService } = require('../services');
 module.exports = {
   name: 'alerts',
   args: false,
-  usage: '!alerts',
+  usage: `
+    **!alerts**
+  `,
   description: '!alerts',
   async execute(message) {
     const events = [];

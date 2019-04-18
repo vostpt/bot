@@ -42,7 +42,8 @@ module.exports = {
     **!op if [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
     **!op status [Despacho|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
     **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.
-      Distritos reconhecíveis: ${Object.keys(DISTRICTS).join(', ')}*
+    
+    Distritos reconhecíveis: ${Object.keys(DISTRICTS).join(', ')}*
   `,
   description: '',
   async execute(message, args) {
@@ -202,7 +203,7 @@ module.exports = {
 
       if (!district) {
         try {
-          message.reply(`é necessário fornecer um distrito.\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
+          message.reply(`é necessário fornecer um distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
         } catch (e) {
           //
         }
@@ -214,7 +215,7 @@ module.exports = {
 
       if (!districtToSearch) {
         try {
-          message.reply(`não foi possível identificar esse distrito.\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
+          message.reply(`não foi possível identificar esse distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
         } catch (e) {
           //
         }

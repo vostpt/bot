@@ -20,7 +20,7 @@ const message = (client, msg) => {
     if (command === 'commands') {
       const commandUsage = client.commands.map(({ usage }) => usage);
 
-      msg.channel.send(`***Comandos:***\n${commandUsage.join('\n')}`);
+      msg.channel.send(`***Comandos:***\n${commandUsage.join('')}`);
     }
   }
 

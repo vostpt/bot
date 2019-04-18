@@ -3,7 +3,9 @@ const { AcronymsApi } = require('../api');
 module.exports = {
   name: 'acronimo',
   args: true,
-  usage: '**!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*',
+  usage: `
+    **!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*
+  `,
   description: '',
   async execute(message, args) {
     if (this.args && args.length === 0) {
