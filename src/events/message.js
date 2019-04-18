@@ -5,9 +5,13 @@ const { prefix } = require('../../config/bot');
 moment.locale(locale);
 
 const message = (client, msg) => {
+  if (msg.author.bot) {
+    return;
+  }
+
   const prefixHelp = '?';
 
-  if (msg.content.toLowerCase().includes('vostpt') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('vostpt')) {
     const replies = [
       'Provavelmente a melhor VOST do mundo',
       ':eyes:',
@@ -27,18 +31,18 @@ const message = (client, msg) => {
   // catering
   // Morning Routine
 
-  if (msg.content.toLowerCase().includes('bom dia') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('bom dia')) {
     const hora = parseInt(moment(msg.createdTimestamp).format('H'), 10);
     let msgString = '';
 
     if (hora >= 13 && hora < 20) {
-      msgString = `Para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) `;
+      msgString = 'Para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ';
     } else if (hora >= 20) {
-      msgString = `Para mim já é boa Noite! **Estás bem?**`;
+      msgString = 'Para mim já é boa Noite! **Estás bem?**';
     } else if (hora < 6) {
-      msgString = `Já de pé a estas horas? **ALVORADA!!!!!!**`;
+      msgString = 'Já de pé a estas horas? **ALVORADA!!!!!!**';
     } else {
-      msgString = `Bom Dia, `;
+      msgString = 'Bom Dia, ';
       switch (msg.author.discriminator) {
         case '1318':
           msgString += 'aqui tens o teu chá verde :tea:';
@@ -56,8 +60,7 @@ const message = (client, msg) => {
           msgString += 'duplo curto, como gostas, certo? :coffee:';
           break;
         case '6984':
-          msgString +=
-            'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:';
+          msgString += 'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:';
           break;
         default:
           msgString += 'aqui tens o teu café :coffee:';
@@ -74,19 +77,19 @@ const message = (client, msg) => {
 
   // Good Afternoon routine
 
-  if (msg.content.toLowerCase().includes('boa tarde') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('boa tarde')) {
     const hour = parseInt(moment(msg.createdTimestamp).format('H'), 10);
 
-    let msgString = `Tarde?? Viesses mais cedo :thinking:`;
+    let msgString = 'Tarde?? Viesses mais cedo :thinking:';
 
     if (hour < 12) {
-      msgString = `Ainda não é boa tarde, digo eu que só tenho o cérebro do tamanho do universo.`;
+      msgString = 'Ainda não é boa tarde, digo eu que só tenho o cérebro do tamanho do universo.';
     } else if (hour < 15) {
-      msgString = `Olá boa tarde, já almoçaste?`;
+      msgString = 'Olá boa tarde, já almoçaste?';
     } else if (hour < 17) {
-      msgString = `Olá boa tarde, tudo bem contigo?`;
+      msgString = 'Olá boa tarde, tudo bem contigo?';
     } else if (hour < 19) {
-      msgString = `Boas! Vai um lanchinho? :milk: :cake:`;
+      msgString = 'Boas! Vai um lanchinho? :milk: :cake:';
     }
 
     try {
@@ -97,15 +100,15 @@ const message = (client, msg) => {
   }
 
   // Good Night routine
-  if (msg.content.toLowerCase().includes('boa noite') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('boa noite')) {
     const hour = parseInt(moment(msg.createdTimestamp).format('H'), 10);
 
-    let msgString = `Por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:`;
+    let msgString = 'Por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:';
 
     if (hour >= 7 && hour <= 19) {
-      msgString = `Boa noite? Estás em que fuso horário?`;
+      msgString = 'Boa noite? Estás em que fuso horário?';
     } else if (hour >= 20 && hour <= 23) {
-      msgString = `Boa noit, já jantaste?`;
+      msgString = 'Boa noit, já jantaste?';
     }
 
     try {
@@ -116,56 +119,41 @@ const message = (client, msg) => {
   }
 
   if (msg.content === '!coffee') {
-    msg.channel.send(
-      `@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`,
-    );
+    msg.channel.send(`@everyone A pedido de ${msg.author} tomem lá um café! :coffee:`);
   }
 
   if (msg.content === '!champagne') {
-    msg.channel.send(
-      `@everyone A pedido de ${
-        msg.author
-      } vamos todos celebrar :champagne: :champagne_glass:`,
-    );
+    msg.channel.send(`@everyone A pedido de ${msg.author} vamos todos celebrar :champagne: :champagne_glass:`);
   }
 
   // End Catering
 
   // Foul Language
-  if (msg.content.toLowerCase().includes('merda') && !msg.author.bot) {
-    msg.reply(
-      `Hey https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953`,
-    );
+  if (msg.content.toLowerCase().includes('merda')) {
+    msg.reply('Hey https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953');
   }
   // End Foul Language
 
   // Teaching
-  if (msg.content.toLowerCase().includes('voluntários') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('voluntários')) {
     msg.reply(
-      `Desculpa interromper, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência`,
+      'Desculpa interromper, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência',
     );
   }
 
-  if (msg.content.toLowerCase().includes('💪') && !msg.author.bot) {
-    msg.channel.send(
-      `Muito vai esta gente ao ginásio, graças a Deus :rolling_eyes: `,
-    );
+  if (msg.content.toLowerCase().includes('💪')) {
+    msg.channel.send('Muito vai esta gente ao ginásio, graças a Deus :rolling_eyes: ');
   }
 
-  // Football? No problem! (If you are in the US reading this code we mean real football, not the thing you play with pads and helmets)
-  if (msg.content.toLowerCase().includes('benfica') && !msg.author.bot) {
-    msg.reply(
-      `:eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:`,
-    );
+  if (msg.content.toLowerCase().includes('benfica')) {
+    msg.reply(':eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:');
   }
 
-  if (msg.content.toLowerCase().includes('sporting') && !msg.author.bot) {
-    msg.reply(
-      `:lion_face: **Todo o mundo sabe porque não fico em casa!** :lion_face:`,
-    );
+  if (msg.content.toLowerCase().includes('sporting')) {
+    msg.reply(':lion_face: **Todo o mundo sabe porque não fico em casa!** :lion_face:');
   }
 
-  if (msg.content.toLowerCase().includes('fcp') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('fcp')) {
     msg.channel.send(
       `:dragon: ${
         msg.author
@@ -173,73 +161,40 @@ const message = (client, msg) => {
     );
   }
 
-  if (msg.content.toLowerCase().includes('fc porto') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('fc porto')) {
     msg.channel.send(
-      `:dragon: ${
-        msg.author
-      } :dragon: **E salta Porto! E salta Porto! Allez! Allez!** :dragon:`,
+      `:dragon: ${msg.author} :dragon: **E salta Porto! E salta Porto! Allez! Allez!** :dragon:`,
     );
   }
 
-  if (msg.content.toLowerCase().includes('senhorim') && !msg.author.bot) {
+  if (msg.content.toLowerCase().includes('senhorim')) {
     msg.channel.send(
-      `:bear: ${
-        msg.author
-      } :bear: **SENHORIM! SENHORIM! QUEM AQUI VEM NÃO MANDA AQUI!** :bear:`,
+      `:bear: ${msg.author} :bear: **SENHORIM! SENHORIM! QUEM AQUI VEM NÃO MANDA AQUI!** :bear:`,
     );
   }
 
-  if (msg.content.toLowerCase().includes('scb') && !msg.author.bot) {
-    msg.channel.send(
-      `${msg.author} **Braga Braga Braga, vamos para a frente!**`,
-    );
+  if (msg.content.toLowerCase().includes('scb')) {
+    msg.channel.send(`${msg.author} **Braga Braga Braga, vamos para a frente!**`);
   }
 
-  if (msg.content.toLowerCase().includes('sc braga') && !msg.author.bot) {
-    msg.channel.send(
-      `${msg.author} **Braga Braga Braga, vamos para a frente!**`,
-    );
+  if (msg.content.toLowerCase().includes('sc braga')) {
+    msg.channel.send(`${msg.author} **Braga Braga Braga, vamos para a frente!**`);
   }
   // End Football
   // End just for fun
 
-  if (msg.content.startsWith(prefixHelp) && !msg.author.bot) {
+  if (msg.content.startsWith(prefixHelp)) {
     const args = msg.content.slice(prefixHelp.length).split(' ');
     const command = args.shift().toLowerCase();
 
     if (command === 'commands') {
-      let resp = '\n';
+      const commandUsage = client.commands.map(({ usage }) => usage);
 
-      resp += '**!coffee** - *Manda vir café para todos.*\n';
-      resp +=
-        '**!champagne** - *Se há algo para festejar, serve champagne a todos*\n';
-      resp +=
-        '**!all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*\n';
-      resp +=
-        '**!all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*\n';
-      resp +=
-        '**!all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*\n';
-      resp +=
-        '**!all important** - *Mostra todas as ocorrências marcadas como importantes na ProCivApi.*\n';
-      resp +=
-        '**!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*\n';
-      resp +=
-        '**!op if [#IFConcelho]** - *Mostra os dados relativos à ocorrência com esse #IF.*\n';
-      resp +=
-        '**!op status [Despacho|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*\n';
-      resp +=
-        '**!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado. NOTA: Distrito deve ser introduzido sem espaço e em minúsculas*\n';
-      resp += '**!weather** - *Mostra a meteorologia do dia atual.*\n';
-      resp +=
-        '**!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*\n';
-      resp +=
-        '**?acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*\n';
-
-      msg.channel.send(`***Comandos:***\n${resp}`);
+      msg.channel.send(`***Comandos:***\n${commandUsage.join('\n')}`);
     }
   }
 
-  if (msg.content.startsWith(prefix) && !msg.author.bot) {
+  if (msg.content.startsWith(prefix)) {
     const args = msg.content.slice(prefix.length).split(' ');
     const commandName = args.shift().toLowerCase();
 

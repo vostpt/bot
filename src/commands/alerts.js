@@ -1,19 +1,28 @@
-const { WarningsApi } = require('../api');
+const { WarningsService } = require('../services');
 
 module.exports = {
   name: 'alerts',
-  description: 'Alerts',
+  args: false,
+  usage: '!alerts',
+  description: '!alerts',
   async execute(message) {
     const events = [];
 
-    const { data = {} } = await WarningsApi.getAll();
+    const { warnings = [] } = await WarningsService.getAll();
 
-    data.forEach((item) => {
-      const { local, alertas: alerts = [] } = item;
+    if (warnings.length === 0) {
+      message.channel.send('***Sem Alertas:***');
 
-      events.push(`
-        ${local}
-      `);
+      return;
+    }
+
+    warnings.forEach((item) => {
+      const {
+        local,
+        alertas: alerts = [],
+      } = item;
+
+      events.push(`${local}\n`);
 
       alerts.forEach((alert) => {
         const {
@@ -24,19 +33,20 @@ module.exports = {
           fim: end,
         } = alert;
 
-        const weatherType = type === 'Precipitação' ? 'Chuva' : type;
+        const weatherType = type === 'Precipitação' ? 'Chuva' : type.replace(' ', '');
 
-        events.push(`
-        **${level}** // ${icon}${weatherType} // ${begin} :arrow_right: ${end}
-        `);
+        events.push(`**${level}** // ${icon}${weatherType} // ${begin} :arrow_right: ${end}`);
       });
     });
 
-    if (events.length > 0) {
-      message.channel.send(`
-        ***Alertas:***
-        ${events.join('')}
-      `);
+    try {
+      if (events.length > 0) {
+        message.channel.send(`***Alertas:***\n${events.join('\n')}`);
+      } else {
+        message.channel.send('***Sem Alertas:***');
+      }
+    } catch (e) {
+      //
     }
   },
 };

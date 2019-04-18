@@ -1,6 +1,7 @@
 const moment = require('moment');
 const { WarningsApi } = require('../api');
 const { clientTwitter } = require('./Twitter');
+const { channels } = require('../../config/bot');
 
 const iconsMap = new Map([
   [':dash:', '🌬'],
@@ -18,13 +19,19 @@ const DATE_FORMATS = {
   second: 'YYYY-MM-DD',
 };
 
+const getAll = async () => {
+  const { data: warnings = [] } = await WarningsApi.getAll();
+
+  return warnings;
+};
+
 const getWarnings = async (client) => {
-  const warnings = await WarningsApi.getAll();
+  const { data: warnings = [] } = await WarningsApi.getAll();
 
   let respnovos = '';
   let resptwitter = '';
 
-  warnings.data.forEach((warning) => {
+  warnings.forEach((warning) => {
     const {
       icon,
       tipo: type = '',
@@ -37,18 +44,13 @@ const getWarnings = async (client) => {
     let primeiro = 0;
     resptwitter = '';
 
-    const weatherType =
-      type === 'Precipitação' ? 'Chuva' : type.replace(' ', '');
+    const weatherType = type === 'Precipitação' ? 'Chuva' : type.replace(' ', '');
 
     let inicio = '';
     let fim = '';
 
-    const formattedBegin = moment(begin, DATE_FORMATS.first).format(
-      DATE_FORMATS.second,
-    );
-    const formattedEnd = moment(end, DATE_FORMATS.first).format(
-      DATE_FORMATS.second,
-    );
+    const formattedBegin = moment(begin, DATE_FORMATS.first).format(DATE_FORMATS.second);
+    const formattedEnd = moment(end, DATE_FORMATS.first).format(DATE_FORMATS.second);
     const formattedNow = moment().format(DATE_FORMATS.second);
     const formattedTomorrow = moment(formattedNow).add('1', 'days');
 
@@ -64,13 +66,9 @@ const getWarnings = async (client) => {
       }
     } else {
       if (formattedBegin === formattedNow) {
-        inicio = `${moment(begin, DATE_FORMATS.first).format(
-          'HH:mm',
-        )}h de hoje`;
+        inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h de hoje`;
       } else if (formattedBegin === formattedTomorrow) {
-        inicio = `${moment(begin, DATE_FORMATS.first).format(
-          'HH:mm',
-        )}h de amanhã`;
+        inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h de amanhã`;
       } else {
         inicio = moment(begin, DATE_FORMATS.first).format('YYYY-MM-DD HH:mm');
       }
@@ -118,7 +116,7 @@ const getWarnings = async (client) => {
 
   if (respnovos !== '') {
     try {
-      client.channels.get('501056125802905601').send(`
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`
         ***Novos Alertas:***
         ${respnovos}
       `);
@@ -129,5 +127,6 @@ const getWarnings = async (client) => {
 };
 
 module.exports = {
+  getAll,
   getWarnings,
 };

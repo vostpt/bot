@@ -3,10 +3,12 @@ const { EarthquakesApi } = require('../api');
 
 module.exports = {
   name: 'sismos',
-  description: 'Sismos!',
+  description: `
+    !sismos
+  `,
   execute(message, args) {
     if (args.length === 0) {
-      message.reply(`Falta a data.`);
+      message.reply('Falta a data.');
       return;
     }
 

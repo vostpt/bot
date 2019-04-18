@@ -1,10 +1,16 @@
 const { FireApi } = require('../api');
-const { MAIN_CHANNEL_ID } = require('../../config/bot');
+const { channels } = require('../../config/bot');
+
+const getByDistrict = async (district) => {
+  const { data: fires = [] } = await FireApi.getByDistrict(district);
+
+  return fires;
+};
 
 const getForestFires = async (client) => {
   const response = await FireApi.getIF();
 
-  const newEvents = [];
+  const events = [];
   const importantEvents = [];
 
   const updatedEvents = [];
@@ -21,7 +27,7 @@ const getForestFires = async (client) => {
       a: helicopters,
       e: status,
       tipo: type,
-      ea,
+      ea: previousStatus,
     } = element;
 
     if (type === '1') {
@@ -31,17 +37,17 @@ const getForestFires = async (client) => {
           __**${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
         `);
       } else {
-        newEvents.push(`
+        events.push(`
             __${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}__
         `);
       }
     } else if (type === '2') {
       updatedEvents.push(`
-          ${id} - #IF${city},${local} - ${ea} :track_next: ${status}
+          ${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}
       `);
     } else if (type === '3') {
       updatedImportantEvents.push(`
-        __**${id} - #IF${city},${local} - ${ea} :track_next: ${status}**__
+        __**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__
       `);
     } else if (type === '4') {
       updatedImportantEvents.push(`
@@ -56,7 +62,7 @@ const getForestFires = async (client) => {
         __**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
       `;
       try {
-        client.channels.get(MAIN_CHANNEL_ID).send(`
+        client.channels.get(channels.MAIN_CHANNEL_ID).send(`
         :warning: :fire: ***Ocorrência importante:***
         ${message}
         `);
@@ -68,7 +74,7 @@ const getForestFires = async (client) => {
         __**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
       `;
       try {
-        client.channels.get(MAIN_CHANNEL_ID).send(`
+        client.channels.get(channels.MAIN_CHANNEL_ID).send(`
         @here :warning: :fire: ***Ocorrência importante:***
         ${message}
         `);
@@ -77,11 +83,11 @@ const getForestFires = async (client) => {
       }
     } else if (type === '8') {
       const message = `
-        __**${id} - #IF${city},${local} - ${ea} :track_next: ${status}**__
+        __**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__
       `;
 
       try {
-        client.channels.get(MAIN_CHANNEL_ID).send(`
+        client.channels.get(channels.MAIN_CHANNEL_ID).send(`
         @here :warning: :fire: ***Atualização importante:***
         ${message}
         `);
@@ -91,12 +97,12 @@ const getForestFires = async (client) => {
     }
   });
 
-  if (newEvents.length > 0 || importantEvents.length > 0) {
+  if (events.length > 0 || importantEvents.length > 0) {
     try {
-      client.channels.get(MAIN_CHANNEL_ID).send(`
+      client.channels.get(channels.MAIN_CHANNEL_ID).send(`
         :fire: ***Novas Ocorrências:***
         ${importantEvents.join('')}
-        ${newEvents.join('')}
+        ${events.join('')}
       `);
     } catch (e) {
       //
@@ -105,7 +111,7 @@ const getForestFires = async (client) => {
 
   if (updatedEvents.length > 0 || updatedImportantEvents.length > 0) {
     try {
-      client.channels.get(MAIN_CHANNEL_ID).send(`
+      client.channels.get(channels.MAIN_CHANNEL_ID).send(`
       :fire: ***Ocorrências actualizadas:***
       ${updatedImportantEvents.join('')}
       ${updatedEvents.join('')}
@@ -116,6 +122,10 @@ const getForestFires = async (client) => {
   }
 };
 
+const getMap = () => 'http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/RCM24_conc.jpg';
+
 module.exports = {
+  getByDistrict,
   getForestFires,
+  getMap,
 };

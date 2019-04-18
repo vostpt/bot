@@ -1,17 +1,11 @@
 const api = require('axios');
 const { baseURL } = require('../../config/api');
 
-const getIF = () => {
-  return api.get(`${baseURL}/getIF.php`);
-};
+const getIF = () => api.get(`${baseURL}/getIF.php`);
 
-const getImportantIF = () => {
-  return api.get(`${baseURL}/getImportantIF.php`);
-};
+const getImportantIF = () => api.get(`${baseURL}/getImportantIF.php`);
 
-const getByDistrict = (district) => {
-  return api.get(`${baseURL}/getIFDistrito.php?distrito=${district}`);
-};
+const getByDistrict = district => api.get(`${baseURL}/getIFDistrito.php?distrito=${district}`);
 
 module.exports = {
   getIF,

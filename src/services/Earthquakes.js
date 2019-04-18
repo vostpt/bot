@@ -1,14 +1,14 @@
 const moment = require('moment');
 const { EarthquakesApi } = require('../api');
-const { EARTHQUAKES_CHANNEL_ID } = require('../../config/bot');
+const { channels } = require('../../config/bot');
 
 const getEarthquakes = (client) => {
   const yesterday = moment().subtract(1, 'days');
 
   const events = [];
   const eventsSensed = [];
-  EarthquakesApi.getAll().then((response) => {
-    response.data.forEach((element) => {
+  EarthquakesApi.getAll().then(({ data: earthquakes = [] }) => {
+    earthquakes.forEach((earthquake) => {
       const {
         sensed,
         time,
@@ -21,7 +21,7 @@ const getEarthquakes = (client) => {
         lat,
         lon,
         obsRegion,
-      } = element;
+      } = earthquake;
 
       if (moment(time).format('L') === yesterday.format('L')) {
         const formattedTime = moment(time).format('LT');
@@ -38,22 +38,22 @@ const getEarthquakes = (client) => {
       }
     });
 
-    if (eventsSensed.length > 0) {
-      this.client.channels.get(EARTHQUAKES_CHANNEL_ID).send(`
-        ***Sismos sentido dia ${yesterday.format('L')}:***
-        ${eventsSensed.join('')}
-      `);
-    }
+    try {
+      if (eventsSensed.length > 0) {
+        client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`
+          ***Sismos sentido dia ${yesterday.format('L')}:***
+          ${eventsSensed.join('')}
+        `);
+      }
 
-    if (events.length > 0) {
-      try {
-        client.channels.get(EARTHQUAKES_CHANNEL_ID).send(`
+      if (events.length > 0) {
+        client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`
           ***Sismos de ${yesterday.format('L')}:***
           ${events.join('')}
         `);
-      } catch (e) {
-        //
       }
+    } catch (e) {
+      //
     }
   });
 };

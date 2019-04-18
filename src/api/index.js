@@ -1,17 +1,17 @@
-const FireService = require('./Fires');
-const ProcivService = require('./Prociv');
-const WarningsService = require('./Warnings');
-const EarthquakesService = require('./Earthquakes');
-const AcronymsService = require('./Acronyms');
-const WindService = require('./Wind');
-const WeatherService = require('./Weather');
+const FireApi = require('./Fires');
+const ProcivApi = require('./Prociv');
+const WarningsApi = require('./Warnings');
+const EarthquakesApi = require('./Earthquakes');
+const AcronymsApi = require('./Acronyms');
+const WindApi = require('./Wind');
+const WeatherApi = require('./Weather');
 
 module.exports = {
-  FireApi: FireService,
-  ProcivApi: ProcivService,
-  WarningsApi: WarningsService,
-  EarthquakesApi: EarthquakesService,
-  AcronymsApi: AcronymsService,
-  WindApi: WindService,
-  WeatherApi: WeatherService,
+  FireApi,
+  ProcivApi,
+  WarningsApi,
+  EarthquakesApi,
+  AcronymsApi,
+  WindApi,
+  WeatherApi,
 };

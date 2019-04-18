@@ -1,9 +1,15 @@
-const { getEarthquakes } = require('./Earthquakes');
-const { getWarnings } = require('./Warnings');
-const { getForestFires } = require('./Fires');
+const Earthquakes = require('./Earthquakes');
+const Warnings = require('./Warnings');
+const Fires = require('./Fires');
+const Prociv = require('./ProCiv');
+const Winds = require('./Winds');
+const Weather = require('./Weather');
 
 module.exports = {
-  getEarthquakes,
-  getWarnings,
-  getForestFires,
+  Earthquakes,
+  Warnings,
+  Fires,
+  Prociv,
+  Winds,
+  Weather,
 };

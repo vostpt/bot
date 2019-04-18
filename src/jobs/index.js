@@ -1,5 +1,6 @@
 const schedule = require('node-schedule');
-const Services = require('../services');
+const { Fires, Earthquakes, Warnings } = require('../services');
+const { channels } = require('../../config/bot');
 
 class Jobs {
   constructor(client) {
@@ -19,7 +20,7 @@ class Jobs {
     rule.minute = new schedule.Range(1, 56, 5);
     rule.second = 30;
 
-    schedule.scheduleJob(rule, () => Services.getForestFires(this.client));
+    schedule.scheduleJob(rule, () => Fires.getForestFires(this.client));
   }
 
   warnings() {
@@ -27,7 +28,7 @@ class Jobs {
 
     rule.minute = new schedule.Range(0, 59, 10);
 
-    schedule.scheduleJob(rule, () => Services.getWarnings(this.client));
+    schedule.scheduleJob(rule, () => Warnings.getWarnings(this.client));
   }
 
   fireRisk() {
@@ -36,12 +37,10 @@ class Jobs {
     rule.hour = 7;
 
     schedule.scheduleJob(rule, () => {
+      const map = Fires.getMap();
+
       try {
-        this.client.channels
-          .get('559384838306529311')
-          .send(
-            `http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`,
-          );
+        this.client.channels.get(channels.FIRE_CHANNEL_ID).send(map);
       } catch (e) {
         //
       }
@@ -55,7 +54,7 @@ class Jobs {
     rule.minute = 0;
     rule.second = 30;
 
-    schedule.scheduleJob(rule, () => Services.getEarthquakes(this.client));
+    schedule.scheduleJob(rule, () => Earthquakes.getEarthquakes(this.client));
   }
 }
 

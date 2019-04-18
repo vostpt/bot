@@ -1,26 +1,33 @@
+const Fires = require('../services/Fires');
+
 const allowedArgs = ['hoje'];
 
 module.exports = {
   name: 'rcm',
-  description: 'RCM!',
+  args: true,
+  description: '!rcm',
+  usage: '!rcm hoje',
   execute(message, args) {
-    if (args.length === 0) {
-      message.reply(`
-        Falta o dia!
-        Dias disponíveis: ${allowedArgs.join(', ')}
-      `);
+    if (args && args.length === 0) {
+      try {
+        message.reply(`falta o dia!\n${this.usage}`);
+      } catch (e) {
+        //
+      }
+
+      return;
     }
 
     const [day] = args;
 
     if (!allowedArgs.includes(day)) {
-      message.reply(`Dias disponíveis: ${allowedArgs.join(', ')}`);
+      message.reply(`dias disponíveis: ${allowedArgs.join(', ')}`);
     }
 
     if (day.toLowerCase() === 'hoje') {
-      message.channel.send(
-        `http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/FWI24_conc.jpg`,
-      );
+      const map = Fires.getMap();
+
+      message.channel.send(map);
     }
   },
 };

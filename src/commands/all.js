@@ -1,336 +1,287 @@
-const { FireApi, ProcivApi } = require('../api');
+
+const {
+  Prociv,
+  Fire,
+} = require('../services');
+const { isSevere } = require('../helpers');
 
 module.exports = {
   name: 'all',
-  description: 'all',
-  execute(message, args) {
-    if (args.length === 0) {
-      ProcivApi.getAll().then((response) => {
-        const events = [];
-        const importantEvents = [];
+  args: true,
+  allowedArgs: [
+    'human',
+    'ground',
+    'air',
+    'important',
+    'links',
+  ],
+  usage: `
+    **!all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*
+    **!all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*
+    **!all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*
+    **!all important** - *Mostra todas as ocorrências marcadas como importantes na ProCivApi.*
+  `,
+  description: '',
+  async execute(message, args) {
+    const events = [];
+    const importantEvents = [];
 
-        if (response.data.length === 0) {
-          message.channel.send(':fire: ***Sem Ocorrências***');
-        }
+    if (this.args && args.length === 0) {
+      const data = await Prociv.getAll();
 
-        response.data.forEach((element) => {
-          const {
-            id,
-            d: date,
-            l: city,
-            s: local,
-            o: mans,
-            t: cars,
-            a: helicopters,
-            e: status,
-          } = element;
+      if (data.length === 0) {
+        message.channel.send(':fire: ***Sem Ocorrências***');
 
-          const isSevere = mans > 20 || cars + helicopters > 5;
+        return;
+      }
 
-          if (isSevere) {
-            importantEvents.push(`
-              __**${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-            `);
-          } else {
-            events.push(`
-              ${date} - ${id} - $IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}
-            `);
-          }
-        });
+      data.forEach((item) => {
+        const {
+          id,
+          d: date,
+          l: city,
+          s: local,
+          o: mans,
+          t: cars,
+          a: helicopters,
+          e: status,
+        } = item;
 
-        if (importantEvents.length > 0) {
-          message.channel.send(
-            `:fire::fire: ***Ocorrências Importantes:***
-            ${importantEvents.join('')}`,
-          );
-        }
+        const msg = `${date} - ${id} - $IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (events.length > 0) {
-          message.channel.send(
-            `:fire: ***Ocorrências:***
-            ${events.join('')}
-          `,
-          );
+        if (isSevere(mans, cars + helicopters)) {
+          importantEvents.push(`__**${msg}**__`);
+        } else {
+          events.push(msg);
         }
       });
 
       return;
     }
 
-    const argumento = args[0].toLowerCase();
+    const requestedArgument = args[0].toLowerCase();
 
-    if (argumento === 'links') {
-      ProcivApi.getAll().then((res) => {
-        const events = [];
-        const importantEvents = [];
+    if (!this.allowedArgs.includes(requestedArgument)) {
+      try {
+        message.reply(`${requestedArgument} não é válido.\n${this.usage}`);
+      } catch (e) {
+        //
+      }
 
-        if (res.data.length === 0) {
-          try {
-            message.channel.send(':fire: ***Sem Ocorrências***');
-          } catch (e) {
-            //
-          }
+      return;
+    }
+
+    if (requestedArgument === 'links') {
+      const data = await Prociv.getAll();
+
+      if (data.length === 0) {
+        try {
+          message.channel.send(':fire: ***Sem Ocorrências***');
+        } catch (e) {
+          //
         }
 
-        res.data.forEach((element) => {
-          const {
-            id,
-            l: city,
-            s: local,
-            o: mans,
-            t: cars,
-            a: helicopters,
-          } = element;
+        return;
+      }
 
-          const isSevere = mans > 20 || cars + helicopters > 5;
+      data.forEach((item) => {
+        const {
+          id,
+          l: city,
+          s: local,
+          o: mans,
+          t: cars,
+          a: helicopters,
+        } = item;
 
-          if (isSevere) {
-            importantEvents.push(`
-              __**#IF${city},${local} - https://fogos.pt/fogo/2019${id}**__
-              `);
-          } else {
-            events.push(`
-              #IF${city},${local} - https://fogos.pt/fogo/2019${id}
-              `);
-          }
-        });
+        const msg = `#IF${city},${local} - https://fogos.pt/fogo/2019${id}`;
 
-        if (events.length > 0 || importantEvents.length > 0) {
-          try {
-            message.channel.send(
-              `:fire: ***Ocorrências:***
-                ${importantEvents.join('')}
-                ${events.join('')}
-            `,
-            );
-          } catch (e) {
-            //
-          }
+        if (isSevere(mans, cars + helicopters)) {
+          importantEvents.push(`__**${msg}**__`);
         } else {
-          try {
-            message.channel.send(':fire: ***Sem Ocorrências***');
-          } catch (e) {
-            //
-          }
+          events.push(msg);
         }
       });
     }
 
-    if (argumento === 'human') {
+    if (requestedArgument === 'human') {
       if (args.length < 2) {
-        message.channel.send(
-          `Falta o numero de operacionais, ${message.author}!`,
-        );
+        message.reply(`falta o numero de operacionais!\n${this.usage}`);
 
         return;
       }
 
       const [, amountOfMans] = args;
 
-      ProcivApi.getAll().then((res) => {
-        const events = [];
-        const importantEvents = [];
+      const data = await Prociv.filterByMinimumMans(amountOfMans);
 
-        const filteredEvents = res.data.filter(
-          ({ o: mans }) => mans > amountOfMans,
-        );
-
-        if (filteredEvents.length === 0) {
+      if (data.length === 0) {
+        try {
           message.channel.send(':fire: ***Sem Ocorrências***');
-          return;
+        } catch (e) {
+          //
         }
 
-        filteredEvents.forEach((element) => {
-          const {
-            id,
-            d: date,
-            l: city,
-            s: local,
-            o: mans,
-            t: cars,
-            a: helicopters,
-            e: status,
-          } = element;
+        return;
+      }
 
-          if (amountOfMans < 0 || amountOfMans <= mans) {
-            return;
-          }
+      data.forEach((item) => {
+        const {
+          id,
+          d: date,
+          l: city,
+          s: local,
+          o: mans,
+          t: cars,
+          a: helicopters,
+          e: status,
+        } = item;
 
-          const isSevere = mans > 20 || cars + helicopters > 5;
+        const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-          if (isSevere) {
-            importantEvents.push(`
-              __**${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-            `);
-          } else {
-            events.push(`
-              ${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}
-            `);
-          }
-        });
-
-        if (events.length > 0 || importantEvents.length > 0) {
-          message.channel.send(
-            `:fire: ***Ocorrências +${amountOfMans} Operacionais:***
-              ${importantEvents.join('')}
-              ${events.join('')}
-            `,
-          );
+        if (isSevere(mans, cars + helicopters)) {
+          importantEvents.push(`__**${msg}**__`);
+        } else {
+          events.push(msg);
         }
       });
 
       return;
     }
 
-    if (argumento === 'ground') {
+    if (requestedArgument === 'ground') {
       if (args.length < 2) {
-        message.reply(`Falta o numero de meios terrestres!`);
+        try {
+          message.reply(`falta o numero de meios terrestres!\n${this.usage}`);
+        } catch (e) {
+          //
+        }
+
+        return;
       }
 
       const [, amountOfCars] = args;
 
-      ProcivApi.getAll().then((res) => {
-        const events = [];
-        const importantEvents = [];
+      const data = await Prociv.filterByMinimumCars(amountOfCars);
 
-        const filteredEvents = res.data.filter(
-          ({ t: cars }) => cars > amountOfCars,
-        );
-
-        if (filteredEvents === 0) {
+      if (data.length === 0) {
+        try {
           message.channel.send(':fire: ***Sem Ocorrências***');
           return;
+        } catch (e) {
+          //
         }
 
-        filteredEvents.forEach((element) => {
-          const {
-            id,
-            d: date,
-            l: city,
-            s: local,
-            o: mans,
-            t: cars,
-            a: helicopters,
-            e: status,
-          } = element;
+        return;
+      }
 
-          if (amountOfCars <= cars) {
-            return;
-          }
+      data.forEach((item) => {
+        const {
+          id,
+          d: date,
+          l: city,
+          s: local,
+          o: mans,
+          t: cars,
+          a: helicopters,
+          e: status,
+        } = item;
 
-          const isSevere = mans > 20 || cars + helicopters > 5;
-          if (isSevere) {
-            importantEvents.push(`
-              __**${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-            `);
-          } else {
-            events.push(`
-              ${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}
-            `);
-          }
-        });
+        const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (events.length > 0 || importantEvents.length > 0) {
-          message.channel.send(
-            `:fire: ***Ocorrências +${amountOfCars} Meios Terrestres:***
-              ${importantEvents.join('')}
-              ${events.join('')}
-            `,
-          );
+        if (isSevere(mans, cars + helicopters)) {
+          importantEvents.push(`__**${msg}**__`);
+        } else {
+          events.push(msg);
         }
       });
-
-      return;
     }
 
-    if (argumento === 'air') {
+    if (requestedArgument === 'air') {
       if (args.length < 2) {
-        message.channel.send(
-          `Falta o numero de meios aéreos, ${message.author}!`,
-        );
+        try {
+          message.reply(`falta o numero de meios aéreos!\n${this.usage}`);
+        } catch (e) {
+          //
+        }
+
+        return;
       }
 
       const [, amountOfAerials] = args;
 
-      ProcivApi.getAll().then((res) => {
-        const events = [];
-        const importantEvents = [];
+      const data = await Prociv.filterByMinimumAerials(amountOfAerials);
 
-        const filteredEvents = res.data.filter(
-          ({ a: helicopters }) => helicopters > amountOfAerials,
-        );
-
-        if (filteredEvents.length === 0) {
+      if (data.length === 0) {
+        try {
           message.channel.send(':fire: ***Sem Ocorrências***');
-          return;
+        } catch (e) {
+          //
         }
 
-        filteredEvents.forEach((element) => {
-          const {
-            id,
-            d: date,
-            l: city,
-            s: local,
-            o: mans,
-            t: cars,
-            a: helicopters,
-            e: status,
-          } = element;
+        return;
+      }
 
-          if (amountOfAerials <= helicopters) {
-            return;
-          }
+      data.forEach((item) => {
+        const {
+          id,
+          d: date,
+          l: city,
+          s: local,
+          o: mans,
+          t: cars,
+          a: helicopters,
+          e: status,
+        } = item;
 
-          const isSevere = mans > 20 || cars + helicopters > 5;
-          if (isSevere) {
-            importantEvents.push(`
-              __**${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-            `);
-          } else {
-            events.push(`
-              ${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}
-            `);
-          }
-        });
+        const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (events.length > 0 || importantEvents.length > 0) {
-          message.channel.send(
-            `:fire: ***Ocorrências +${amountOfAerials} Meios Aéreos:***
-              ${importantEvents.join('')}
-              ${events.join('')}
-            `,
-          );
+        if (isSevere(mans, cars + helicopters)) {
+          importantEvents.push(`__**${msg}**__`);
+        } else {
+          events.push(msg);
         }
       });
-
-      return;
     }
 
-    if (argumento === 'important') {
-      FireApi.getImportantIF().then((res) => {
-        const events = [];
-
-        if (res.data.length === 0) {
+    if (requestedArgument === 'important') {
+      const data = await Fire.getImportantIF();
+      if (data.length === 0) {
+        try {
           message.channel.send(':fire: ***Sem Ocorrências***');
-          return;
+        } catch (e) {
+          //
         }
 
-        res.data.forEach((element) => {
-          const { id, l: city, s: local, i, ps } = element;
+        return;
+      }
 
-          events.push(`
-            __**${id} - #IF${city},${local} - ${i} $${ps ? `- ${ps}` : ''}**__
-          `);
-        });
+      data.forEach((item) => {
+        const {
+          id,
+          l: city,
+          s: local,
+          i, ps,
+        } = item;
 
-        if (events.length > 0) {
-          message.channel.send(
-            `:fire: ***Ocorrências:***
-            ${events.join('')}
-          `,
-          );
-        }
+        events.push(`__**${id} - #IF${city},${local} - ${i} $${ps ? `- ${ps}` : ''}**__`);
       });
+    }
+
+    try {
+      if (importantEvents.length > 0) {
+        message.channel.send(`:fire::fire: ***Ocorrências Importantes:***\n${importantEvents.join('\n')}`);
+        return;
+      }
+
+      if (events.length > 0) {
+        message.channel.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
+        return;
+      }
+
+      message.channel.send(':fire: ***Sem Ocorrências***');
+    } catch (e) {
+      //
     }
   },
 };
