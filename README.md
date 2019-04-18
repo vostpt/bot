@@ -49,7 +49,7 @@ TWITTER_ACCESS_TOKEN_SECRET=
 If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
  
 ```sh
-node src/app.js
+npm start
 ```
 
 You should see an output similar to this:
