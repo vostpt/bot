@@ -17,7 +17,7 @@ After installing the dependencies, it's time for a quick configuration.
 Create a `.env` file in the project root.
 
 ```sh
-cp .env_example .env
+cp .env.example .env
 ```
  
 Add and replace values where needed:
