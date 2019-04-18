@@ -26,7 +26,7 @@ const getAll = async () => {
 };
 
 const getWarnings = async (client) => {
-  const { data: warnings = [] } = await WarningsApi.getAll();
+  const warnings = await getAll();
 
   let respnovos = '';
   let resptwitter = '';
@@ -116,10 +116,7 @@ const getWarnings = async (client) => {
 
   if (respnovos !== '') {
     try {
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`
-        ***Novos Alertas:***
-        ${respnovos}
-      `);
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas:***\n${respnovos}`);
     } catch (e) {
       //
     }

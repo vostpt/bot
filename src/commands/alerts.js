@@ -1,4 +1,4 @@
-const { WarningsService } = require('../services');
+const { Warnings } = require('../services');
 
 module.exports = {
   name: 'alerts',
@@ -10,10 +10,10 @@ module.exports = {
   async execute(message) {
     const events = [];
 
-    const { warnings = [] } = await WarningsService.getAll();
+    const warnings = await Warnings.getAll();
 
     if (warnings.length === 0) {
-      message.channel.send('***Sem Alertas:***');
+      message.channel.send('***Sem Alertas***');
 
       return;
     }

@@ -6,7 +6,7 @@ moment.locale(locale);
 
 const prefixHelp = '?';
 
-const message = (client, msg) => {
+const message = async (client, msg) => {
   if (msg.author.bot) {
     return;
   }
@@ -32,9 +32,9 @@ const message = (client, msg) => {
 
     if (command) {
       try {
-        command.execute(msg, args);
+        await command.execute(msg, args);
       } catch (e) {
-        //
+        msg.reply('infelizmente não consigo satisfazer esse pedido');
       }
     }
   }
