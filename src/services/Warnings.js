@@ -1,3 +1,9 @@
+/*
+'Warnings' gets a list of updated meteo warnings issued by IPMA, using bot api, and send it to Discord and Twitter
+
+Note that will be sent one message including all warnings to Discord, while one message per warning will be sent to Twitter
+*/
+
 const moment = require('moment');
 const { WarningsApi } = require('../api');
 const { clientTwitter } = require('./Twitter');
@@ -19,12 +25,14 @@ const DATE_FORMATS = {
   second: 'YYYY-MM-DD',
 };
 
+//Returns array of updated meteo warnings (even there's no issued warnings)
 const getAll = async () => {
   const { data: warnings = [] } = await WarningsApi.getAll();
 
   return warnings;
 };
 
+//Get updated meteo warnings,  data and send response to Discord
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
@@ -49,6 +57,7 @@ const getWarnings = async (client) => {
     let inicio = '';
     let fim = '';
 
+    //Format warning time and date
     const formattedBegin = moment(begin, DATE_FORMATS.first).format(DATE_FORMATS.second);
     const formattedEnd = moment(end, DATE_FORMATS.first).format(DATE_FORMATS.second);
     const formattedNow = moment().format(DATE_FORMATS.second);
@@ -56,6 +65,7 @@ const getWarnings = async (client) => {
 
     const noDiff = moment(begin).diff(end) === 0;
 
+    //Parse begin and end time/date from warning
     if (noDiff) {
       if (formattedBegin === formattedNow) {
         inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h`;
@@ -82,18 +92,21 @@ const getWarnings = async (client) => {
       }
     }
 
+    //Create message to Discord
     respnovos += `:information_source: :warning: ${icon} `;
     respnovos += `#Aviso${level} devido a `;
     respnovos += `#${weatherType} entre as `;
     respnovos += `${inicio} e as `;
     respnovos += `${fim} para os distritos de `;
 
+    //Create message to Twitter
     resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
     resptwitter += `#Aviso${level} devido a `;
     resptwitter += `#${weatherType} entre as `;
     resptwitter += `${inicio} e as `;
     resptwitter += `${fim} para os distritos de `;
 
+    //Add districts included in warning to both Discord and Twitter message
     places.forEach(({ local }) => {
       if (primeiro === 0) {
         respnovos += `#${local}`;
@@ -108,14 +121,17 @@ const getWarnings = async (client) => {
       primeiro += 1;
     });
 
+    //
     respnovos += ` ${icon} :warning: :information_source:\n\n`;
     resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
 
+    //Send message to Twitter
     if (clientTwitter) {
       clientTwitter.post('statuses/update', { status: resptwitter });
     }
   });
 
+  //Send message to Discord
   if (respnovos !== '') {
     try {
       client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas:***\n${respnovos}`);
