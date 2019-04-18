@@ -1,8 +1,8 @@
 {
-  "name": "botocorrencias",
+  "name": "vostpt-bot",
   "version": "1.0.0",
-  "description": "",
-  "main": "bot.js",
+  "description": "VOST PT bot",
+  "main": "./app.js",
   "dependencies": {
     "axios": "^0.18.0",
     "discord.js": "^11.4.2",
@@ -14,10 +14,7 @@
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-import": "^2.17.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.17.0"
+    "eslint-plugin-import": "^2.17.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,9 +23,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://2162238@bitbucket.org/vostpt/botocorrencias.git"
+    "url": "git@github.com:vostpt/bot.git"
   },
-  "author": "Jonathan Serrario",
+  "author": "VOSTPT",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/vostpt/botocorrencias#readme"
+  "homepage": "https://github.com/vostpt/bot/"
 }

@@ -1,5 +1,17 @@
 const { FireApi } = require('../api');
 const { channels } = require('../../config/bot');
+const { isSevere } = require('../helpers');
+
+const EVENT_TYPES = {
+  GENERAL: '1',
+  UPDATE: '2',
+  IMPORTANT_UPDATE: '3',
+  SEVERITY_UP: '4',
+  SEVERITY_DOWN: '5',
+  IMPORTANT_EVENT: '6',
+  IMPORTANT_EVENT_WARN_ALL: '7',
+  IMPORTANT_UPDATE_WARN_ALL: '8',
+};
 
 const getByDistrict = async (district) => {
   const { data: fires = [] } = await FireApi.getByDistrict(district);
@@ -8,7 +20,7 @@ const getByDistrict = async (district) => {
 };
 
 const getForestFires = async (client) => {
-  const response = await FireApi.getIF();
+  const { data: fires = [] } = await FireApi.getIF();
 
   const events = [];
   const importantEvents = [];
@@ -16,7 +28,7 @@ const getForestFires = async (client) => {
   const updatedEvents = [];
   const updatedImportantEvents = [];
 
-  response.data.forEach((element) => {
+  fires.forEach((fire) => {
     const {
       id,
       d: date,
@@ -28,82 +40,72 @@ const getForestFires = async (client) => {
       e: status,
       tipo: type,
       ea: previousStatus,
-    } = element;
+    } = fire;
 
-    if (type === '1') {
-      const isSevere = mans > 20 || cars + helicopters > 5;
-      if (isSevere) {
-        importantEvents.push(`
-          __**${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-        `);
-      } else {
-        events.push(`
-            __${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}__
-        `);
-      }
-    } else if (type === '2') {
-      updatedEvents.push(`
-          ${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}
-      `);
-    } else if (type === '3') {
-      updatedImportantEvents.push(`
-        __**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__
-      `);
-    } else if (type === '4') {
-      updatedImportantEvents.push(`
-        __**${id} - #IF${city},${local} - Subiu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-      `);
-    } else if (type === '5') {
-      updatedImportantEvents.push(`
-        __**${id} - #IF${city},${local} - Desceu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-      `);
-    } else if (type === '6') {
-      const message = `
-        __**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-      `;
-      try {
-        client.channels.get(channels.MAIN_CHANNEL_ID).send(`
-        :warning: :fire: ***Ocorrência importante:***
-        ${message}
-        `);
-      } catch (e) {
-        //
-      }
-    } else if (type === '7') {
-      const message = `
-        __**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__
-      `;
-      try {
-        client.channels.get(channels.MAIN_CHANNEL_ID).send(`
-        @here :warning: :fire: ***Ocorrência importante:***
-        ${message}
-        `);
-      } catch (e) {
-        //
-      }
-    } else if (type === '8') {
-      const message = `
-        __**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__
-      `;
+    switch (type) {
+      case EVENT_TYPES.GENERAL: {
+        const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-      try {
-        client.channels.get(channels.MAIN_CHANNEL_ID).send(`
-        @here :warning: :fire: ***Atualização importante:***
-        ${message}
-        `);
-      } catch (e) {
-        //
+        if (isSevere(mans, cars + helicopters)) {
+          importantEvents.push(`__**${msg}**__`);
+        } else {
+          events.push(msg);
+        }
+        break;
+      }
+      case EVENT_TYPES.UPDATE: {
+        updatedEvents.push(`${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}`);
+        break;
+      }
+      case EVENT_TYPES.IMPORTANT_UPDATE: {
+        updatedImportantEvents.push(`__**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__`);
+        break;
+      }
+      case EVENT_TYPES.SEVERITY_UP: {
+        updatedImportantEvents.push(`__**${id} - #IF${city},${local} - Subiu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`);
+        break;
+      }
+      case EVENT_TYPES.SEVERITY_DOWN: {
+        updatedImportantEvents.push(`__**${id} - #IF${city},${local} - Desceu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`);
+        break;
+      }
+      case EVENT_TYPES.IMPORTANT_EVENT: {
+        const msg = `__**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`;
+        try {
+          client.channels.get(channels.MAIN_CHANNEL_ID).send(`:warning: :fire: ***Ocorrência importante:***\n${msg}`);
+        } catch (e) {
+          //
+        }
+        break;
+      }
+      case EVENT_TYPES.IMPORTANT_EVENT_WARN_ALL: {
+        const msg = `__**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`;
+        try {
+          client.channels.get(channels.MAIN_CHANNEL_ID).send(`@here :warning: :fire: ***Ocorrência importante:***\n${msg}`);
+        } catch (e) {
+          //
+        }
+        break;
+      }
+      case EVENT_TYPES.IMPORTANT_UPDATE_WARN_ALL: {
+        const msg = `__**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__`;
+
+        try {
+          client.channels.get(channels.MAIN_CHANNEL_ID).send(`@here :warning: :fire: ***Atualização importante:***\n${msg}`);
+        } catch (e) {
+          //
+        }
+        break;
+      }
+      default: {
+        break;
       }
     }
   });
 
   if (events.length > 0 || importantEvents.length > 0) {
     try {
-      client.channels.get(channels.MAIN_CHANNEL_ID).send(`
-        :fire: ***Novas Ocorrências:***
-        ${importantEvents.join('')}
-        ${events.join('')}
-      `);
+      client.channels.get(channels.MAIN_CHANNEL_ID).send(`:fire: ***Novas Ocorrências:***\n${importantEvents.join('\n')}\n${events.join('\n')}`);
     } catch (e) {
       //
     }
@@ -111,11 +113,7 @@ const getForestFires = async (client) => {
 
   if (updatedEvents.length > 0 || updatedImportantEvents.length > 0) {
     try {
-      client.channels.get(channels.MAIN_CHANNEL_ID).send(`
-      :fire: ***Ocorrências actualizadas:***
-      ${updatedImportantEvents.join('')}
-      ${updatedEvents.join('')}
-      `);
+      client.channels.get(channels.MAIN_CHANNEL_ID).send(`:fire: ***Ocorrências actualizadas:***\n${updatedImportantEvents.join('\n')}\n${updatedEvents.join('\n')}`);
     } catch (e) {
       //
     }
