@@ -29,7 +29,7 @@ module.exports = {
     if (day.toLowerCase() === 'hoje') {
       const map = Fires.getMap();
 
-      message.channel.send(map);
+      message.channel.send('Risco de Incêndio', { files: [map] });
     }
   },
 };

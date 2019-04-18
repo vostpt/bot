@@ -9,7 +9,7 @@ module.exports = {
     }
 
     if (messageContent.includes('sporting')) {
-      message.reply(':lion_face: **Todo o mundo sabe porque não fico em casa!** :lion_face:');
+      message.reply(':lion_face: **Rapaziada oiçam bem o que eu vos digo, gritem todos comigo: VIVA O SPORTING!** :lion_face:');
     }
 
     if (messageContent.includes('fcp')) {
