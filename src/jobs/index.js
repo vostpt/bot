@@ -35,6 +35,8 @@ class Jobs {
     const rule = new schedule.RecurrenceRule();
 
     rule.hour = 7;
+    rule.minute = 0;
+    rule.second = 0;
 
     schedule.scheduleJob(rule, () => {
       const map = Fires.getMap();
