@@ -7,7 +7,7 @@ const PERSONAL_MESSAGES = {
   7744: 'aqui está o teu chá! :tea:',
   2908: 'duplo curto, como gostas, certo? :coffee:',
   6984: 'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:',
-  8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)'
+  8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)',
 };
 
 module.exports = {

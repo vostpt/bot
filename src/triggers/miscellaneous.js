@@ -11,7 +11,6 @@ module.exports = {
   async execute(message) {
     const messageContent = message.content.toLowerCase();
 
-
     if (messageContent.includes('vostpt')) {
       const replytext = Math.floor(Math.random() * replies.length + 0);
 

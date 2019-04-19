@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { locale } = require('../../config/locale');
-const { prefix } = require('../../config/bot');
+const { prefix, channels } = require('../../config/bot');
 
 moment.locale(locale);
 
@@ -11,7 +11,11 @@ const message = async (client, msg) => {
     return;
   }
 
-  client.triggers.forEach(({ execute }) => execute(msg));
+  const channelId = msg.channel.id;
+
+  if (channelId === channels.TRIGGERS_CHANNEL_ID) {
+    client.triggers.forEach(({ execute }) => execute(msg));
+  }
 
   if (msg.content.startsWith(prefixHelp)) {
     const args = msg.content.slice(prefixHelp.length).split(' ');
