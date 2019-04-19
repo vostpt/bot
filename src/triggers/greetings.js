@@ -20,18 +20,18 @@ module.exports = {
     if (messageContent.includes('bom dia')) {
       try {
         if (hour >= 13 && hour < 20) {
-          message.reply(', para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
+          message.reply(' para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
         } else if (hour >= 20) {
-          message.reply(', para mim já é boa Noite! **Estás bem?**');
+          message.reply(' para mim já é boa Noite! **Estás bem?**');
         } else if (hour < 6) {
-          message.reply(', já de pé a estas horas?!? **ALVORADA!!!!!!**');
+          message.reply(' já de pé a estas horas?!? **ALVORADA!!!!!!**');
         } else {
           const personalMessage = PERSONAL_MESSAGES[message.author.discriminator];
 
           if (personalMessage) {
-            message.reply(` ,bom Dia, ${personalMessage}`);
+            message.reply(` bom dia, ${personalMessage}`);
           } else {
-            message.reply(' ,bom Dia, aqui tens o teu café :coffee:');
+            message.reply(' bom dia, aqui tens o teu café :coffee:');
           }
 
           return;
