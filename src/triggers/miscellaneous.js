@@ -20,12 +20,12 @@ const replies = [
 ];
 
 module.exports = {
-  name: 'Miscellaneous',
-  description: 'Miscellaneous things',
+  name: 'A sentient bot',
+  description: 'The bot will trigger a random message if mentioned, listens to a word, or gets a command',
   async execute(message) {
     const messageContent = message.content.toLowerCase();
 
-    if (messageContent.includes('vostia')) {
+    if (message.isMentioned(client.user)) {
       const replytext = Math.floor(Math.random() * replies.length + 0);
 
       try {
@@ -36,6 +36,7 @@ module.exports = {
 
       return;
     }
+    
     if (messageContent === '!coffee') {
       message.channel.send(`@everyone A pedido de ${message.author} tomem lá um café! :coffee:`);
     }
