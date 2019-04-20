@@ -36,10 +36,17 @@ const getAll = async () => {
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
+  trataDados(warnings, acores);
+  trataDados(warnings, madeira);
+  trataDados(warnings, continente);
+
+};
+
+function trataDados(warnings, zone) {
   let respnovos = '';
   let resptwitter = '';
 
-  warnings.forEach((warning) => {
+  warnings[zone].forEach((warning) => {
     const {
       icon,
       tipo: type = '',
@@ -94,18 +101,34 @@ const getWarnings = async (client) => {
     }
 
     //Create message to Discord
-    respnovos += `:information_source: :warning: ${icon} `;
-    respnovos += `#Aviso${level} devido a `;
-    respnovos += `#${weatherType} entre as `;
-    respnovos += `${inicio} e as `;
-    respnovos += `${fim} para os distritos de `;
+    if (zone == "continente") {
+      respnovos += `:information_source: :warning: ${icon} `;
+      respnovos += `#Aviso${level} devido a `;
+      respnovos += `#${weatherType} entre as `;
+      respnovos += `${inicio} e as `;
+      respnovos += `${fim} para os distritos de `;
 
-    //Create message to Twitter
-    resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
-    resptwitter += `#Aviso${level} devido a `;
-    resptwitter += `#${weatherType} entre as `;
-    resptwitter += `${inicio} e as `;
-    resptwitter += `${fim} para os distritos de `;
+      //Create message to Twitter
+      resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
+      resptwitter += `#Aviso${level} devido a `;
+      resptwitter += `#${weatherType} entre as `;
+      resptwitter += `${inicio} e as `;
+      resptwitter += `${fim} para os distritos de `;
+    }
+    else if (zone == "madeira" || zone == "acores") {
+      respnovos += `:information_source: :warning: ${icon} `;
+      respnovos += `#Aviso${level} devido a `;
+      respnovos += `#${weatherType} entre as `;
+      respnovos += `${inicio} e as `;
+      respnovos += `${fim} para `;
+
+      //Create message to Twitter
+      resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
+      resptwitter += `#Aviso${level} devido a `;
+      resptwitter += `#${weatherType} entre as `;
+      resptwitter += `${inicio} e as `;
+      resptwitter += `${fim} para `;
+    }
 
     //Add districts included in warning to both Discord and Twitter message
     places.forEach(({ local }) => {
@@ -123,24 +146,41 @@ const getWarnings = async (client) => {
     });
 
     //Add final emojis
-    respnovos += ` ${icon} :warning: :information_source:\n\n`;
-    resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
+    if (zone == "continente") {
+      respnovos += ` ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
+    }
+    else if (zone == "acores") {
+      respnovos += ` dos #Açores ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
+    }
+    else if (zone == "madeira") {
+      respnovos += ` da #Madeira ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
+    }
+  });
 
-    //Send message to Twitter
+  //Send message to Twitter
+  if (resptwitter !== '') {
     if (clientTwitter) {
       clientTwitter.post('statuses/update', { status: resptwitter });
     }
-  });
+  }
 
   //Send message to Discord
   if (respnovos !== '') {
     try {
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas:***\n${respnovos}`);
+      if (zone == "continente")
+        client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${respnovos}`);
+      else if (zone == "acores")
+        client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${respnovos}`);
+      else if (zone == "madeira")
+        client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${respnovos}`);
     } catch (e) {
       //
     }
   }
-};
+}
 
 module.exports = {
   getAll,
