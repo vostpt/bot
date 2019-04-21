@@ -72,7 +72,7 @@ const getForestFires = async (client) => {
       case EVENT_TYPES.IMPORTANT_EVENT: {
         const msg = `__**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`;
         try {
-          client.channels.get(channels.MAIN_CHANNEL_ID).send(`:warning: :fire: ***Ocorrência importante:***\n${msg}`);
+          client.channels.get(channels.FIRES_CHANNEL_ID).send(`:warning: :fire: ***Ocorrência importante:***\n${msg}`);
         } catch (e) {
           //
         }
@@ -81,7 +81,7 @@ const getForestFires = async (client) => {
       case EVENT_TYPES.IMPORTANT_EVENT_WARN_ALL: {
         const msg = `__**${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`;
         try {
-          client.channels.get(channels.MAIN_CHANNEL_ID).send(`@here :warning: :fire: ***Ocorrência importante:***\n${msg}`);
+          client.channels.get(channels.FIRES_CHANNEL_ID).send(`@here :warning: :fire: ***Ocorrência importante:***\n${msg}`);
         } catch (e) {
           //
         }
@@ -91,7 +91,7 @@ const getForestFires = async (client) => {
         const msg = `__**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__`;
 
         try {
-          client.channels.get(channels.MAIN_CHANNEL_ID).send(`@here :warning: :fire: ***Atualização importante:***\n${msg}`);
+          client.channels.get(channels.FIRES_CHANNEL_ID).send(`@here :warning: :fire: ***Atualização importante:***\n${msg}`);
         } catch (e) {
           //
         }
@@ -105,7 +105,7 @@ const getForestFires = async (client) => {
 
   if (events.length > 0 || importantEvents.length > 0) {
     try {
-      client.channels.get(channels.MAIN_CHANNEL_ID).send(`:fire: ***Novas Ocorrências:***\n${importantEvents.join('\n')}\n${events.join('\n')}`);
+      client.channels.get(channels.FIRES_CHANNEL_ID).send(`:fire: ***Novas Ocorrências:***\n${importantEvents.join('\n')}\n${events.join('\n')}`);
     } catch (e) {
       //
     }
@@ -113,7 +113,7 @@ const getForestFires = async (client) => {
 
   if (updatedEvents.length > 0 || updatedImportantEvents.length > 0) {
     try {
-      client.channels.get(channels.MAIN_CHANNEL_ID).send(`:fire: ***Ocorrências actualizadas:***\n${updatedImportantEvents.join('\n')}\n${updatedEvents.join('\n')}`);
+      client.channels.get(channels.FIRES_CHANNEL_ID).send(`:fire: ***Ocorrências actualizadas:***\n${updatedImportantEvents.join('\n')}\n${updatedEvents.join('\n')}`);
     } catch (e) {
       //
     }
