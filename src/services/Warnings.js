@@ -27,7 +27,7 @@ const DATE_FORMATS = {
 
 //Returns array of updated meteo warnings (even there's no issued warnings)
 const getAll = async () => {
-  const { data: warnings = [] } = await WarningsApi.getAll();
+  const { data: warnings = [] } = await WarningsApi.getNewWarnings();
 
   return warnings;
 };
@@ -36,17 +36,21 @@ const getAll = async () => {
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
-  getWarningsZones(warnings['acores'], "acores");
-  getWarningsZones(warnings['madeira'], "madeira");
-  getWarningsZones(warnings['continente'], "continente");
+  try {
+    getWarningsZones(warnings['acores'], "acores", client);
+    getWarningsZones(warnings['madeira'], "madeira", client);
+    getWarningsZones(warnings['continente'], "continente", client);
+  } catch (error) {
+    console.log(error);
+  }
 
 };
 
-function getWarningsZones(warnings, zone) {
+function getWarningsZones(warningsZone, zone, client) {
   let respnovos = '';
   let resptwitter = '';
 
-  warnings.forEach((warning) => {
+  warningsZone.forEach((warning) => {
     const {
       icon,
       tipo: type = '',
@@ -169,17 +173,14 @@ function getWarningsZones(warnings, zone) {
 
   //Send message to Discord
   if (respnovos !== '') {
-    try {
-      if (zone == "continente")
-        client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${respnovos}`);
-      else if (zone == "acores")
-        client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${respnovos}`);
-      else if (zone == "madeira")
-        client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${respnovos}`);
-    } catch (e) {
-      //
-    }
+    if (zone == "continente")
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${respnovos}`);
+    else if (zone == "acores")
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${respnovos}`);
+    else if (zone == "madeira")
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${respnovos}`);
   }
+  return 1;
 }
 
 module.exports = {
