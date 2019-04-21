@@ -26,7 +26,7 @@ class Jobs {
   warnings() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(0, 59, 2);
+    rule.minute = new schedule.Range(0, 59, 10);
 
     schedule.scheduleJob(rule, () => Warnings.getWarnings(this.client));
   }
