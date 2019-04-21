@@ -36,17 +36,17 @@ const getAll = async () => {
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
-  trataDados(warnings[0], "acores");
-  trataDados(warnings[0], "madeira");
-  trataDados(warnings[0], "continente");
+  getWarningsZones(warnings['acores'], "acores");
+  getWarningsZones(warnings['madeira'], "madeira");
+  getWarningsZones(warnings['continente'], "continente");
 
 };
 
-function trataDados(warnings, zone) {
+function getWarningsZones(warnings, zone) {
   let respnovos = '';
   let resptwitter = '';
 
-  warnings["'" + zone + "'"].forEach((warning) => {
+  warnings.forEach((warning) => {
     const {
       icon,
       tipo: type = '',
