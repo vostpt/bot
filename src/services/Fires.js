@@ -62,11 +62,11 @@ const getForestFires = async (client) => {
         break;
       }
       case EVENT_TYPES.SEVERITY_UP: {
-        updatedImportantEvents.push(`__**${id} - #IF${city},${local} - Subiu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`);
+        updatedImportantEvents.push(`__**${id} - #IF${city},${local} - Subiu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:S**__`);
         break;
       }
       case EVENT_TYPES.SEVERITY_DOWN: {
-        updatedImportantEvents.push(`__**${id} - #IF${city},${local} - Desceu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}**__`);
+        updatedImportantEvents.push(`__**${id} - #IF${city},${local} - Desceu para ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:**__`);
         break;
       }
       case EVENT_TYPES.IMPORTANT_EVENT: {
