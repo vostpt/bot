@@ -46,7 +46,7 @@ function trataDados(warnings, zone) {
   let respnovos = '';
   let resptwitter = '';
 
-  warnings[zone].forEach((warning) => {
+  warnings["'" + zone + "'"].forEach((warning) => {
     const {
       icon,
       tipo: type = '',
