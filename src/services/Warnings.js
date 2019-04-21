@@ -36,9 +36,9 @@ const getAll = async () => {
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
-  trataDados(warnings, acores);
-  trataDados(warnings, madeira);
-  trataDados(warnings, continente);
+  trataDados(warnings, "acores");
+  trataDados(warnings, "madeira");
+  trataDados(warnings, "continente");
 
 };
 
