@@ -90,7 +90,7 @@ function getWarningsZones(warningsZone, zone, client) {
       } else if (formattedBegin === formattedTomorrow) {
         inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h de amanhã`;
       } else {
-        inicio = moment(begin, DATE_FORMATS.first).format('YYYY-MM-DD HH:mm');
+        inicio = moment(begin, DATE_FORMATS.first).format('HH:mm') + "h de dia " + moment(begin, DATE_FORMATS.first).format('DD/MM/YYYY');
       }
 
       if (formattedEnd === formattedNow) {
@@ -98,7 +98,7 @@ function getWarningsZones(warningsZone, zone, client) {
       } else if (formattedEnd === formattedTomorrow) {
         fim = `${moment(end, DATE_FORMATS.first).format('HH:mm')}h de amanhã,`;
       } else {
-        fim = moment(end, DATE_FORMATS.first).format('YYYY-MM-DD HH:mm');
+        fim = moment(end, DATE_FORMATS.first).format('HH:mm') + "h de dia " + moment(end, DATE_FORMATS.first).format('DD/MM/YYYY');
       }
     }
 
