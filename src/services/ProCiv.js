@@ -46,7 +46,7 @@ const getByCity = async (cityId) => {
 /**
  * Get occurrences that have more than a given number of operatives
  *
- * @param {Number} amountOfMansInvolved If < 0 the function will return a Promise object that was rejected
+ * @param {Number} amountOfMansInvolved If < 0 the function will return a rejected Promise object
  * @returns {Promise|Array}
  */
 const filterByMinimumMans = async (amountOfMansInvolved) => {
@@ -62,7 +62,7 @@ const filterByMinimumMans = async (amountOfMansInvolved) => {
 /**
  * Get occurrences that have more than a given number of ground assets
  *
- * @param {Number} amountOfCarsInvolved If < 0 the function will return a Promise object that was rejected
+ * @param {Number} amountOfCarsInvolved If < 0 the function will return a rejected Promise object
  * @returns {Promise|Array}
  */
 const filterByMinimumCars = async (amountOfCarsInvolved) => {
@@ -77,7 +77,7 @@ const filterByMinimumCars = async (amountOfCarsInvolved) => {
 /**
  * Get occurrences that have more than a given number of aerial assets
  *
- * @param {Number} amountOfAerialsInvolved If < 0 the function will return a Promise object that was rejected
+ * @param {Number} amountOfAerialsInvolved If < 0 the function will return a rejected Promise object
  * @returns {Promise|Array}
  */
 const filterByMinimumAerials = async (amountOfAerialsInvolved) => {
