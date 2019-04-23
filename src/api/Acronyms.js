@@ -1,10 +1,8 @@
 const api = require('axios');
 
-const get = (acronym) => {
-  const baseURl = 'https://vost.mariosantos.net/api';
+const baseURl = 'https://vost.mariosantos.net/api';
 
-  return api.get(`${baseURl}/acronym/${acronym.toLowercase()}.php`);
-};
+const get = acronym => api.get(`${baseURl}/acronym/${acronym.toLowercase()}.php`);
 
 module.exports = {
   get,
