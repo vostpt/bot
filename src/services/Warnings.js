@@ -1,8 +1,9 @@
-/*
-'Warnings' gets a list of updated meteo warnings issued by IPMA, using bot api, and send it to Discord and Twitter
-
-Note that will be sent one message including all warnings to Discord, while one message per warning will be sent to Twitter
-*/
+/**
+ * Warnings' gets a list of updated meteo warnings issued by IPMA,
+ * using bot api, and send it to Discord and Twitter
+ * Note that will be sent one message including all warnings to Discord,
+ * while one message per warning will be sent to Twitter
+ */
 
 const moment = require('moment');
 const { WarningsApi } = require('../api');
@@ -25,28 +26,14 @@ const DATE_FORMATS = {
   second: 'YYYY-MM-DD',
 };
 
-//Returns array of updated meteo warnings (even there's no issued warnings)
+// Returns array of updated meteo warnings (even there's no issued warnings)
 const getAll = async () => {
   const { data: warnings = [] } = await WarningsApi.getNewWarnings();
 
   return warnings;
 };
 
-//Get updated meteo warnings, data and send response to Discord
-const getWarnings = async (client) => {
-  const warnings = await getAll();
-
-  try {
-    getWarningsZones(warnings['acores'], "acores", client);
-    getWarningsZones(warnings['madeira'], "madeira", client);
-    getWarningsZones(warnings['continente'], "continente", client);
-  } catch (error) {
-    console.log(error);
-  }
-
-};
-
-function getWarningsZones(warningsZone, zone, client) {
+const getWarningsZones = (warningsZone, zone, client) => {
   let respnovos = '';
   let resptwitter = '';
 
@@ -63,19 +50,19 @@ function getWarningsZones(warningsZone, zone, client) {
     let primeiro = 0;
     resptwitter = '';
 
-    //If warning type is 'Precipitação' (EN: rain), replace by a synonym
+    // If warning type is 'Precipitação' (EN: rain), replace by a synonym
     const weatherType = type === 'Precipitação' ? 'Chuva' : type.replace(' ', '');
 
     let inicio = '';
     let fim = '';
 
-    //Format warning time and date
+    // Format warning time and date
     const formattedBegin = moment(begin, DATE_FORMATS.first).format(DATE_FORMATS.second);
     const formattedEnd = moment(end, DATE_FORMATS.first).format(DATE_FORMATS.second);
     const formattedNow = moment().format(DATE_FORMATS.second);
     const formattedTomorrow = moment().add('1', 'days').format(DATE_FORMATS.second);
 
-    //Parse begin and end time/date from warning
+    // Parse begin and end time/date from warning
     if (formattedBegin === formattedEnd) {
       if (formattedBegin === formattedNow) {
         inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h`;
@@ -90,7 +77,7 @@ function getWarningsZones(warningsZone, zone, client) {
       } else if (formattedBegin === formattedTomorrow) {
         inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h de amanhã`;
       } else {
-        inicio = moment(begin, DATE_FORMATS.first).format('HH:mm') + "h de dia " + moment(begin, DATE_FORMATS.first).format('DD/MM/YYYY');
+        inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h de dia ${moment(begin, DATE_FORMATS.first).format('DD/MM/YYYY')}`;
       }
 
       if (formattedEnd === formattedNow) {
@@ -98,34 +85,32 @@ function getWarningsZones(warningsZone, zone, client) {
       } else if (formattedEnd === formattedTomorrow) {
         fim = `${moment(end, DATE_FORMATS.first).format('HH:mm')}h de amanhã,`;
       } else {
-        fim = moment(end, DATE_FORMATS.first).format('HH:mm') + "h de dia " + moment(end, DATE_FORMATS.first).format('DD/MM/YYYY');
+        fim = `${moment(end, DATE_FORMATS.first).format('HH:mm')}h de dia ${moment(end, DATE_FORMATS.first).format('DD/MM/YYYY')}`;
       }
     }
 
-
-    //Create message to Discord
-    if (zone == "continente") {
+    // Create message to Discord
+    if (zone === 'continente') {
       respnovos += `:information_source: :warning: ${icon} `;
       respnovos += `#Aviso${level} devido a `;
       respnovos += `#${weatherType} entre as `;
       respnovos += `${inicio} e as `;
       respnovos += `${fim} para os distritos de `;
 
-      //Create message to Twitter
+      // Create message to Twitter
       resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
       resptwitter += `#Aviso${level} devido a `;
       resptwitter += `#${weatherType} entre as `;
       resptwitter += `${inicio} e as `;
       resptwitter += `${fim} para os distritos de `;
-    }
-    else if (zone == "madeira" || zone == "acores") {
+    } else if (['madeira', 'acores'].includes(zone)) {
       respnovos += `:information_source: :warning: ${icon} `;
       respnovos += `#Aviso${level} devido a `;
       respnovos += `#${weatherType} entre as `;
       respnovos += `${inicio} e as `;
       respnovos += `${fim} para `;
 
-      //Create message to Twitter
+      // Create message to Twitter
       resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
       resptwitter += `#Aviso${level} devido a `;
       resptwitter += `#${weatherType} entre as `;
@@ -133,7 +118,7 @@ function getWarningsZones(warningsZone, zone, client) {
       resptwitter += `${fim} para `;
     }
 
-    //Add districts included in warning to both Discord and Twitter message
+    // Add districts included in warning to both Discord and Twitter message
     places.forEach(({ local }) => {
       if (primeiro === 0) {
         respnovos += `#${local}`;
@@ -148,39 +133,47 @@ function getWarningsZones(warningsZone, zone, client) {
       primeiro += 1;
     });
 
-    //Add final emojis
-    if (zone == "continente") {
+    // Add final emojis
+    if (zone === 'continente') {
       respnovos += ` ${icon} :warning: :information_source:\n\n`;
-      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
-    }
-    else if (zone == "acores") {
+    } else if (zone === 'acores') {
       respnovos += ` dos #Açores ${icon} :warning: :information_source:\n\n`;
-      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
-    }
-    else if (zone == "madeira") {
+    } else if (zone === 'madeira') {
       respnovos += ` da #Madeira ${icon} :warning: :information_source:\n\n`;
-      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
     }
+    resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
   });
 
-  //Send message to Twitter
+  // Send message to Twitter
   if (resptwitter !== '') {
     if (clientTwitter) {
       clientTwitter.post('statuses/update', { status: resptwitter });
     }
   }
 
-  //Send message to Discord
+  // Send message to Discord
   if (respnovos !== '') {
-    if (zone == "continente")
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${respnovos}`);
-    else if (zone == "acores")
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${respnovos}`);
-    else if (zone == "madeira")
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${respnovos}`);
+    if (zone === 'continente') client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${respnovos}`);
+    else if (zone === 'acores') client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${respnovos}`);
+    else if (zone === 'madeira') client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${respnovos}`);
   }
   return 1;
-}
+};
+
+
+// Get updated meteo warnings, data and send response to Discord
+const getWarnings = async (client) => {
+  const warnings = await getAll();
+
+  try {
+    getWarningsZones(warnings.acores, 'acores', client);
+    getWarningsZones(warnings.madeira, 'madeira', client);
+    getWarningsZones(warnings.continente, 'continente', client);
+  } catch (error) {
+    //
+  }
+};
+
 
 module.exports = {
   getAll,

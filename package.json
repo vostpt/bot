@@ -17,8 +17,8 @@
     "eslint-plugin-import": "^2.17.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./src/**/*.js",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "pretest": "eslint ./src/**/*.js",
     "start": "node src/app"
   },
   "repository": {
