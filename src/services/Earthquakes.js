@@ -6,14 +6,23 @@ const moment = require('moment');
 const { EarthquakesApi } = require('../api');
 const { channels } = require('../../config/bot');
 
-// Returns array of all registered earthquakes
+/**
+ * Returns array of all registered earthquakes
+ *
+ * @returns {Array} earthquakes
+ */
 const getAll = async () => {
   const { data: earthquakes = [] } = await EarthquakesApi.getAll();
 
   return earthquakes;
 };
 
-// Given a certain date, return only registered earthquakes in that date
+/**
+ * Get earthquakes and filters by a specific date
+ *
+ * @param {Date} date
+ * @returns {Array} earthquakes
+ */
 const getByDate = async (date) => {
   try {
     const earthquakes = await getAll();
@@ -24,7 +33,11 @@ const getByDate = async (date) => {
   }
 };
 
-// Get registered earthquakes from the previous day and send response to Discord
+/**
+ * Get registered earthquakes from the previous day and send response to Discord
+ *
+ * @param {Client} client
+ */
 const getEarthquakes = async (client) => {
   const yesterday = moment().subtract(1, 'days');
 

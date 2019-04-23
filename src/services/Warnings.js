@@ -26,13 +26,24 @@ const DATE_FORMATS = {
   second: 'YYYY-MM-DD',
 };
 
-// Returns array of updated meteo warnings (even there's no issued warnings)
+/**
+ * Returns array of updated meteo warnings (even there's no issued warnings)
+ *
+ * @returns {Array} warnings
+ */
 const getAll = async () => {
   const { data: warnings = [] } = await WarningsApi.getNewWarnings();
 
   return warnings;
 };
 
+/**
+ * Returns array of updated meteo warnings (even there's no issued warnings)
+ *
+ * @param {Array} warningsZone
+ * @param {String} zone
+ * @param {Client} client
+ */
 const getWarningsZones = (warningsZone, zone, client) => {
   let respnovos = '';
   let resptwitter = '';
@@ -162,7 +173,11 @@ const getWarningsZones = (warningsZone, zone, client) => {
 };
 
 
-// Get updated meteo warnings, data and send response to Discord
+/**
+ * Get updated meteo warnings, data and send response to Discord
+ *
+ * @param {Client} client
+ */
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
