@@ -60,12 +60,10 @@ const getWarningsZones = (warningsZone, zone, client) => {
     const formattedBegin = moment(begin, DATE_FORMATS.first).format(DATE_FORMATS.second);
     const formattedEnd = moment(end, DATE_FORMATS.first).format(DATE_FORMATS.second);
     const formattedNow = moment().format(DATE_FORMATS.second);
-    const formattedTomorrow = moment(formattedNow).add('1', 'days');
-
-    const noDiff = moment(begin).diff(end) === 0;
+    const formattedTomorrow = moment().add('1', 'days').format(DATE_FORMATS.second);
 
     // Parse begin and end time/date from warning
-    if (noDiff) {
+    if (formattedBegin === formattedEnd) {
       if (formattedBegin === formattedNow) {
         inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h`;
         fim = `${moment(end, DATE_FORMATS.first).format('HH:mm')}h de hoje,`;
@@ -79,7 +77,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
       } else if (formattedBegin === formattedTomorrow) {
         inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h de amanhã`;
       } else {
-        inicio = moment(begin, DATE_FORMATS.first).format('YYYY-MM-DD HH:mm');
+        inicio = `${moment(begin, DATE_FORMATS.first).format('HH:mm')}h de dia ${moment(begin, DATE_FORMATS.first).format('DD/MM/YYYY')}`;
       }
 
       if (formattedEnd === formattedNow) {
@@ -87,7 +85,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
       } else if (formattedEnd === formattedTomorrow) {
         fim = `${moment(end, DATE_FORMATS.first).format('HH:mm')}h de amanhã,`;
       } else {
-        fim = moment(end, DATE_FORMATS.first).format('YYYY-MM-DD HH:mm');
+        fim = `${moment(end, DATE_FORMATS.first).format('HH:mm')}h de dia ${moment(end, DATE_FORMATS.first).format('DD/MM/YYYY')}`;
       }
     }
 
