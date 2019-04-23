@@ -42,7 +42,7 @@ class Jobs {
       const map = Fires.getMap();
 
       try {
-        this.client.channels.get(channels.FIRES_CHANNEL_ID).send(map);
+        this.client.channels.get(channels.FIRES_CHANNEL_ID).send('Risco de Incêndio para hoje', { files: [map] });
       } catch (e) {
         //
       }
