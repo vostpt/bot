@@ -145,19 +145,20 @@ const getWarningsZones = (warningsZone, zone, client) => {
   });
 
   // Send message to Twitter
-  if (resptwitter !== '') {
-    if (clientTwitter) {
-      clientTwitter.post('statuses/update', { status: resptwitter });
-    }
+  if (clientTwitter && resptwitter !== '') {
+    clientTwitter.post('statuses/update', { status: resptwitter });
   }
 
   // Send message to Discord
   if (respnovos !== '') {
-    if (zone === 'continente') client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${respnovos}`);
-    else if (zone === 'acores') client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${respnovos}`);
-    else if (zone === 'madeira') client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${respnovos}`);
+    if (zone === 'continente') {
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${respnovos}`);
+    } else if (zone === 'acores') {
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${respnovos}`);
+    } else if (zone === 'madeira') {
+      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${respnovos}`);
+    }
   }
-  return 1;
 };
 
 
