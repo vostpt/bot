@@ -38,6 +38,7 @@ const message = async (client, msg) => {
       try {
         await command.execute(msg, args);
       } catch (e) {
+        // log exception
         msg.reply('infelizmente não consigo satisfazer esse pedido');
       }
     }

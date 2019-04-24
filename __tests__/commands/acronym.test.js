@@ -10,19 +10,6 @@ const mockMessage = {
   },
 };
 
-AcronymsAPI.get.mockImplementation((acronym) => {
-  if (acronym === 'ok') {
-    return Promise.resolve({
-      data: {
-        acronym,
-        description: 'desc',
-      },
-    });
-  }
-
-  return Promise.reject();
-});
-
 describe('Acronym command', () => {
   test('No args passed', () => {
     AcronymCommand.execute(mockMessage, []);
@@ -32,18 +19,25 @@ describe('Acronym command', () => {
   });
 
   describe('Args passed', () => {
-    test('Valid acronym', async () => {
+    test('Valid acronym but no data retuned', async () => {
+      AcronymsAPI.get.mockResolvedValue({});
+      await AcronymCommand.execute(mockMessage, ['ok']);
+
+      expect(mockMessage.reply).toHaveBeenCalledTimes(1);
+      expect(mockMessage.reply.mock.calls[0][0]).toContain('Esse acrónimo não consta na base de dados!');
+    });
+
+    test('Valid acronym and data retuned', async () => {
+      AcronymsAPI.get.mockResolvedValue({
+        data: {
+          acronym: 'ok',
+          description: 'desc',
+        },
+      });
       await AcronymCommand.execute(mockMessage, ['ok']);
 
       expect(mockMessage.channel.send).toHaveBeenCalledTimes(1);
       expect(mockMessage.channel.send.mock.calls[0][0]).toContain('ok - desc');
-    });
-
-    test('Invalid acronym', async () => {
-      await AcronymCommand.execute(mockMessage, ['arg1']);
-
-      expect(mockMessage.reply).toHaveBeenCalledTimes(1);
-      expect(mockMessage.reply.mock.calls[0][0]).toContain('Esse acrónimo não consta na base de dados!');
     });
   });
 });

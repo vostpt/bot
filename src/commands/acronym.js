@@ -9,22 +9,20 @@ module.exports = {
   description: '',
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      try {
-        message.reply(`*Give me more data* para eu poder trabalhar!\n${this.usage}`);
-      } catch (e) {
-        //
-      }
+      message.reply(`*Give me more data* para eu poder trabalhar!\n${this.usage}`);
 
       return;
     }
 
     const [acronym] = args;
-    try {
-      const { data = {} } = await AcronymsApi.get(acronym);
+    const { data } = await AcronymsApi.get(acronym);
 
-      message.channel.send(`${data.acronym} - ${data.description}`);
-    } catch (e) {
+    if (!data) {
       message.reply('Esse acrónimo não consta na base de dados!');
+
+      return;
     }
+
+    message.channel.send(`${data.acronym} - ${data.description}`);
   },
 };
