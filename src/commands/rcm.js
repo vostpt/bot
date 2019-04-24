@@ -11,11 +11,7 @@ module.exports = {
   `,
   execute(message, args) {
     if (this.args && args.length === 0) {
-      try {
-        message.reply(`falta o dia!\n${this.usage}`);
-      } catch (e) {
-        //
-      }
+      message.reply(`falta o dia!\n${this.usage}`);
 
       return;
     }
@@ -23,7 +19,7 @@ module.exports = {
     const [day] = args;
 
     if (!this.allowedArgs.includes(day)) {
-      message.reply(`dias disponíveis: ${this.allowedArgs.join(', ')}`);
+      message.reply(`opções disponíveis: ${this.allowedArgs.join(', ')}`);
     }
 
     if (day.toLowerCase() === 'hoje') {
