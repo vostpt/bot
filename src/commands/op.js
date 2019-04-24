@@ -39,20 +39,16 @@ module.exports = {
   usage: `
     **!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*
     **!op if [#IFConcelho]** - *Mostra os dados relativos à ocorrência com esse #IF.*
-    **!op if [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
+    **!op vento [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
     **!op status [Despacho|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
     **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.
     
-    Distritos reconhecíveis: ${Object.keys(DISTRICTS).join(', ')}*
+    Distritos reconhecíveis: *${Object.keys(DISTRICTS).join(', ')}*
   `,
   description: '',
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      try {
-        message.reply(`falta o número da ocorrência!\n${this.usage}`);
-      } catch (e) {
-        //
-      }
+      message.reply(`falta o parâmetro de filtro das ocorrências!\n${this.usage}`);
 
       return;
     }
@@ -65,14 +61,16 @@ module.exports = {
     if (requestedArgument === 'id') {
       const [, requestedId] = args;
 
+      if (!requestedId) {
+        message.reply(`falta o id da ocorrência!\n${this.usage}`);
+
+        return;
+      }
+
       const data = await Prociv.getById(requestedId);
 
       if (data.length === 0) {
-        try {
-          message.channel.send(':fire: ***Sem Ocorrências***');
-        } catch (e) {
-          //
-        }
+        message.channel.send(':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -101,6 +99,12 @@ module.exports = {
 
     if (requestedArgument === 'if') {
       const [, requestedCity] = args;
+
+      if (!requestedCity) {
+        message.reply(`falta a cidade!\n${this.usage}`);
+
+        return;
+      }
 
       const data = await Prociv.getByCity(requestedCity);
 
@@ -133,12 +137,8 @@ module.exports = {
     }
 
     if (requestedArgument === 'vento') {
-      if (args.length < 2) {
-        try {
-          message.reply(`falta argumentos.\n${this.usage}`);
-        } catch (e) {
-          //
-        }
+      if (this.args && args.length < 2) {
+        message.reply(`falta o id da cidade.\n${this.usage}`);
 
         return;
       }
@@ -146,8 +146,10 @@ module.exports = {
       const cityId = args[1].toLowerCase();
 
       const data = await Winds.getById(cityId);
-      if (data.length === 0) {
+
+      if (!data) {
         message.channel.send(':wind_blowing_face: :fire: ***Sem Ocorrência***');
+
         return;
       }
 
@@ -165,13 +167,16 @@ module.exports = {
     if (requestedArgument === 'status') {
       const [, requestedStatus] = args;
 
+      if (!requestedStatus) {
+        message.reply(`falta o estado!\n${this.usage}`);
+
+        return;
+      }
+
       const data = await Prociv.filterByStatus(requestedStatus);
+
       if (data.length === 0) {
-        try {
-          message.channel.send(':fire: ***Sem Ocorrências***');
-        } catch (e) {
-          //
-        }
+        message.channel.send(':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -202,11 +207,7 @@ module.exports = {
       const [, district] = args;
 
       if (!district) {
-        try {
-          message.reply(`é necessário fornecer um distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
-        } catch (e) {
-          //
-        }
+        message.reply(`é necessário fornecer um distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
 
         return;
       }
@@ -214,11 +215,7 @@ module.exports = {
       const districtToSearch = DISTRICTS[district.toLowerCase()];
 
       if (!districtToSearch) {
-        try {
-          message.reply(`não foi possível identificar esse distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
-        } catch (e) {
-          //
-        }
+        message.reply(`não foi possível identificar esse distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
 
         return;
       }
@@ -226,11 +223,7 @@ module.exports = {
       const fires = await Fires.getByDistrict(districtToSearch);
 
       if (fires.length === 0) {
-        try {
-          message.channel.send(':fire: ***Sem Ocorrências***');
-        } catch (e) {
-          //
-        }
+        message.channel.send(':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -257,20 +250,12 @@ module.exports = {
       });
     }
 
-    try {
-      if (importantEvents.length > 0) {
-        message.channel.send(`:fire: ***Ocorrências importantes:***\n${importantEvents.join('\n')}`);
-      }
+    if (importantEvents.length > 0) {
+      message.channel.send(`:fire: ***Ocorrências importantes:***\n${importantEvents.join('\n')}`);
+    }
 
-      if (events.length > 0) {
-        message.channel.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
-      }
-
-      if (events.length === 0 && importantEvents.length === 0) {
-        message.channel.send(':fire: ***Sem Ocorrências***');
-      }
-    } catch (e) {
-      //
+    if (events.length > 0) {
+      message.channel.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
     }
   },
 };
