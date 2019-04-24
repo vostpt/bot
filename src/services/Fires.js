@@ -13,12 +13,23 @@ const EVENT_TYPES = {
   IMPORTANT_UPDATE_WARN_ALL: '8',
 };
 
+/**
+ * Get fire list in a given district
+ *
+ * @param {String} district
+ * @returns {Array} fires
+ */
 const getByDistrict = async (district) => {
   const { data: fires = [] } = await FireApi.getByDistrict(district);
 
   return fires;
 };
 
+/**
+ * Get fire list
+ *
+ * @param {Client} client
+ */
 const getForestFires = async (client) => {
   const { data: fires = [] } = await FireApi.getIF();
 
