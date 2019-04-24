@@ -1,16 +1,16 @@
 const Fires = require('../services/Fires');
 
-const allowedArgs = ['hoje'];
 
 module.exports = {
   name: 'rcm',
   args: true,
+  allowedArgs: ['hoje'],
   description: '!rcm',
   usage: `
     **!rcm hoje**
   `,
   execute(message, args) {
-    if (args && args.length === 0) {
+    if (this.args && args.length === 0) {
       try {
         message.reply(`falta o dia!\n${this.usage}`);
       } catch (e) {
@@ -22,8 +22,8 @@ module.exports = {
 
     const [day] = args;
 
-    if (!allowedArgs.includes(day)) {
-      message.reply(`dias disponíveis: ${allowedArgs.join(', ')}`);
+    if (!this.allowedArgs.includes(day)) {
+      message.reply(`dias disponíveis: ${this.allowedArgs.join(', ')}`);
     }
 
     if (day.toLowerCase() === 'hoje') {
