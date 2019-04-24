@@ -41,14 +41,6 @@ module.exports = {
       });
     });
 
-    try {
-      if (events.length > 0) {
-        message.channel.send(`***Alertas:***\n${events.join('\n')}`);
-      } else {
-        message.channel.send('***Sem Alertas:***');
-      }
-    } catch (e) {
-      //
-    }
+    message.channel.send(`***Alertas:***\n${events.join('\n')}`);
   },
 };
