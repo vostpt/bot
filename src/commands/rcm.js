@@ -9,6 +9,14 @@ module.exports = {
   usage: `
     **!rcm hoje**
   `,
+
+  /**
+  * Send to Discord fire risk for today
+  *
+  * @async
+  * @param {Message} message
+  * @param {Array} args
+  */
   execute(message, args) {
     if (args && args.length === 0) {
       try {
