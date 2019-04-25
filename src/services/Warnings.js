@@ -153,7 +153,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
       respnovos += ` da #Madeira ${icon} :warning: :information_source:\n\n`;
     }
     resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
-    
+
     // Send message to Twitter
     if (clientTwitter && resptwitter !== '') {
       clientTwitter.post('statuses/update', { status: resptwitter });
