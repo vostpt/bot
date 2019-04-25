@@ -10,6 +10,14 @@ module.exports = {
     **!weather** - *Mostra a meteorologia do dia atual.*
     **!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*
   `,
+
+  /**
+  * Send to Discord weather forecast for today or tomorrow
+  *
+  * @async
+  * @param {Message} message
+  * @param {Array} args
+  */
   async execute(message, args) {
     let day = 0;
 

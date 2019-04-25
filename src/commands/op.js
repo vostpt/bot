@@ -46,6 +46,14 @@ module.exports = {
     Distritos reconhecíveis: ${Object.keys(DISTRICTS).join(', ')}*
   `,
   description: '',
+
+  /**
+  * Send to Discord occurrences, filtered by id, county, town, status or district
+  *
+  * @async
+  * @param {Message} message
+  * @param {Array} args
+  */
   async execute(message, args) {
     if (this.args && args.length === 0) {
       try {
