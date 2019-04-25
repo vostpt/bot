@@ -27,7 +27,7 @@ const DATE_FORMATS = {
 };
 
 /**
- * Returns array of updated meteo warnings (even there's no issued warnings)
+ * Returns array of updated meteo warnings
  *
  * @returns {Array} warnings
  */
@@ -38,7 +38,7 @@ const getAll = async () => {
 };
 
 /**
- * Returns array of updated meteo warnings (even there's no issued warnings)
+ * Returns array of updated meteo warnings
  *
  * @param {Array} warningsZone
  * @param {String} zone

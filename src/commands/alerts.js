@@ -7,6 +7,13 @@ module.exports = {
     **!alerts**
   `,
   description: '!alerts',
+
+  /**
+  * Send to Discord alerts issued by IPMA
+  *
+  * @async
+  * @param {Message} message
+  */
   async execute(message) {
     const events = [];
 

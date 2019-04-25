@@ -7,6 +7,14 @@ module.exports = {
   usage: `
     **!sismos [data]** - Retorna informação acerca de sismos ocorridos na data específicada: Formato da data: dd/mm/aaaa
   `,
+
+  /**
+  * Send to Discord all registered earthquakes in a specified date
+  *
+  * @async
+  * @param {Message} message
+  * @param {Array} args
+  */
   async execute(message, args) {
     if (this.args && args.length === 0) {
       message.reply(`falta a data.\n${this.usage}`);
