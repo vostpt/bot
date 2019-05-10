@@ -108,7 +108,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
       respnovos += `${inicio} e as `;
       if (places.length === 1) {
         respnovos += `${fim} para o distrito de `;
-      } else if (places.length > 2) {
+      } else if (places.length > 1) {
         respnovos += `${fim} para os distritos de `;
       }
 
@@ -119,7 +119,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
       resptwitter += `${inicio} e as `;
       if (places.length === 1) {
         resptwitter += `${fim} para o distrito de `;
-      } else if (places.length > 2) {
+      } else if (places.length > 1) {
         resptwitter += `${fim} para os distritos de `;
       }
 
