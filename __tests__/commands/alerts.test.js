@@ -1,21 +1,18 @@
+const Discord = require('discord.js');
 const WarningsService = require('../../src/services/Warnings');
 const alertsCommand = require('../../src/commands/alerts');
 
 jest.mock('../../src/services/Warnings');
 
-const mockMessage = {
-  channel: {
-    send: jest.fn(),
-  },
-};
+const client = new Discord.Client();
 
 describe('!alerts command', () => {
   test('it has no warnings', async () => {
     WarningsService.getAll.mockResolvedValue([]);
-    await alertsCommand.execute(mockMessage);
+    await alertsCommand.execute(client.message);
 
-    expect(mockMessage.channel.send).toHaveBeenCalledTimes(1);
-    expect(mockMessage.channel.send.mock.calls[0][0]).toContain('Sem Alertas');
+    expect(client.message.channel.send).toHaveBeenCalledTimes(1);
+    expect(client.message.channel.send.mock.calls[0][0]).toContain('Sem Alertas');
   });
 
   test('it has locals but no alerts to display', async () => {
@@ -26,10 +23,10 @@ describe('!alerts command', () => {
       },
     ]);
 
-    await alertsCommand.execute(mockMessage);
+    await alertsCommand.execute(client.message);
 
-    expect(mockMessage.channel.send).toHaveBeenCalledTimes(1);
-    expect(mockMessage.channel.send.mock.calls[0][0]).toContain('Alertas');
+    expect(client.message.channel.send).toHaveBeenCalledTimes(1);
+    expect(client.message.channel.send.mock.calls[0][0]).toContain('Alertas');
   });
 
   test('it has locals and alerts to display', async () => {
@@ -55,9 +52,9 @@ describe('!alerts command', () => {
       },
     ]);
 
-    await alertsCommand.execute(mockMessage);
+    await alertsCommand.execute(client.message);
 
-    expect(mockMessage.channel.send).toHaveBeenCalledTimes(1);
-    expect(mockMessage.channel.send.mock.calls[0][0]).toContain('**something**');
+    expect(client.message.channel.send).toHaveBeenCalledTimes(1);
+    expect(client.message.channel.send.mock.calls[0][0]).toContain('**something**');
   });
 });

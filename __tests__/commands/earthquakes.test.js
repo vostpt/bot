@@ -1,31 +1,27 @@
+const Discord = require('discord.js');
 const EarthquakesService = require('../../src/services/Earthquakes');
 const earthquakesCommand = require('../../src/commands/earthquakes');
 
 jest.mock('../../src/services/Earthquakes');
 
-const mockMessage = {
-  reply: jest.fn(),
-  channel: {
-    send: jest.fn(),
-  },
-};
+const client = new Discord.Client();
 
 describe('Earthquakes command', () => {
   test('No args passed', () => {
-    earthquakesCommand.execute(mockMessage, []);
+    earthquakesCommand.execute(client.message, []);
 
-    expect(mockMessage.reply).toHaveBeenCalledTimes(1);
-    expect(mockMessage.reply.mock.calls[0][0]).toContain(earthquakesCommand.usage);
+    expect(client.message.reply).toHaveBeenCalledTimes(1);
+    expect(client.message.reply.mock.calls[0][0]).toContain(earthquakesCommand.usage);
   });
 
   describe('Args provided', () => {
     test('if required date has no events', async () => {
       EarthquakesService.getByDate.mockResolvedValue([]);
 
-      await earthquakesCommand.execute(mockMessage, ['arg']);
+      await earthquakesCommand.execute(client.message, ['arg']);
 
-      expect(mockMessage.reply).toHaveBeenCalledTimes(1);
-      expect(mockMessage.reply.mock.calls[0][0]).toContain('arg');
+      expect(client.message.reply).toHaveBeenCalledTimes(1);
+      expect(client.message.reply.mock.calls[0][0]).toContain('arg');
     });
 
     test('if required date has both events (regular/sensed)', async () => {
@@ -34,11 +30,11 @@ describe('Earthquakes command', () => {
         { sensed: false },
       ]);
 
-      await earthquakesCommand.execute(mockMessage, ['arg']);
+      await earthquakesCommand.execute(client.message, ['arg']);
 
-      expect(mockMessage.channel.send).toHaveBeenCalledTimes(2);
-      expect(mockMessage.channel.send.mock.calls[0][0]).toContain('Sismos sentidos');
-      expect(mockMessage.channel.send.mock.calls[1][0]).toContain('Sismos de');
+      expect(client.message.channel.send).toHaveBeenCalledTimes(2);
+      expect(client.message.channel.send.mock.calls[0][0]).toContain('Sismos sentidos');
+      expect(client.message.channel.send.mock.calls[1][0]).toContain('Sismos de');
     });
 
     test('if required date has only regular events', async () => {
@@ -46,10 +42,10 @@ describe('Earthquakes command', () => {
         { sensed: false },
       ]);
 
-      await earthquakesCommand.execute(mockMessage, ['arg']);
+      await earthquakesCommand.execute(client.message, ['arg']);
 
-      expect(mockMessage.channel.send).toHaveBeenCalledTimes(1);
-      expect(mockMessage.channel.send.mock.calls[0][0]).toContain('Sismos de');
+      expect(client.message.channel.send).toHaveBeenCalledTimes(1);
+      expect(client.message.channel.send.mock.calls[0][0]).toContain('Sismos de');
     });
 
     test('if required date has only sensed events', async () => {
@@ -57,10 +53,10 @@ describe('Earthquakes command', () => {
         { sensed: true },
       ]);
 
-      await earthquakesCommand.execute(mockMessage, ['arg']);
+      await earthquakesCommand.execute(client.message, ['arg']);
 
-      expect(mockMessage.channel.send).toHaveBeenCalledTimes(1);
-      expect(mockMessage.channel.send.mock.calls[0][0]).toContain('Sismos sentidos');
+      expect(client.message.channel.send).toHaveBeenCalledTimes(1);
+      expect(client.message.channel.send.mock.calls[0][0]).toContain('Sismos sentidos');
     });
   });
 });

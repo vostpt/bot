@@ -21,38 +21,32 @@ module.exports = {
   async execute(message, args) {
     let day = 0;
 
-    if (args.length > 0) {
+    if (this.args && args.length > 0) {
       const requestedDay = args[0].toLowerCase();
 
       if (requestedDay === 'tomorrow') {
         day = 1;
       } else {
-        try {
-          message.reply(`desconheço essa opção.${this.usage}`);
-        } catch (e) {
-          //
-        }
+        message.reply(`desconheço essa opção.\n${this.usage}`);
+
         return;
       }
     }
 
-    let events = ['***Meteorologia:*** '];
-    let count = 0;
-    let chunk = 1;
-
     const data = await Weather.getByDay(day);
 
     if (data.length === 0) {
-      try {
-        message.channel.send('***Sem Dados***');
-      } catch (e) {
-        //
-      }
+      message.channel.send('***Sem Dados***');
 
       return;
     }
 
-    events.push(`[${chunk}/${Math.ceil(data.length / rowsPerMessage)}]`);
+    let chunk = 1;
+    let count = 0;
+    let events = [  
+      '***Meteorologia***',
+      `[${chunk}/${Math.ceil(data.length / rowsPerMessage)}]`,
+    ];
 
     data.forEach((element) => {
       const {
@@ -83,10 +77,6 @@ module.exports = {
       count += 1;
     });
 
-    try {
-      message.channel.send(events.join('\n'));
-    } catch (e) {
-      //
-    }
+    message.channel.send(events.join('\n'));
   },
 };

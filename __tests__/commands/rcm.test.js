@@ -1,35 +1,31 @@
+const Discord = require('discord.js');
 const rcmCommand = require('../../src/commands/rcm');
 
 jest.mock('../../src/api/Acronyms');
 
-const mockMessage = {
-  reply: jest.fn(),
-  channel: {
-    send: jest.fn(),
-  },
-};
+const client = new Discord.Client();
 
 describe('RCM command', () => {
   test('No args passed', () => {
-    rcmCommand.execute(mockMessage, []);
+    rcmCommand.execute(client.message, []);
 
-    expect(mockMessage.reply).toHaveBeenCalledTimes(1);
-    expect(mockMessage.reply.mock.calls[0][0]).toContain(rcmCommand.usage);
+    expect(client.message.reply).toHaveBeenCalledTimes(1);
+    expect(client.message.reply.mock.calls[0][0]).toContain(rcmCommand.usage);
   });
 
   describe('Args passed - day', () => {
     test('Allowed day', () => {
-      rcmCommand.execute(mockMessage, ['hoje']);
+      rcmCommand.execute(client.message, ['hoje']);
 
-      expect(mockMessage.channel.send).toHaveBeenCalledTimes(1);
-      expect(mockMessage.channel.send.mock.calls[0][0]).toContain('Risco de Incêndio');
+      expect(client.message.channel.send).toHaveBeenCalledTimes(1);
+      expect(client.message.channel.send.mock.calls[0][0]).toContain('Risco de Incêndio');
     });
 
     test('Not allowed day', () => {
-      rcmCommand.execute(mockMessage, ['notAllowedDay']);
+      rcmCommand.execute(client.message, ['notAllowedDay']);
 
-      expect(mockMessage.reply).toHaveBeenCalledTimes(1);
-      expect(mockMessage.reply.mock.calls[0][0]).toContain(rcmCommand.allowedArgs.join(', '));
+      expect(client.message.reply).toHaveBeenCalledTimes(1);
+      expect(client.message.reply.mock.calls[0][0]).toContain(rcmCommand.allowedArgs.join(', '));
     });
   });
 });
