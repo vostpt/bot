@@ -14,9 +14,8 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 2018
-  }
-  // "plugins": ["prettier"],
-  // "rules": {
-  //   "prettier/prettier": "error",
-  // },
+  },
+  rules: {
+    "linebreak-style": "off"
+  },
 };
