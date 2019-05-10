@@ -111,7 +111,6 @@ const getWarningsZones = (warningsZone, zone, client) => {
       } else if (places.length > 1) {
         respnovos += `${fim} para os distritos de `;
       }
-
       // Create message to Twitter
       resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
       resptwitter += `#Aviso${level} devido a `;
@@ -122,7 +121,6 @@ const getWarningsZones = (warningsZone, zone, client) => {
       } else if (places.length > 1) {
         resptwitter += `${fim} para os distritos de `;
       }
-
     } else if (['madeira', 'acores'].includes(zone)) {
       respnovos += `:information_source: :warning: ${icon} `;
       respnovos += `#Aviso${level} devido a `;
@@ -149,8 +147,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
             respnovos += `os #${local}`;
             resptwitter += `os #${local}`;
           }
-        }
-        else {
+        } else {
           respnovos += `#${local}`;
           resptwitter += `#${local}`;
         }
