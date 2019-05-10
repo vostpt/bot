@@ -106,14 +106,23 @@ const getWarningsZones = (warningsZone, zone, client) => {
       respnovos += `#Aviso${level} devido a `;
       respnovos += `#${weatherType} entre as `;
       respnovos += `${inicio} e as `;
-      respnovos += `${fim} para os distritos de `;
+      if (places.length === 1) {
+        respnovos += `${fim} para o distrito de `;
+      } else if (places.length > 2) {
+        respnovos += `${fim} para os distritos de `;
+      }
 
       // Create message to Twitter
       resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
       resptwitter += `#Aviso${level} devido a `;
       resptwitter += `#${weatherType} entre as `;
       resptwitter += `${inicio} e as `;
-      resptwitter += `${fim} para os distritos de `;
+      if (places.length === 1) {
+        resptwitter += `${fim} para o distrito de `;
+      } else if (places.length > 2) {
+        resptwitter += `${fim} para os distritos de `;
+      }
+
     } else if (['madeira', 'acores'].includes(zone)) {
       respnovos += `:information_source: :warning: ${icon} `;
       respnovos += `#Aviso${level} devido a `;
@@ -132,8 +141,19 @@ const getWarningsZones = (warningsZone, zone, client) => {
     // Add districts included in warning to both Discord and Twitter message
     places.forEach(({ local }) => {
       if (primeiro === 0) {
-        respnovos += `#${local}`;
-        resptwitter += `#${local}`;
+        if (['madeira', 'acores'].includes(zone)) {
+          if (places.length === 1 || places.length > 2) {
+            respnovos += `o #${local}`;
+            resptwitter += `o #${local}`;
+          } else if (places.length === 2) {
+            respnovos += `os #${local}`;
+            resptwitter += `os #${local}`;
+          }
+        }
+        else {
+          respnovos += `#${local}`;
+          resptwitter += `#${local}`;
+        }
       } else if (places.length - 1 === primeiro) {
         respnovos += `, e #${local}`;
         resptwitter += `, e #${local}`;
