@@ -7,6 +7,14 @@ module.exports = {
     **!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*
   `,
   description: '',
+
+  /**
+  * Send to Discord acronym definition
+  *
+  * @async
+  * @param {Message} message
+  * @param {Array} args
+  */
   async execute(message, args) {
     if (this.args && args.length === 0) {
       try {

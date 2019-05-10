@@ -22,6 +22,14 @@ module.exports = {
     **!all important** - *Mostra todas as ocorrências marcadas como importantes na ProCivApi.*
   `,
   description: '',
+
+  /**
+  * Send to Discord occurrences, list all (with or without fogos.pt url), or use filters
+  *
+  * @async
+  * @param {Message} message
+  * @param {Array} args
+  */
   async execute(message, args) {
     const events = [];
     const importantEvents = [];

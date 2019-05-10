@@ -8,6 +8,7 @@ const PERSONAL_MESSAGES = {
   2908: 'duplo curto, como gostas, certo? :coffee:',
   6984: 'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:',
   8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)',
+  1905: 'ora aqui está um chá fresquinho bem quentinho. Se quiseres uma farripa de leite é só dizer.',
 };
 
 module.exports = {

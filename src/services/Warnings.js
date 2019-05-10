@@ -27,7 +27,7 @@ const DATE_FORMATS = {
 };
 
 /**
- * Returns array of updated meteo warnings (even there's no issued warnings)
+ * Returns array of updated meteo warnings
  *
  * @returns {Array} warnings
  */
@@ -38,7 +38,7 @@ const getAll = async () => {
 };
 
 /**
- * Returns array of updated meteo warnings (even there's no issued warnings)
+ * Returns array of updated meteo warnings
  *
  * @param {Array} warningsZone
  * @param {String} zone
@@ -147,13 +147,15 @@ const getWarningsZones = (warningsZone, zone, client) => {
     // Add final emojis
     if (zone === 'continente') {
       respnovos += ` ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
     } else if (zone === 'acores') {
       respnovos += ` dos #Açores ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` dos #Açores ${iconsMap.get(icon)}⚠️ℹ️`;
     } else if (zone === 'madeira') {
       respnovos += ` da #Madeira ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` da #Madeira ${iconsMap.get(icon)}⚠️ℹ️`;
     }
-    resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
-    
+
     // Send message to Twitter
     if (clientTwitter && resptwitter !== '') {
       clientTwitter.post('statuses/update', { status: resptwitter });
