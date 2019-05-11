@@ -39,7 +39,7 @@ const getByDate = async (date) => {
  * @param {Client} client
  */
 const getEarthquakes = async (client) => {
-  const yesterday = moment().subtract(1, 'days');
+  const yesterday = moment().subtract(1, 'days').format('L');
 
   const events = [];
   const eventsSensed = [];
