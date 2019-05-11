@@ -57,6 +57,13 @@ class Jobs {
     rule.second = 30;
 
     schedule.scheduleJob(rule, () => Earthquakes.getEarthquakes(this.client));
+
+
+    const ruleCurrent = new schedule.RecurrenceRule();
+
+    ruleCurrent.minute = new schedule.Range(0, 59, 10);
+
+    schedule.scheduleJob(ruleCurrent, () => Earthquakes.getLastEarthquakes(this.client));
   }
 }
 
