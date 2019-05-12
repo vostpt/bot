@@ -176,11 +176,14 @@ const getWarningsZones = (warningsZone, zone, client) => {
 
     // Send message to Twitter
     if (clientTwitter && resptwitter !== '') {
-      if (level === 'Amarelo') {
+
+      // Review the code to send GIF
+      /*if (level === 'Amarelo') {
         // Load your image
-        const data = fs.readFileSync('/images/VOSTPT_YellowWarning.png');
+        const data = fs.readFileSync('../images/VOSTPT_YellowWarning.png');
         // Make post request on media endpoint. Pass file data as media parameter
         clientTwitter.post('media/upload', { media: data }, (error, media, response) => {
+          console.log(error);
           if (!error && response !== '') {
             // Lets tweet it
             const status = {
@@ -192,7 +195,8 @@ const getWarningsZones = (warningsZone, zone, client) => {
         });
       } else {
         clientTwitter.post('statuses/update', { status: resptwitter });
-      }
+      }*/
+      clientTwitter.post('statuses/update', { status: resptwitter });
     }
   });
 
