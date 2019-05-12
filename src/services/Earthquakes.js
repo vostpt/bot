@@ -37,7 +37,7 @@ const getRealTime = async (current) => {
   try {
     const earthquakes = await getAll();
 
-    return earthquakes.filter(({ time }) => ((current - new Date(time).getTime())/1000) <= 600);
+    return earthquakes.filter(({ time }) => ((current - new Date(time).getTime()) / 1000) <= 600);
   } catch (e) {
     throw e;
   }
@@ -120,7 +120,6 @@ const getLastEarthquakes = async (client) => {
       lon,
       obsRegion,
     } = earthquake;
-    
     // Format time (hh:mm)
     const formattedTime = moment(time).format('LT');
 
@@ -128,9 +127,7 @@ const getLastEarthquakes = async (client) => {
     if (sensed) {
       // Add to list of sensed earthquake
       eventsSensed.push(`${formattedTime}h - M${magType} **${magnitud}** em ${obsRegion} a ${depth}Km prof. **Sentido em ${local} com Int. ${degree}** ${shakemapref} // ${lat},${lon}`);
-    } else {
-      // Add to list of non-sensed earthquakes list
-      if(magnitud >= 3)
+    } else if (magnitud >= 3) {
       events.push(`${formattedTime}h - M${magType} **${magnitud}** em ${obsRegion} a ${depth}Km prof. // ${lat},${lon}`);
     }
   });
