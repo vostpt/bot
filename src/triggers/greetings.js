@@ -9,6 +9,7 @@ const PERSONAL_MESSAGES = {
   6984: 'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:',
   8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)',
   1905: 'ora aqui está um chá fresquinho bem quentinho. Se quiseres uma farripa de leite é só dizer.',
+  5652: 'sei que não bebes café, por isso toma lá um chá e não digas que vais daqui :tea:',
 };
 
 module.exports = {
