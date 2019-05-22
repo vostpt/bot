@@ -1,5 +1,7 @@
 # VOSTPT Discord bot
 
+[![Build Status](https://travis-ci.com/vostpt/bot.svg?branch=master)](https://travis-ci.com/vostpt/bot)
+
 # Installation
 Before anything else, install the dependencies:
 ```sh

@@ -6,6 +6,7 @@
  */
 
 const moment = require('moment');
+const fs = require('fs');
 const { WarningsApi } = require('../api');
 const { clientTwitter } = require('./Twitter');
 const { channels } = require('../../config/bot');
@@ -106,14 +107,21 @@ const getWarningsZones = (warningsZone, zone, client) => {
       respnovos += `#Aviso${level} devido a `;
       respnovos += `#${weatherType} entre as `;
       respnovos += `${inicio} e as `;
-      respnovos += `${fim} para os distritos de `;
-
+      if (places.length === 1) {
+        respnovos += `${fim} para o distrito de `;
+      } else if (places.length > 1) {
+        respnovos += `${fim} para os distritos de `;
+      }
       // Create message to Twitter
       resptwitter += `ℹ️⚠️${iconsMap.get(icon)} `;
       resptwitter += `#Aviso${level} devido a `;
       resptwitter += `#${weatherType} entre as `;
       resptwitter += `${inicio} e as `;
-      resptwitter += `${fim} para os distritos de `;
+      if (places.length === 1) {
+        resptwitter += `${fim} para o distrito de `;
+      } else if (places.length > 1) {
+        resptwitter += `${fim} para os distritos de `;
+      }
     } else if (['madeira', 'acores'].includes(zone)) {
       respnovos += `:information_source: :warning: ${icon} `;
       respnovos += `#Aviso${level} devido a `;
@@ -132,8 +140,18 @@ const getWarningsZones = (warningsZone, zone, client) => {
     // Add districts included in warning to both Discord and Twitter message
     places.forEach(({ local }) => {
       if (primeiro === 0) {
-        respnovos += `#${local}`;
-        resptwitter += `#${local}`;
+        if (['madeira', 'acores'].includes(zone)) {
+          if (places.length === 1 || places.length > 2) {
+            respnovos += `o #${local}`;
+            resptwitter += `o #${local}`;
+          } else if (places.length === 2) {
+            respnovos += `os #${local}`;
+            resptwitter += `os #${local}`;
+          }
+        } else {
+          respnovos += `#${local}`;
+          resptwitter += `#${local}`;
+        }
       } else if (places.length - 1 === primeiro) {
         respnovos += `, e #${local}`;
         resptwitter += `, e #${local}`;
@@ -147,16 +165,34 @@ const getWarningsZones = (warningsZone, zone, client) => {
     // Add final emojis
     if (zone === 'continente') {
       respnovos += ` ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
     } else if (zone === 'acores') {
       respnovos += ` dos #Açores ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` dos #Açores ${iconsMap.get(icon)}⚠️ℹ️`;
     } else if (zone === 'madeira') {
       respnovos += ` da #Madeira ${icon} :warning: :information_source:\n\n`;
+      resptwitter += ` da #Madeira ${iconsMap.get(icon)}⚠️ℹ️`;
     }
-    resptwitter += ` ${iconsMap.get(icon)}⚠️ℹ️`;
 
     // Send message to Twitter
     if (clientTwitter && resptwitter !== '') {
-      clientTwitter.post('statuses/update', { status: resptwitter });
+      if (level === 'Amarelo') {
+        // Load your image
+        const data = fs.readFileSync('/images/VOSTPT_YellowWarning.png');
+        // Make post request on media endpoint. Pass file data as media parameter
+        clientTwitter.post('media/upload', { media: data }, (error, media, response) => {
+          if (!error && response !== '') {
+            // Lets tweet it
+            const status = {
+              status: resptwitter,
+              media_ids: media.media_id_string, // Pass the media id string
+            };
+            clientTwitter.post('statuses/update', status);
+          }
+        });
+      } else {
+        clientTwitter.post('statuses/update', { status: resptwitter });
+      }
     }
   });
 
