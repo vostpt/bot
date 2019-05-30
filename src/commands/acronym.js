@@ -17,7 +17,7 @@ module.exports = {
   */
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      message.reply(`*Give me more data* para eu poder trabalhar!\n${this.usage}`);
+      message.reply(`Preciso de mais dados para poder trabalhar!\n${this.usage}`);
 
       return;
     }
