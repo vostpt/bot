@@ -1,4 +1,4 @@
-const { AcronymsApi } = require('../api');
+const { Acronyms } = require('../services');
 
 module.exports = {
   name: 'acronimo',
@@ -17,22 +17,25 @@ module.exports = {
   */
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      try {
-        message.reply(`*Give me more data* para eu poder trabalhar!\n${this.usage}`);
-      } catch (e) {
-        //
-      }
+      message.reply(`Preciso de mais dados para poder trabalhar!\n${this.usage}`);
 
       return;
     }
 
-    const [acronym] = args;
-    try {
-      const { data = {} } = await AcronymsApi.get(acronym);
+    const [requestedAcronym] = args;
+    const { data: acronyms = [] } = await Acronyms.getExactAcronym(requestedAcronym);
+    const [acronym] = acronyms;
 
-      message.channel.send(`${data.acronym} - ${data.description}`);
-    } catch (e) {
-      message.reply('Esse acrónimo não consta na base de dados!');
+    if (!acronym) {
+      message.channel.send('Não reconheço esse acrónimo');
+      return;
     }
+
+    const {
+      initials,
+      meaning,
+    } = acronym.attributes;
+
+    message.channel.send(`${initials} - ${meaning}`);
   },
 };

@@ -1,10 +1,6 @@
 const api = require('./api');
 
-const get = (acronym) => {
-  const baseURl = 'https://vost.mariosantos.net/api';
-
-  return api.get(`${baseURl}/acronym/${acronym.toLowercase()}.php`);
-};
+const get = acronym => api.get(`https://api.vost.pt/v1/acronyms/?search=${acronym.toLowerCase()}&exact=1`);
 
 module.exports = {
   get,
