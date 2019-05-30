@@ -1,4 +1,4 @@
-const api = require('axios');
+const api = require('./api');
 
 const get = (acronym) => {
   const baseURl = 'https://vost.mariosantos.net/api';
