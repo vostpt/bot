@@ -1,3 +1,4 @@
+const api = require('./api');
 const FireApi = require('./Fires');
 const ProcivApi = require('./Prociv');
 const WarningsApi = require('./Warnings');
@@ -7,6 +8,7 @@ const WindApi = require('./Wind');
 const WeatherApi = require('./Weather');
 
 module.exports = {
+  api,
   FireApi,
   ProcivApi,
   WarningsApi,
