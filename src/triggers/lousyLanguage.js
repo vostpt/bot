@@ -1,6 +1,13 @@
 module.exports = {
   name: 'lousy language',
   description: 'Avoid lousy language',
+
+   /**
+  * Send to Discord a message when someone uses lousy language in the server
+  *
+  * @async
+  * @param {Message} message
+  */
   async execute(message) {
     const messageContent = message.content.toLowerCase();
 

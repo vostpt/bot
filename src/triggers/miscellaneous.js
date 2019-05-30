@@ -22,6 +22,13 @@ const replies = [
 module.exports = {
   name: 'Miscellaneous',
   description: 'Miscellaneous things',
+
+  /**
+  * Send to Discord a custom message according to the trigger or the content of the message
+  *
+  * @async
+  * @param {Message} message
+  */
   async execute(message) {
     const messageContent = message.content.toLowerCase();
 

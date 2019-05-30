@@ -15,6 +15,13 @@ const PERSONAL_MESSAGES = {
 module.exports = {
   name: 'greetings',
   description: 'Greeting people',
+
+  /**
+  * Send to Discord a greeting message according to time and/or user (if user has a defined custom message in PERSONAL_MESSAGES)
+  *
+  * @async
+  * @param {Message} message
+  */
   async execute(message) {
     const messageContent = message.content.toLowerCase();
     const hour = parseInt(moment(message.createdTimestamp).format('H'), 10);
