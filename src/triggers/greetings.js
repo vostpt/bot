@@ -17,7 +17,8 @@ module.exports = {
   description: 'Greeting people',
 
   /**
-  * Send to Discord a greeting message according to time and/or user (if user has a defined custom message in PERSONAL_MESSAGES)
+  * Send to Discord a greeting message according to time and/or user,
+  * (if user has a defined custom message in PERSONAL_MESSAGES)
   *
   * @async
   * @param {Message} message
