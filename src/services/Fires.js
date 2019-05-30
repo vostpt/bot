@@ -25,7 +25,6 @@ const getByDistrict = async (district) => {
   return fires;
 };
 
-
 /**
  * Get important fires' list
  *
