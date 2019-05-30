@@ -7,7 +7,7 @@ const defaultOptions = {
 };
 
 const api = {
-  get(url, customOptions) {
+  get(url, customOptions = {}) {
     const options = { ...defaultOptions, ...customOptions };
 
     return fetch(url, options).then(data => data.json()).then(data => ({ data }));
