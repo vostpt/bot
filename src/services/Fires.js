@@ -26,6 +26,18 @@ const getByDistrict = async (district) => {
 };
 
 /**
+ * Get important fires' list
+ *
+ * @param {Client} client
+ */
+
+const getImportantForestFires = async () => {
+  const { data: fires = [] } = await FireApi.getImportantIF();
+
+  return fires;
+};
+
+/**
  * Get fire list
  *
  * @param {Client} client
@@ -136,5 +148,6 @@ const getMap = () => 'http://www.ipma.pt/resources.www/transf/clientes/11000.anp
 module.exports = {
   getByDistrict,
   getForestFires,
+  getImportantForestFires,
   getMap,
 };
