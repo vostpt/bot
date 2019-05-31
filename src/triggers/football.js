@@ -1,6 +1,13 @@
 module.exports = {
   name: 'football',
   description: 'Football related replies',
+
+  /**
+  * Send to Discord a custom message according to football club
+  *
+  * @async
+  * @param {Message} message
+  */
   async execute(message) {
     const messageContent = message.content.toLowerCase();
 

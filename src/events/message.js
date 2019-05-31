@@ -6,6 +6,13 @@ moment.locale(locale);
 
 const prefixHelp = '?';
 
+/**
+* Receives a message from Discord, and execute trigger(s) included in it
+*
+* @async
+* @param {Client} client
+* @param {Message} msg
+*/
 const message = async (client, msg) => {
   if (msg.author.bot) {
     return;
