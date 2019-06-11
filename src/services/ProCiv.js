@@ -28,6 +28,10 @@ const getAll = async () => {
 const getById = async (requestedId) => {
   const events = await getAll();
 
+  if (requestedId.startsWith(((new Date).getFullYear()).toString()) && requestedId.length >= 13) {
+  	requestedId = requestedId.slice(4);
+  }
+
   return events.filter(({ id }) => id === requestedId);
 };
 
