@@ -26,9 +26,15 @@ const getAll = async () => {
  * @returns {Array}
  */
 const getById = async (requestedId) => {
+  const year = (new Date()).getFullYear().toString();
+
   const events = await getAll();
 
-  return events.filter(({ id }) => id === requestedId);
+  const reqIdFormatted = requestedId.startsWith(year) && requestedId.length >= 13
+    ? requestedId.slice(4)
+    : requestedId;
+
+  return events.filter(({ id }) => id === reqIdFormatted);
 };
 
 /**
