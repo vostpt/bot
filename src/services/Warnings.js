@@ -6,7 +6,6 @@
  */
 
 const moment = require('moment');
-const fs = require('fs');
 const { WarningsApi } = require('../api');
 const { clientTwitter } = require('./Twitter');
 const { channels } = require('../../config/bot');
@@ -176,23 +175,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
 
     // Send message to Twitter
     if (clientTwitter && resptwitter !== '') {
-      if (level === 'Amarelo') {
-        // Load your image
-        const data = fs.readFileSync('/images/VOSTPT_YellowWarning.png');
-        // Make post request on media endpoint. Pass file data as media parameter
-        clientTwitter.post('media/upload', { media: data }, (error, media, response) => {
-          if (!error && response !== '') {
-            // Lets tweet it
-            const status = {
-              status: resptwitter,
-              media_ids: media.media_id_string, // Pass the media id string
-            };
-            clientTwitter.post('statuses/update', status);
-          }
-        });
-      } else {
-        clientTwitter.post('statuses/update', { status: resptwitter });
-      }
+      clientTwitter.post('statuses/update', { status: resptwitter });
     }
   });
 
