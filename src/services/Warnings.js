@@ -6,7 +6,6 @@
  */
 
 const moment = require('moment');
-//const fs = require('fs');
 const { WarningsApi } = require('../api');
 const { clientTwitter } = require('./Twitter');
 const { channels } = require('../../config/bot');
