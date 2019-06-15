@@ -4,7 +4,7 @@
   "description": "VOST PT bot",
   "main": "./app.js",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
     "libsodium": "^0.7.4",
     "moment": "^2.24.0",
@@ -13,15 +13,9 @@
     "twit": "^2.2.11"
   },
   "devDependencies": {
-    "@discordjs/uws": "^10.149.0",
-    "bufferutil": "^4.0.1",
-    "erlpack": "github:discordapp/erlpack",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.17.3",
-    "libsodium-wrappers": "^0.7.4",
-    "node-opus": "^0.2.9",
-    "opusscript": "0.0.6"
+    "eslint-plugin-import": "^2.17.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
@@ -30,9 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:vostpt/bot.git"
+    "url": "git+ssh://git@github.com/vostpt/bot.git"
   },
   "author": "VOSTPT",
   "license": "ISC",
-  "homepage": "https://github.com/vostpt/bot/"
+  "homepage": "https://github.com/vostpt/bot/",
+  "bugs": {
+    "url": "https://github.com/vostpt/bot/issues"
+  }
 }
