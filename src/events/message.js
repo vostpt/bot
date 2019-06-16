@@ -31,7 +31,9 @@ const message = async (client, msg) => {
     if (command === 'commands') {
       const commandUsage = client.commands.map(({ usage }) => usage);
 
-      msg.channel.send(`***Comandos:***\n${commandUsage.join('')}`);
+      msg.author.send(`***Comandos:***\n${commandUsage.join('')}`);
+
+      msg.reply('os comandos foram enviados por DM');
     }
   }
 
