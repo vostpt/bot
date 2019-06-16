@@ -1,4 +1,5 @@
 const moment = require('moment');
+const { removeAccent } = require('../helpers');
 
 const PERSONAL_MESSAGES = {
   1318: 'aqui tens o teu chá verde :tea:',
@@ -12,6 +13,27 @@ const PERSONAL_MESSAGES = {
   5652: 'sei que não bebes café, por isso toma lá um chá e não digas que vais daqui :tea:',
 };
 
+const GREETINGS_BOM_DIA = [
+  'bomdia',
+  'buenosdias',
+  'goodmorning',
+
+];
+
+const GREETINGS_BOA_TARDE = [
+  'boatarde',
+  'buenastardes',
+  'goodafternoon',
+
+];
+
+const GREETINGS_BOA_NOITE = [
+  'boanoite',
+  'buenasnoches',
+  'goodnight',
+
+];
+
 module.exports = {
   name: 'greetings',
   description: 'Greeting people',
@@ -24,10 +46,10 @@ module.exports = {
   * @param {Message} message
   */
   async execute(message) {
-    const messageContent = message.content.toLowerCase();
+    const messageContent = removeAccent(message.content.toLowerCase().replace(/\s+/g, ''));
     const hour = parseInt(moment(message.createdTimestamp).format('H'), 10);
 
-    if (messageContent.includes('bom dia')) {
+    if (GREETINGS_BOM_DIA.some(greeting => messageContent.includes(greeting))) {
       try {
         if (hour >= 13 && hour < 20) {
           message.reply(' para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
@@ -53,7 +75,7 @@ module.exports = {
 
     // Good Afternoon routine
 
-    if (messageContent.includes('boa tarde')) {
+    if (GREETINGS_BOA_TARDE.some(greeting => messageContent.includes(greeting))) {
       try {
         if (hour < 12) {
           message.reply('Ainda não é boa tarde, digo eu que só tenho o cérebro do tamanho do universo.');
@@ -72,7 +94,7 @@ module.exports = {
     }
 
     // Good Night routine
-    if (messageContent.includes('boa noite')) {
+    if (GREETINGS_BOA_NOITE.some(greeting => messageContent.includes(greeting))) {
       try {
         if (hour >= 7 && hour <= 19) {
           message.reply('Boa noite? Estás em que fuso horário?');

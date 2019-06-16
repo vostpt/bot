@@ -21,7 +21,7 @@ const message = async (client, msg) => {
   const channelId = msg.channel.id;
 
   if (channelId === channels.TRIGGERS_CHANNEL_ID) {
-    client.triggers.forEach(({ execute }) => execute(msg));
+    client.triggers.forEach(({ execute }) => execute(msg, client));
   }
 
   if (msg.content.startsWith(prefixHelp)) {
@@ -31,7 +31,9 @@ const message = async (client, msg) => {
     if (command === 'commands') {
       const commandUsage = client.commands.map(({ usage }) => usage);
 
-      msg.channel.send(`***Comandos:***\n${commandUsage.join('')}`);
+      msg.author.send(`***Comandos:***\n${commandUsage.join('')}`);
+
+      msg.reply('os comandos foram enviados por DM');
     }
   }
 

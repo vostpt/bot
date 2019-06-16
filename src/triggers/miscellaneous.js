@@ -29,17 +29,13 @@ module.exports = {
   * @async
   * @param {Message} message
   */
-  async execute(message) {
+  async execute(message, client) {
     const messageContent = message.content.toLowerCase();
 
-    if (messageContent.includes('vostia')) {
+    if (message.isMentioned(client.user)) {
       const replytext = Math.floor(Math.random() * replies.length + 0);
 
-      try {
-        message.channel.send(replies[replytext]);
-      } catch (e) {
-        //
-      }
+      message.channel.send(replies[replytext]);
 
       return;
     }
