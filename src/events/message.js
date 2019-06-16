@@ -21,7 +21,7 @@ const message = async (client, msg) => {
   const channelId = msg.channel.id;
 
   if (channelId === channels.TRIGGERS_CHANNEL_ID) {
-    client.triggers.forEach(({ execute }) => execute(msg));
+    client.triggers.forEach(({ execute }) => execute(msg, client));
   }
 
   if (msg.content.startsWith(prefixHelp)) {
