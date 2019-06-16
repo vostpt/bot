@@ -7,7 +7,7 @@
 
 const moment = require('moment');
 const { WarningsApi } = require('../api');
-const { clientTwitter } = require('./Twitter');
+const { clientTwitter, uploadTweetPhoto } = require('./Twitter');
 const { channels } = require('../../config/bot');
 
 const iconsMap = new Map([
@@ -60,6 +60,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
 
     let primeiro = 0;
     resptwitter = '';
+    let fileName = '';
 
     // If warning type is 'Precipitação' (EN: rain), replace by a synonym
     const weatherType = type === 'Precipitação' ? 'Chuva' : type.replace(' ', '');
@@ -175,7 +176,10 @@ const getWarningsZones = (warningsZone, zone, client) => {
 
     // Send message to Twitter
     if (clientTwitter && resptwitter !== '') {
-      clientTwitter.post('statuses/update', { status: resptwitter });
+      fileName += 'VOSTPT_aviso_';
+      fileName += level;
+      fileName += '.png';
+      uploadTweetPhoto(resptwitter, fileName);
     }
   });
 
