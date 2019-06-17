@@ -15,22 +15,29 @@ const PERSONAL_MESSAGES = {
 
 const GREETINGS_BOM_DIA = [
   'bomdia',
+  'bonsdias',
   'buenosdias',
   'goodmorning',
+  'bonjour',
 
 ];
 
 const GREETINGS_BOA_TARDE = [
   'boatarde',
+  'boastardes',
   'buenastardes',
   'goodafternoon',
+  'bonapresmidi',
 
 ];
 
 const GREETINGS_BOA_NOITE = [
   'boanoite',
+  'boasnoites',
   'buenasnoches',
-  'goodnight',
+  'goodevening',
+  'bonsoir',
+  'bonnenuit',
 
 ];
 
@@ -52,18 +59,18 @@ module.exports = {
     if (GREETINGS_BOM_DIA.some(greeting => messageContent.includes(greeting))) {
       try {
         if (hour >= 13 && hour < 20) {
-          message.reply(' para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
+          message.reply('para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
         } else if (hour >= 20) {
-          message.reply(' para mim já é boa Noite! **Estás bem?**');
+          message.reply('para mim já é boa Noite! **Estás bem?**');
         } else if (hour < 6) {
-          message.reply(' já de pé a estas horas?!? **ALVORADA!!!!!!**');
+          message.reply('já de pé a estas horas?!? **ALVORADA!!!!!!**');
         } else {
           const personalMessage = PERSONAL_MESSAGES[message.author.discriminator];
 
           if (personalMessage) {
-            message.reply(` bom dia, ${personalMessage}`);
+            message.reply(`bom dia, ${personalMessage}`);
           } else {
-            message.reply(' bom dia, aqui tens o teu café :coffee:');
+            message.reply('bom dia, aqui tens o teu café :coffee:');
           }
 
           return;
@@ -101,7 +108,7 @@ module.exports = {
         } else if (hour >= 20 && hour <= 23) {
           message.reply('Boa noite, já jantaste?');
         } else {
-          message.reply(' por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:');
+          message.reply('por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:');
         }
       } catch (e) {
       //
