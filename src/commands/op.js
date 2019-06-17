@@ -38,8 +38,8 @@ module.exports = {
   ],
   usage: `
     **!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*
-    **!op if [#IFConcelho]** - *Mostra os dados relativos à ocorrência com esse #IF.*
-    **!op if [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
+    **!op if [termo_pesquisa]** - *Mostra os dados relativos às ocorrências num dado concelho/localidade (min. 3 caracteres).*
+    **!op if vento [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
     **!op status [Despacho|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
     **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.
     
