@@ -3,7 +3,7 @@ const {
   Winds,
   Prociv,
 } = require('../services');
-const { isSevere } = require('../helpers');
+const { isSevere, removeAccent } = require('../helpers');
 
 const DISTRICTS = {
   aveiro: '1',
@@ -110,7 +110,15 @@ module.exports = {
     if (requestedArgument === 'if') {
       const [, requestedCity] = args;
 
-      const data = await Prociv.getByCity(requestedCity);
+      const reqCityFormatted = removeAccent(requestedCity.toLowerCase()).replace('#if', '');
+
+      if (reqCityFormatted.length < 3) {
+        message.reply('o nº mínimo de caracteres para pesquisa são 3 (sem espaços). Tenta outra vez\n');
+
+        return;
+      }
+
+      const data = await Prociv.getByCityAndLocal(reqCityFormatted);
 
       if (data.length === 0) {
         message.channel.send(':fire: ***Sem Ocorrências***');
