@@ -65,7 +65,7 @@ module.exports = {
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - $IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
+        const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
         if (isSevere(mans, cars + helicopters)) {
           importantEvents.push(`__**${msg}**__`);

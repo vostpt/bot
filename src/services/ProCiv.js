@@ -1,3 +1,5 @@
+const { removeAccent } = require('../helpers');
+
 const { ProcivApi } = require('../api');
 
 const statuses = {
@@ -26,21 +28,33 @@ const getAll = async () => {
  * @returns {Array}
  */
 const getById = async (requestedId) => {
+  const year = (new Date()).getFullYear().toString();
+
   const events = await getAll();
 
-  return events.filter(({ id }) => id === requestedId);
+  const reqIdFormatted = requestedId.startsWith(year) && requestedId.length >= 13
+    ? requestedId.slice(4)
+    : requestedId;
+
+  return events.filter(({ id }) => id === reqIdFormatted);
 };
 
 /**
- * Get occurrences in a certain city
+ * Get occurrences in a certain city or local
  *
- * @param {String} cityId
+ * @param {String} searchId
  * @returns {Array}
  */
-const getByCity = async (cityId) => {
+const getByCityAndLocal = async (searchId) => {
   const events = await getAll();
 
-  return events.filter(({ l: city }) => `#IF${city}` === cityId);
+  return events.filter(({ l: city, s: local }) => {
+    if (removeAccent(`${city}`.toLowerCase()).includes(searchId) || removeAccent(`${local}`.toLowerCase()).includes(searchId)) {
+      return true;
+    }
+
+    return false;
+  });
 };
 
 /**
@@ -104,7 +118,7 @@ const filterByStatus = async (requestedStatus) => {
 module.exports = {
   getAll,
   getById,
-  getByCity,
+  getByCityAndLocal,
   filterByMinimumMans,
   filterByMinimumCars,
   filterByMinimumAerials,
