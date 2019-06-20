@@ -8,6 +8,7 @@ const { isSevere } = require('../helpers');
 module.exports = {
   name: 'all',
   args: true,
+  cooldown: 10,
   allowedArgs: [
     'human',
     'ground',

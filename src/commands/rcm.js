@@ -5,6 +5,7 @@ const allowedArgs = ['hoje'];
 module.exports = {
   name: 'rcm',
   args: true,
+  cooldown: 10,
   description: '!rcm',
   usage: `
     **!rcm hoje**

@@ -29,6 +29,7 @@ const DISTRICTS = {
 module.exports = {
   name: 'op',
   args: true,
+  cooldown: 10,
   allowedArgs: [
     'id',
     'if',

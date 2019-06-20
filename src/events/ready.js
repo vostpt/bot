@@ -7,7 +7,7 @@ const { locale } = require('../../config/locale');
 * @param {Client} client
 */
 const ready = (client) => {
-  new Jobs(client).startAll();
+  (new Jobs(client)).startAll();
 
   const currentDate = new Date().toLocaleString(locale);
 

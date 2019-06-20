@@ -4,6 +4,7 @@ const { Earthquakes } = require('../services');
 module.exports = {
   name: 'sismos',
   args: true,
+  cooldown: 10,
   usage: `
     **!sismos [data]** - Retorna informação acerca de sismos ocorridos na data específicada: Formato da data: dd/mm/aaaa
   `,

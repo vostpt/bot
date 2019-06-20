@@ -3,6 +3,7 @@ const { Warnings } = require('../services');
 module.exports = {
   name: 'alerts',
   args: false,
+  cooldown: 10,
   usage: `
     **!alerts**
   `,
