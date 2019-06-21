@@ -64,7 +64,9 @@ const message = async (client, msg) => {
 
       msg.author.send(`***Comandos:***\n${commandUsage.join('')}`);
 
-      msg.reply('os comandos foram enviados por DM');
+      msg.react('📧')
+        .then(() => msg.react('📥'))
+        .catch(() => msg.reply('os comandos foram enviados por DM'));
     }
   }
 
