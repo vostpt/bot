@@ -7,7 +7,10 @@ const channels = {
   TRIGGERS_CHANNEL_ID: process.env.TRIGGERS_CHANNEL_ID,
 };
 
+const { COOLDOWN: cooldown = 10 } = process.env;
+
 module.exports = {
   prefix,
   channels,
+  cooldown,
 };

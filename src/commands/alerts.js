@@ -1,9 +1,10 @@
 const { Warnings } = require('../services');
+const { cooldown } = require('../../config/bot');
 
 module.exports = {
   name: 'alerts',
   args: false,
-  cooldown: 10,
+  cooldown,
   usage: `
     **!alerts**
   `,

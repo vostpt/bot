@@ -86,7 +86,7 @@ const message = async (client, msg) => {
           if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000;
 
-            msg.author.reply(`Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
+            msg.author.send(`Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
 
             return;
           }

@@ -4,11 +4,12 @@ const {
   Fires,
 } = require('../services');
 const { isSevere } = require('../helpers');
+const { cooldown } = require('../../config/bot');
 
 module.exports = {
   name: 'all',
   args: true,
-  cooldown: 10,
+  cooldown,
   allowedArgs: [
     'human',
     'ground',

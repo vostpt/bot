@@ -1,9 +1,10 @@
 const { Acronyms } = require('../services');
+const { cooldown } = require('../../config/bot');
 
 module.exports = {
   name: 'acronimo',
   args: true,
-  cooldown: 10,
+  cooldown,
   usage: `
     **!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*
   `,
