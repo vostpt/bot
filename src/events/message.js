@@ -76,7 +76,27 @@ const message = async (client, msg) => {
 
     if (command) {
       try {
+        const now = Date.now();
+        const timestamps = client.cooldowns.get(commandName);
+        const cooldownAmount = (command.cooldown) * 1000;
+
+        if (timestamps.has(msg.author.id)) {
+          const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+
+          if (now < expirationTime) {
+            const timeLeft = (expirationTime - now) / 1000;
+
+            msg.author.reply(`Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
+
+            return;
+          }
+        }
+
         await command.execute(msg, args);
+
+        timestamps.set(msg.author.id, now);
+
+        setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
       } catch (e) {
         msg.reply('infelizmente não consigo satisfazer esse pedido');
       }
