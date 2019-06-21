@@ -8,6 +8,7 @@ const Events = require('./events');
 const client = new Discord.Client();
 const commands = new Discord.Collection();
 const triggers = new Discord.Collection();
+const cooldowns = new Discord.Collection();
 
 // Load commands
 fs.readdirSync('./src/commands')
@@ -16,6 +17,7 @@ fs.readdirSync('./src/commands')
     // eslint-disable-next-line import/no-dynamic-require
     const command = require(`./commands/${file}`);
     commands.set(command.name, command);
+    cooldowns.set(command.name, new Discord.Collection());
   });
 
 // Load triggers
@@ -29,6 +31,7 @@ fs.readdirSync('./src/triggers')
 
 client.commands = commands;
 client.triggers = triggers;
+client.cooldowns = cooldowns;
 
 client.on('ready', () => Events.ready(client));
 client.on('message', message => Events.message(client, message));

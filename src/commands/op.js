@@ -4,6 +4,7 @@ const {
   Prociv,
 } = require('../services');
 const { isSevere, removeAccent } = require('../helpers');
+const { cooldown } = require('../../config/bot');
 
 const DISTRICTS = {
   aveiro: '1',
@@ -29,6 +30,7 @@ const DISTRICTS = {
 module.exports = {
   name: 'op',
   args: true,
+  cooldown,
   allowedArgs: [
     'id',
     'if',

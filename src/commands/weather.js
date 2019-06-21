@@ -1,10 +1,12 @@
 const { Weather } = require('../services');
+const { cooldown } = require('../../config/bot');
 
 const rowsPerMessage = 15;
 
 module.exports = {
   name: 'weather',
   args: true,
+  cooldown,
   description: '',
   usage: `
     **!weather** - *Mostra a meteorologia do dia atual.*

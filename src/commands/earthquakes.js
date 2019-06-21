@@ -1,9 +1,11 @@
 const moment = require('moment');
 const { Earthquakes } = require('../services');
+const { cooldown } = require('../../config/bot');
 
 module.exports = {
   name: 'sismos',
   args: true,
+  cooldown,
   usage: `
     **!sismos [data]** - Retorna informação acerca de sismos ocorridos na data específicada: Formato da data: dd/mm/aaaa
   `,
