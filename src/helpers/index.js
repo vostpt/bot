@@ -1,4 +1,17 @@
-const isSevere = (mans, vehicles) => mans > 20 || vehicles > 5;
+const moment = require('moment');
+
+const OCCURENCE_DATE_FORMAT = 'DD/MM HH:mm';
+
+const isSevere = (occurrence) => {
+  const {
+    d: date,
+    o: mans,
+  } = occurrence;
+
+  const formattedBegin = moment(date, OCCURENCE_DATE_FORMAT).subtract(1, 'hours');
+
+  return ((formattedBegin.add(1, 'hours')).isSameOrBefore(moment()) && mans >= 50);
+};
 
 const removeAccent = (messageContent) => {
   const strAccents = messageContent.split('');

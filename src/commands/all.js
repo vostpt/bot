@@ -69,7 +69,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
@@ -95,14 +95,11 @@ module.exports = {
           id,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
         } = occurrence;
 
         const msg = `#IF${city},${local} - https://fogos.pt/fogo/2019${id}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
@@ -135,7 +132,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
@@ -168,7 +165,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
@@ -201,7 +198,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
