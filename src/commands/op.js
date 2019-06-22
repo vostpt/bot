@@ -101,7 +101,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(date, mans)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
@@ -142,7 +142,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(date, mans)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
@@ -208,7 +208,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(date, mans)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
@@ -267,7 +267,7 @@ module.exports = {
 
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(mans, cars + helicopters)) {
+        if (isSevere(date, mans)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
