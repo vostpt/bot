@@ -10,10 +10,7 @@ const isSevere = (occurrence) => {
 
   const formattedBegin = moment(date, OCCURENCE_DATE_FORMAT).subtract(1, 'hours');
 
-  if ((formattedBegin.add(1, 'hours')).isSameOrBefore(moment()) && mans >= 50) {
-    return true;
-  }
-  return false;
+  return ((formattedBegin.add(1, 'hours')).isSameOrBefore(moment()) && mans >= 50);
 };
 
 const removeAccent = (messageContent) => {
