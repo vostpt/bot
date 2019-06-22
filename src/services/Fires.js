@@ -69,7 +69,7 @@ const getForestFires = async (client) => {
       case EVENT_TYPES.GENERAL: {
         const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter:${status}`;
 
-        if (isSevere(date, mans)) {
+        if (isSevere(fire)) {
           importantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
