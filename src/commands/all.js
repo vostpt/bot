@@ -93,11 +93,10 @@ module.exports = {
       occurrences.forEach((occurrence) => {
         const {
           id,
+          d: date,
           l: city,
           s: local,
           o: mans,
-          t: cars,
-          a: helicopters,
         } = occurrence;
 
         const msg = `#IF${city},${local} - https://fogos.pt/fogo/2019${id}`;
