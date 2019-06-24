@@ -1,5 +1,6 @@
 const Twit = require('twit');
 const path = require('path');
+const fs = require('fs');
 
 const {
   TWITTER_CONSUMER_KEY,
@@ -16,34 +17,33 @@ const clientTwitter = new Twit({
 });
 
 /**
-* Post tweet with text and photo
+* Post tweet with text and photos
 *
 * @async
-* @param {String} tweetText
-* @param {String} photoFileName
+* @param {String} status
+* @param {Array<String>} photoFileNames
 */
-const uploadTweetPhoto = async (tweetText, photoFileName) => {
-  let folderPath = path.resolve('./src/images');
-  folderPath += path.sep;
-  const photoPath = folderPath.concat(photoFileName);
+const uploadTweetPhotos = async (status, photoFileNames) => {
+  const uploadedMedia = photoFileNames.map((filename) => {
+    const fileContent = fs.readFileSync(`${path.resolve('./src/images')}${path.sep}${filename}`, { encoding: 'base64' });
 
-  clientTwitter.postMediaChunked({ file_path: photoPath }, (errorChk, dataChk, responseChk) => {
-    if (!errorChk && responseChk !== '') {
-      const mediaIdStr = dataChk.media_id_string;
-      const metaParams = { media_id: mediaIdStr };
+    return clientTwitter.post('media/upload', { media_data: fileContent });
+  });
 
-      clientTwitter.post('media/metadata/create', metaParams, (error, data, response) => {
-        if (!error && response !== '') {
-          const params = { status: tweetText, media_ids: [mediaIdStr] };
+  Promise.all(uploadedMedia).then((results) => {
+    const mediaIds = results.map(({ data }) => {
+      const { media_id_string: mediaId } = data;
 
-          clientTwitter.post('statuses/update', params);
-        }
-      });
-    }
+      clientTwitter.post('media/metadata/create', { media_id: mediaId });
+
+      return mediaId;
+    });
+
+    clientTwitter.post('statuses/update', { status, media_ids: mediaIds });
   });
 };
 
 module.exports = {
   clientTwitter,
-  uploadTweetPhoto,
+  uploadTweetPhotos,
 };
