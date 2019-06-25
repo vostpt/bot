@@ -45,8 +45,6 @@ const message = async (client, msg) => {
 
   if (msg.isMemberMentioned(client.user)) {
     msg.channel.send(getRandomMessage());
-
-    return;
   }
 
   const { id: channelId } = msg.channel;
