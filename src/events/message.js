@@ -23,7 +23,7 @@ const replies = [
   'Se calhar poupava imenso trabalho a toda a gente e apagava-me a mim mesmo',
   'Tia isto, Tia aquilo. Tenho a capacidade de guiar um satélite até Marte, e pedem-me café',
   ':musical_note: The servers are alive with the sound of coding :musical_note:',
-  'Se o código é amigo cá da malta! Tem que pullar, tem que pullar até ao fim!',
+  'Se o código é amigo cá da malta! Tem que compilar, tem que compilar até ao fim!',
 ];
 
 /**
