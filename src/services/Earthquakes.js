@@ -4,7 +4,6 @@
  */
 const moment = require('moment');
 const { EarthquakesApi } = require('../api');
-const { channels } = require('../../config/bot');
 
 /**
  * Returns array of all registered earthquakes
@@ -38,12 +37,10 @@ const getByDate = async (date) => {
  *
  * @param {Client} client
  */
-const getEarthquakes = async (client) => {
-  const yesterday = moment().subtract(1, 'days').format('L');
-
+const getEarthquakes = async (day = moment().subtract(1, 'days').format('L')) => {
   const events = [];
   const eventsSensed = [];
-  const earthquakes = await getByDate(yesterday);
+  const earthquakes = await getByDate(day);
 
   earthquakes.forEach((earthquake) => {
     const {
@@ -73,20 +70,10 @@ const getEarthquakes = async (client) => {
     }
   });
 
-
-  try {
-    // Send list of sensed earthquakes to Discord
-    if (eventsSensed.length > 0) {
-      client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismos sentido dia ${yesterday.format('L')}:***\n${eventsSensed.join('\n')}`);
-    }
-
-    // Send list of non-sensed earthquakes to Discord
-    if (events.length > 0) {
-      client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismos de ${yesterday.format('L')}:***\n${events.join('\n')}`);
-    }
-  } catch (e) {
-    //
-  }
+  return {
+    events,
+    eventsSensed,
+  };
 };
 
 module.exports = {
