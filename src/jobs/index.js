@@ -44,7 +44,7 @@ class Jobs {
     this.warnings();
     this.fireRisk();
 
-    this.resetSentNotifications();
+    Jobs.resetSentNotifications();
   }
 
   /**
@@ -107,7 +107,7 @@ class Jobs {
         const { events, eventsSensed } = Earthquakes.getEarthquakes(yesterday);
 
         if (eventsSensed.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) sentid(o) dia ${yesterday}:***\n${eventsSensed.join('\n')}`);
+          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) sentido(s) dia ${yesterday}:***\n${eventsSensed.join('\n')}`);
         }
 
         if (events.length > 0) {
@@ -127,8 +127,7 @@ class Jobs {
   noticeableEarthquakes({ threshold } = {}) {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(1, 56, 5);
-    rule.second = 30;
+    rule.minute = new schedule.Range(0, 59, 1); // every minute
 
     try {
       schedule.scheduleJob(rule, async () => {
