@@ -74,18 +74,14 @@ const getEarthquakes = async (client) => {
   });
 
 
-  try {
-    // Send list of sensed earthquakes to Discord
-    if (eventsSensed.length > 0) {
-      client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismos sentido dia ${yesterday.format('L')}:***\n${eventsSensed.join('\n')}`);
-    }
+  // Send list of sensed earthquakes to Discord
+  if (eventsSensed.length > 0) {
+    client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismos sentido dia ${yesterday}:***\n${eventsSensed.join('\n')}`);
+  }
 
-    // Send list of non-sensed earthquakes to Discord
-    if (events.length > 0) {
-      client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismos de ${yesterday.format('L')}:***\n${events.join('\n')}`);
-    }
-  } catch (e) {
-    //
+  // Send list of non-sensed earthquakes to Discord
+  if (events.length > 0) {
+    client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismos de ${yesterday}:***\n${events.join('\n')}`);
   }
 };
 

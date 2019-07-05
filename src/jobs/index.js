@@ -56,7 +56,11 @@ class Jobs {
     rule.minute = 0;
     rule.second = 30;
 
-    schedule.scheduleJob(rule, () => Earthquakes.getEarthquakes(this.client));
+    try {
+      schedule.scheduleJob(rule, () => Earthquakes.getEarthquakes(this.client));
+    } catch (e) {
+      //
+    }
   }
 }
 
