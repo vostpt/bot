@@ -2,6 +2,7 @@ const schedule = require('node-schedule');
 const moment = require('moment');
 const { Fires, Earthquakes, Warnings } = require('../services');
 const { channels } = require('../../config/bot');
+const { clientTwitter } = require('../services/Twitter');
 
 /**
  * Check if the earthquake level above threshold
@@ -143,13 +144,19 @@ class Jobs {
           .filter(event => eventAboveThreshold(event, threshold));
 
         if (noticeableSensedEvents.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) sentido(s) dia ${today}:***\n${noticeableSensedEvents.join('\n')}`);
+          const message = `***Sismo(s) sentido(s) dia ${today}:***\n${noticeableSensedEvents.join('\n')}`;
+          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
           noticeableSensedEvents.forEach(event => sentEarthquakesNotifications.add(event));
+
+          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableSensedEvents.join('\n')}\n\nSentiste este sismo?⚠️ℹ️` });
         }
 
         if (noticeableEvents.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) de ${today}:***\n${noticeableEvents.join('\n')}`);
+          const message = `***Sismo(s) de ${today}:***\n${noticeableEvents.join('\n')}`;
+          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
           noticeableEvents.forEach(event => sentEarthquakesNotifications.add(event));
+
+          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n')}\n\nSentiste este sismo?⚠️ℹ️` });
         }
       });
     } catch (e) {
