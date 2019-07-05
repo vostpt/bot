@@ -23,12 +23,13 @@ const eventAboveThreshold = (event, threshold = 0) => {
  * In memory Set to track already sent notifications
  */
 const sentEarthquakesNotifications = new Set();
+
 /**
  * Check if notification has already been sent
  *
  * @param {String} event
  */
-const checkAlreadySent = event => !sentEarthquakesNotifications.has(event);
+const checkNotSentYet = event => !sentEarthquakesNotifications.has(event);
 
 class Jobs {
   constructor(client) {
@@ -136,11 +137,11 @@ class Jobs {
         const { events, eventsSensed } = await Earthquakes.getEarthquakes(today);
 
         const noticeableEvents = events
-          .filter(checkAlreadySent)
+          .filter(checkNotSentYet)
           .filter(event => eventAboveThreshold(event, threshold));
 
         const noticeableSensedEvents = eventsSensed
-          .filter(checkAlreadySent)
+          .filter(checkNotSentYet)
           .filter(event => eventAboveThreshold(event, threshold));
 
         if (noticeableSensedEvents.length > 0) {
