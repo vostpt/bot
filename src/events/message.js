@@ -38,7 +38,7 @@ const getRandomMessage = () => replies[Math.floor(Math.random() * replies.length
 * @param {Client} client
 * @param {Message} msg
 */
-const message = async (client, msg) => {
+const message = async (client, dbInstance, msg) => {
   if (msg.author.bot) {
     return;
   }

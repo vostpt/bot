@@ -1,3 +1,4 @@
+const Database = require('../database')
 const Jobs = require('../jobs');
 const { locale } = require('../../config/locale');
 
@@ -6,7 +7,7 @@ const { locale } = require('../../config/locale');
 *
 * @param {Client} client
 */
-const ready = (client) => {
+const ready = (client, dbInstance) => {
   (new Jobs(client)).startAll();
 
   const currentDate = new Date().toLocaleString(locale);
