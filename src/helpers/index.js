@@ -8,7 +8,7 @@ const isSevere = (occurrence) => {
     o: mans,
   } = occurrence;
 
-  const formattedBegin = moment(date, OCCURENCE_DATE_FORMAT).subtract(1, 'hours');
+  const formattedBegin = moment(date, OCCURENCE_DATE_FORMAT);
 
   return ((formattedBegin.add(1, 'hours')).isSameOrBefore(moment()) && mans >= 50);
 };
