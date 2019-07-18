@@ -37,19 +37,21 @@ module.exports = {
     const importantEvents = [];
 
     function sendMessages() {
-      if (importantEvents.length === 0 && events.length === 0) {
-        message.channel.send(':fire: ***Sem Ocorrências***');
-
-        return;
-      }
-
       if (importantEvents.length > 0) {
-        message.channel.send(`:fire::fire: ***Ocorrências Importantes:***\n${importantEvents.join('\n')}`);
+        message.author.send(`:fire::fire: ***Ocorrências Importantes:***\n${importantEvents.join('\n')}`);
       }
 
       if (events.length > 0) {
-        message.channel.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
+        message.author.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
       }
+
+      if (importantEvents.length === 0 && events.length === 0) {
+        message.author.send(':fire: ***Sem Ocorrências***');
+      }
+
+      message.react('📧')
+        .then(() => message.react('📥'))
+        .catch(() => message.reply('os comandos foram enviados por DM'));
     }
 
     if (this.args && args.length === 0) {
