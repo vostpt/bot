@@ -2,12 +2,24 @@ const { removeAccent } = require('../helpers');
 
 const { ProcivApi } = require('../api');
 
-const statuses = {
-  despacho: '4',
-  curso: '5',
-  resolução: '7',
-  conclusão: '8',
-  vigilância: '9',
+const statusAbrevToId = {
+  despacho1alerta: 3,
+  despacho: 4,
+  curso: 5,
+  chegadato: 6,
+  resolucao: 7,
+  conclusao: 8,
+  vigilancia: 9,
+};
+
+const statusIdToDesc = {
+  3: 'Despacho de 1º alerta',
+  4: 'Despacho',
+  5: 'Em Curso',
+  6: 'Chegada ao TO',
+  7: 'Em Resolução',
+  8: 'Em Conclusão',
+  9: 'Vigilância',
 };
 
 /**
@@ -112,7 +124,19 @@ const filterByMinimumAerials = async (amountOfAerialsInvolved) => {
 const filterByStatus = async (requestedStatus) => {
   const events = await getAll();
 
-  return events.filter(({ ide: statusId }) => statusId === statuses[requestedStatus.toLowerCase()]);
+  return events.filter(({ ide: statusId }) => statusId === statusAbrevToId[requestedStatus]);
+};
+
+/**
+ * Get occurrences that have a given status Id
+ *
+ * @param {String} requestedStatusId
+ * @returns {Array}
+ */
+const filterByStatusId = async (requestedStatusId) => {
+  const events = await getAll();
+
+  return events.filter(({ ide: statusId }) => statusId === requestedStatusId);
 };
 
 module.exports = {
@@ -123,4 +147,7 @@ module.exports = {
   filterByMinimumCars,
   filterByMinimumAerials,
   filterByStatus,
+  filterByStatusId,
+  statusAbrevToId,
+  statusIdToDesc,
 };

@@ -42,7 +42,7 @@ module.exports = {
     **!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*
     **!op if [termo_pesquisa]** - *Mostra os dados relativos às ocorrências num dado concelho/localidade (min. 3 caracteres).*
     **!op if vento [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
-    **!op status [Despacho|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
+    **!op status [Despacho|Despacho1Alerta|ChegadaTO|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
     **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.
     
     Distritos reconhecíveis: ${Object.keys(DISTRICTS).join(', ')}*
@@ -183,13 +183,11 @@ module.exports = {
     if (requestedArgument === 'status') {
       const [, requestedStatus] = args;
 
-      const data = await Prociv.filterByStatus(requestedStatus);
+      const reqStatusFormatted = removeAccent(requestedStatus.toLowerCase());
+
+      const data = await Prociv.filterByStatus(reqStatusFormatted);
       if (data.length === 0) {
-        try {
-          message.channel.send(':fire: ***Sem Ocorrências***');
-        } catch (e) {
-          //
-        }
+        message.channel.send(':fire: ***Sem Ocorrências***');
 
         return;
       }
