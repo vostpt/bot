@@ -3,8 +3,8 @@ const { removeAccent } = require('../helpers');
 const { ProcivApi } = require('../api');
 
 const statusAbrevToId = {
-  despacho1alerta: 3,
-  despacho: 4,
+  despacho: 3,
+  despacho1alerta: 4,
   curso: 5,
   chegadato: 6,
   resolucao: 7,
@@ -13,8 +13,8 @@ const statusAbrevToId = {
 };
 
 const statusIdToDesc = {
-  3: 'Despacho de 1º alerta',
-  4: 'Despacho',
+  3: 'Despacho',
+  4: 'Despacho de 1º alerta',
   5: 'Em Curso',
   6: 'Chegada ao TO',
   7: 'Em Resolução',
