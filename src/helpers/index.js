@@ -1,5 +1,9 @@
 const moment = require('moment');
 
+moment.prototype.lastsLongerThan = function lastsLongerThan(amount, unit) {
+  return this.add(amount, unit).isSameOrBefore(moment());
+};
+
 const OCCURENCE_DATE_FORMAT = 'DD/MM HH:mm';
 
 const isSevere = (occurrence) => {
@@ -8,9 +12,9 @@ const isSevere = (occurrence) => {
     o: mans,
   } = occurrence;
 
-  const formattedBegin = moment(date, OCCURENCE_DATE_FORMAT);
+  const event = moment(date, OCCURENCE_DATE_FORMAT);
 
-  return ((formattedBegin.add(1, 'hours')).isSameOrBefore(moment()) && mans >= 50);
+  return (event.lastsLongerThan(1, 'hours') && mans >= 50);
 };
 
 const removeAccent = (messageContent) => {
