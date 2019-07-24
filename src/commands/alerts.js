@@ -1,8 +1,10 @@
 const { Warnings } = require('../services');
+const { cooldown } = require('../../config/bot');
 
 module.exports = {
   name: 'alerts',
   args: false,
+  cooldown,
   usage: `
     **!alerts**
   `,
@@ -17,15 +19,15 @@ module.exports = {
   async execute(message) {
     const events = [];
 
-    const warnings = await Warnings.getAll();
+    const { acores = [], madeira = [], continente = [] } = await Warnings.getAll();
 
-    if (warnings.length === 0) {
-      message.channel.send('***Sem Alertas***');
+    const allEvents = [
+      ...acores,
+      ...madeira,
+      ...continente,
+    ];
 
-      return;
-    }
-
-    warnings.forEach((item) => {
+    allEvents.forEach((item) => {
       const {
         local,
         alertas: alerts = [],
@@ -48,6 +50,10 @@ module.exports = {
       });
     });
 
-    message.channel.send(`***Alertas:***\n${events.join('\n')}`);
+    if (events.length > 0) {
+      message.channel.send(`***Alertas:***\n${events.join('\n')}`);
+    } else {
+      message.channel.send('***Sem Alertas***');
+    }
   },
 };

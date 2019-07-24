@@ -1,10 +1,12 @@
 const Fires = require('../services/Fires');
+const { cooldown } = require('../../config/bot');
 
 
 module.exports = {
   name: 'rcm',
   args: true,
   allowedArgs: ['hoje'],
+  cooldown,
   description: '!rcm',
   usage: `
     **!rcm hoje**

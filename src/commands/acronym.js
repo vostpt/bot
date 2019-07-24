@@ -1,8 +1,10 @@
-const { AcronymsApi } = require('../api');
+const { Acronyms } = require('../services');
+const { cooldown } = require('../../config/bot');
 
 module.exports = {
   name: 'acronimo',
   args: true,
+  cooldown,
   usage: `
     **!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*
   `,
@@ -17,7 +19,7 @@ module.exports = {
   */
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      message.reply(`*Give me more data* para eu poder trabalhar!\n${this.usage}`);
+      message.reply(`Preciso de mais dados para poder trabalhar!\n${this.usage}`);
 
       return;
     }

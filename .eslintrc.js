@@ -16,8 +16,8 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018
   },
-  "plugins": ["jest"]
-  // "rules": {
-  //   "prettier/prettier": "error",
-  // },
+  "plugins": ["jest"],
+  rules: {
+    "linebreak-style": "off"
+  },
 };

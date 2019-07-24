@@ -1,4 +1,5 @@
 const moment = require('moment');
+const { removeAccent } = require('../helpers');
 
 const PERSONAL_MESSAGES = {
   1318: 'aqui tens o teu chá verde :tea:',
@@ -8,30 +9,68 @@ const PERSONAL_MESSAGES = {
   2908: 'duplo curto, como gostas, certo? :coffee:',
   6984: 'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:',
   8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)',
+  1905: 'ora aqui está um chá fresquinho bem quentinho. Se quiseres uma farripa de leite é só dizer.',
+  5652: 'sei que não bebes café, por isso toma lá um chá e não digas que vais daqui :tea:',
 };
+
+const GREETINGS_BOM_DIA = [
+  'bomdia',
+  'bonsdias',
+  'buenosdias',
+  'goodmorning',
+  'bonjour',
+
+];
+
+const GREETINGS_BOA_TARDE = [
+  'boatarde',
+  'boastardes',
+  'buenastardes',
+  'goodafternoon',
+  'bonapresmidi',
+
+];
+
+const GREETINGS_BOA_NOITE = [
+  'boanoite',
+  'boasnoites',
+  'buenasnoches',
+  'goodevening',
+  'bonsoir',
+  'bonnenuit',
+
+];
 
 module.exports = {
   name: 'greetings',
   description: 'Greeting people',
+
+  /**
+  * Send to Discord a greeting message according to time and/or user,
+  * (if user has a defined custom message in PERSONAL_MESSAGES)
+  *
+  * @async
+  * @param {Message} message
+  */
   async execute(message) {
-    const messageContent = message.content.toLowerCase();
+    const messageContent = removeAccent(message.content.toLowerCase().replace(/\s+/g, ''));
     const hour = parseInt(moment(message.createdTimestamp).format('H'), 10);
 
-    if (messageContent.includes('bom dia')) {
+    if (GREETINGS_BOM_DIA.some(greeting => messageContent.includes(greeting))) {
       try {
         if (hour >= 13 && hour < 20) {
-          message.reply(' para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
+          message.reply('para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
         } else if (hour >= 20) {
-          message.reply(' para mim já é boa Noite! **Estás bem?**');
+          message.reply('para mim já é boa Noite! **Estás bem?**');
         } else if (hour < 6) {
-          message.reply(' já de pé a estas horas?!? **ALVORADA!!!!!!**');
+          message.reply('já de pé a estas horas?!? **ALVORADA!!!!!!**');
         } else {
           const personalMessage = PERSONAL_MESSAGES[message.author.discriminator];
 
           if (personalMessage) {
-            message.reply(` bom dia, ${personalMessage}`);
+            message.reply(`bom dia, ${personalMessage}`);
           } else {
-            message.reply(' bom dia, aqui tens o teu café :coffee:');
+            message.reply('bom dia, aqui tens o teu café :coffee:');
           }
 
           return;
@@ -43,7 +82,7 @@ module.exports = {
 
     // Good Afternoon routine
 
-    if (messageContent.includes('boa tarde')) {
+    if (GREETINGS_BOA_TARDE.some(greeting => messageContent.includes(greeting))) {
       try {
         if (hour < 12) {
           message.reply('Ainda não é boa tarde, digo eu que só tenho o cérebro do tamanho do universo.');
@@ -62,14 +101,14 @@ module.exports = {
     }
 
     // Good Night routine
-    if (messageContent.includes('boa noite')) {
+    if (GREETINGS_BOA_NOITE.some(greeting => messageContent.includes(greeting))) {
       try {
         if (hour >= 7 && hour <= 19) {
           message.reply('Boa noite? Estás em que fuso horário?');
         } else if (hour >= 20 && hour <= 23) {
           message.reply('Boa noite, já jantaste?');
         } else {
-          message.reply(' por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:');
+          message.reply('por aqui a estas horas? Deves ser developer, ou estamos activados e ninguém me disse :thinking:');
         }
       } catch (e) {
       //

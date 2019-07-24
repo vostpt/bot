@@ -1,11 +1,25 @@
+const { removeAccent } = require('../helpers');
+
 const { ProcivApi } = require('../api');
 
-const statuses = {
-  despacho: '4',
-  curso: '5',
-  resolução: '7',
-  conclusão: '8',
-  vigilância: '9',
+const statusAbrevToId = {
+  despacho: 3,
+  despacho1alerta: 4,
+  curso: 5,
+  chegadato: 6,
+  resolucao: 7,
+  conclusao: 8,
+  vigilancia: 9,
+};
+
+const statusIdToDesc = {
+  3: 'Despacho',
+  4: 'Despacho de 1º alerta',
+  5: 'Em Curso',
+  6: 'Chegada ao TO',
+  7: 'Em Resolução',
+  8: 'Em Conclusão',
+  9: 'Vigilância',
 };
 
 /**
@@ -26,21 +40,33 @@ const getAll = async () => {
  * @returns {Array}
  */
 const getById = async (requestedId) => {
+  const year = (new Date()).getFullYear().toString();
+
   const events = await getAll();
 
-  return events.filter(({ id }) => id === requestedId);
+  const reqIdFormatted = requestedId.startsWith(year) && requestedId.length >= 13
+    ? requestedId.slice(4)
+    : requestedId;
+
+  return events.filter(({ id }) => id === reqIdFormatted);
 };
 
 /**
- * Get occurrences in a certain city
+ * Get occurrences in a certain city or local
  *
- * @param {String} cityId
+ * @param {String} searchId
  * @returns {Array}
  */
-const getByCity = async (cityId) => {
+const getByCityAndLocal = async (searchId) => {
   const events = await getAll();
 
-  return events.filter(({ l: city }) => `#IF${city}` === cityId);
+  return events.filter(({ l: city, s: local }) => {
+    if (removeAccent(`${city}`.toLowerCase()).includes(searchId) || removeAccent(`${local}`.toLowerCase()).includes(searchId)) {
+      return true;
+    }
+
+    return false;
+  });
 };
 
 /**
@@ -98,15 +124,30 @@ const filterByMinimumAerials = async (amountOfAerialsInvolved) => {
 const filterByStatus = async (requestedStatus) => {
   const events = await getAll();
 
-  return events.filter(({ ide: statusId }) => statusId === statuses[requestedStatus.toLowerCase()]);
+  return events.filter(({ ide: statusId }) => statusId === statusAbrevToId[requestedStatus]);
+};
+
+/**
+ * Get occurrences that have a given status Id
+ *
+ * @param {String} requestedStatusId
+ * @returns {Array}
+ */
+const filterByStatusId = async (requestedStatusId) => {
+  const events = await getAll();
+
+  return events.filter(({ ide: statusId }) => statusId === requestedStatusId);
 };
 
 module.exports = {
   getAll,
   getById,
-  getByCity,
+  getByCityAndLocal,
   filterByMinimumMans,
   filterByMinimumCars,
   filterByMinimumAerials,
   filterByStatus,
+  filterByStatusId,
+  statusAbrevToId,
+  statusIdToDesc,
 };
