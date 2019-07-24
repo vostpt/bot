@@ -9,6 +9,13 @@ const {
   TWITTER_ACCESS_TOKEN_SECRET,
 } = process.env;
 
+console.log({
+  TWITTER_CONSUMER_KEY,
+  TWITTER_CONSUMER_SECRET,
+  TWITTER_ACCESS_TOKEN_KEY,
+  TWITTER_ACCESS_TOKEN_SECRET,
+});
+
 const clientTwitter = new Twit({
   consumer_key: TWITTER_CONSUMER_KEY,
   consumer_secret: TWITTER_CONSUMER_SECRET,
