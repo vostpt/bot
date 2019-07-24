@@ -9,6 +9,17 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/src/app.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest Tests",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+      "args": [
+          "-i"
+      ],
+      "envFile": "${workspaceRoot}/.env",
+      "sourceMaps": false
     }
   ]
 }

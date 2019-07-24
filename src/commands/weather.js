@@ -45,7 +45,7 @@ module.exports = {
 
     let chunk = 1;
     let count = 0;
-    let events = [  
+    let events = [
       '***Meteorologia***',
       `[${chunk}/${Math.ceil(data.length / rowsPerMessage)}]`,
     ];

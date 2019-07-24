@@ -110,6 +110,12 @@ module.exports = {
     if (requestedArgument === 'if') {
       const [, requestedCity] = args;
 
+      if (!requestedCity) {
+        message.reply(this.usage);
+
+        return;
+      }
+
       const reqCityFormatted = removeAccent(requestedCity.toLowerCase()).replace('#if', '');
 
       if (reqCityFormatted.length < 3) {
@@ -178,6 +184,11 @@ module.exports = {
 
     if (requestedArgument === 'status') {
       const [, requestedStatus] = args;
+
+      if (!requestedStatus) {
+        message.reply(this.usage);
+        return;
+      }
 
       const reqStatusFormatted = removeAccent(requestedStatus.toLowerCase());
 

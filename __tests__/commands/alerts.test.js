@@ -8,7 +8,7 @@ const client = new Discord.Client();
 
 describe('!alerts command', () => {
   test('it has no warnings', async () => {
-    WarningsService.getAll.mockResolvedValue([]);
+    WarningsService.getAll.mockResolvedValue({});
     await alertsCommand.execute(client.message);
 
     expect(client.message.channel.send).toHaveBeenCalledTimes(1);
@@ -16,12 +16,11 @@ describe('!alerts command', () => {
   });
 
   test('it has locals but no alerts to display', async () => {
-    WarningsService.getAll.mockResolvedValue([
-      {
-        local: 'local',
-        alerts: [],
-      },
-    ]);
+    WarningsService.getAll.mockResolvedValue({
+      madeira: [
+        { local: 'local', alertas: [] },
+      ],
+    });
 
     await alertsCommand.execute(client.message);
 
@@ -30,27 +29,29 @@ describe('!alerts command', () => {
   });
 
   test('it has locals and alerts to display', async () => {
-    WarningsService.getAll.mockResolvedValue([
-      {
-        local: 'local',
-        alertas: [
-          {
-            nivel: 'something',
-            tipo: 'Precipitação',
-            icon: 'something',
-            inicio: 'something',
-            fim: 'something',
-          },
-          {
-            nivel: 'something',
-            tipo: 'something',
-            icon: 'something',
-            inicio: 'something',
-            fim: 'something',
-          },
-        ],
-      },
-    ]);
+    WarningsService.getAll.mockResolvedValue({
+      continente: [
+        {
+          local: 'local',
+          alertas: [
+            {
+              nivel: 'something',
+              tipo: 'Precipitação',
+              icon: 'something',
+              inicio: 'something',
+              fim: 'something',
+            },
+            {
+              nivel: 'something',
+              tipo: 'something',
+              icon: 'something',
+              inicio: 'something',
+              fim: 'something',
+            },
+          ],
+        },
+      ],
+    });
 
     await alertsCommand.execute(client.message);
 

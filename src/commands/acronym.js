@@ -25,14 +25,14 @@ module.exports = {
     }
 
     const [acronym] = args;
-    const { data } = await AcronymsApi.get(acronym);
+    const result = await Acronyms.getExactAcronym(acronym);
 
-    if (!data) {
+    if (!result) {
       message.reply('Esse acrónimo não consta na base de dados!');
 
       return;
     }
 
-    message.channel.send(`${data.acronym} - ${data.description}`);
+    message.channel.send(`${result.acronym} - ${result.description}`);
   },
 };

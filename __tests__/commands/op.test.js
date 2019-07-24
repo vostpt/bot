@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const moment = require('moment');
 const FiresService = require('../../src/services/Fires');
 const WindsService = require('../../src/services/Winds');
 const ProCivService = require('../../src/services/ProCiv');
@@ -12,10 +13,12 @@ const client = new Discord.Client();
 
 const severeEvent = {
   o: 150,
+  d: moment().subtract(2, 'hours'),
 };
 
 const regularEvent = {
   o: 1,
+  d: moment().subtract(1, 'days'),
 };
 
 describe('!op command', () => {
@@ -85,7 +88,7 @@ describe('!op command', () => {
 
       describe('city id value is provided', () => {
         test('it returns no events', async () => {
-          ProCivService.getByCity.mockResolvedValue([]);
+          ProCivService.getByCityAndLocal.mockResolvedValue([]);
 
           await opCommand.execute(client.message, ['if', 'cityId']);
 
@@ -94,7 +97,7 @@ describe('!op command', () => {
         });
 
         test('it returns at least one severe event', async () => {
-          ProCivService.getByCity.mockResolvedValue([
+          ProCivService.getByCityAndLocal.mockResolvedValue([
             severeEvent,
           ]);
 
@@ -105,7 +108,7 @@ describe('!op command', () => {
         });
 
         test('it returns at least one regular event', async () => {
-          ProCivService.getByCity.mockResolvedValue([
+          ProCivService.getByCityAndLocal.mockResolvedValue([
             regularEvent,
           ]);
 
