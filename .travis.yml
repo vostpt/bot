@@ -8,3 +8,8 @@ cache:
     - node_modules
 
 sudo: false
+
+env:
+  - TWITTER_CONSUMER_KEY=''
+  - TWITTER_CONSUMER_SECRET=''
+  - TWITTER_ACCESS_TOKEN_KEY=''
