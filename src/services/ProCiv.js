@@ -61,7 +61,10 @@ const getByCityAndLocal = async (searchId) => {
   const events = await getAll();
 
   return events.filter(({ l: city, s: local }) => {
-    if (removeAccent(`${city}`.toLowerCase()).includes(searchId) || removeAccent(`${local}`.toLowerCase()).includes(searchId)) {
+    const foundCity = removeAccent(city.toLowerCase()).includes(searchId);
+    const foundLocal = removeAccent(local.toLowerCase()).includes(searchId);
+
+    if (foundCity || foundLocal) {
       return true;
     }
 
@@ -72,17 +75,19 @@ const getByCityAndLocal = async (searchId) => {
 /**
  * Get occurrences that have more than a given number of operatives
  *
- * @param {Number} amountOfMansInvolved If < 0 the function will return a rejected Promise object
- * @returns {Promise|Array}
+ * @param {Number} amountOfMansInvolved
+ * @returns {Promise}
  */
 const filterByMinimumMans = async (amountOfMansInvolved) => {
-  if (amountOfMansInvolved < 0) {
+  const amountOfMans = Number(amountOfMansInvolved);
+
+  if (Number.isNaN(amountOfMans) || amountOfMans < 0) {
     return Promise.reject();
   }
 
   const events = await getAll();
 
-  return events.filter(({ o: mans }) => mans > amountOfMansInvolved);
+  return Promise.resolve(events.filter(({ o: mans }) => mans > amountOfMans));
 };
 
 /**
