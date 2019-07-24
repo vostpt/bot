@@ -91,13 +91,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           importantEvents.push(`__**${msg}**__`);
@@ -138,13 +138,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           importantEvents.push(`__**${msg}**__`);
@@ -203,15 +203,15 @@ module.exports = {
         const {
           id,
           d: date,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           l: city,
           s: local,
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           importantEvents.push(`__**${msg}**__`);
@@ -250,15 +250,15 @@ module.exports = {
         const {
           id,
           d: date,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           l: city,
           s: local,
           e: status,
         } = fire;
 
-        const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city},${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(fire)) {
           importantEvents.push(`__**${msg}**__`);

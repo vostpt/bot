@@ -9,12 +9,12 @@ const OCCURENCE_DATE_FORMAT = 'DD/MM HH:mm';
 const isSevere = (occurrence) => {
   const {
     d: date,
-    o: mans,
+    o: operatives,
   } = occurrence;
 
   const event = moment(date, OCCURENCE_DATE_FORMAT);
 
-  return (event.lastsLongerThan(1, 'hours') && mans >= 50);
+  return (event.lastsLongerThan(1, 'hours') && operatives >= 50);
 };
 
 const removeAccent = (messageContent) => {

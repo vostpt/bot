@@ -1,5 +1,4 @@
 const { removeAccent } = require('../helpers');
-
 const { ProcivApi } = require('../api');
 
 const statusAbrevToId = {
@@ -75,49 +74,53 @@ const getByCityAndLocal = async (searchId) => {
 /**
  * Get occurrences that have more than a given number of operatives
  *
- * @param {Number} amountOfMansInvolved
+ * @param {Number} amountOfOperativesInvolved
  * @returns {Promise}
  */
-const filterByMinimumMans = async (amountOfMansInvolved) => {
-  const amountOfMans = Number(amountOfMansInvolved);
+const filterByMinimumOperatives = async (amountOfOperativesInvolved) => {
+  const amountOfOperatives = Number(amountOfOperativesInvolved);
 
-  if (Number.isNaN(amountOfMans) || amountOfMans < 0) {
+  if (Number.isNaN(amountOfOperatives) || amountOfOperatives < 0) {
     return Promise.reject();
   }
 
   const events = await getAll();
 
-  return Promise.resolve(events.filter(({ o: mans }) => mans > amountOfMans));
+  return Promise.resolve(events.filter(({ o: operatives }) => operatives > amountOfOperatives));
 };
 
 /**
  * Get occurrences that have more than a given number of ground assets
  *
- * @param {Number} amountOfCarsInvolved If < 0 the function will return a rejected Promise object
- * @returns {Promise|Array}
+ * @param {Number} amountOfVehiclesInvolved
+ * @returns {Promise}
  */
-const filterByMinimumCars = async (amountOfCarsInvolved) => {
-  if (amountOfCarsInvolved < 0) {
+const filterByMinimumVehicles = async (amountOfVehiclesInvolved) => {
+  const amountOfVehicles = Number(amountOfVehiclesInvolved);
+  if (Number.isNaN(amountOfVehicles) || amountOfVehicles < 0) {
     return Promise.reject();
   }
+
   const events = await getAll();
 
-  return events.filter(({ t: cars }) => cars > amountOfCarsInvolved);
+  return Promise.resolve(events.filter(({ t: vehicles }) => vehicles > amountOfVehicles));
 };
 
 /**
  * Get occurrences that have more than a given number of aerial assets
  *
- * @param {Number} amountOfAerialsInvolved If < 0 the function will return a rejected Promise object
- * @returns {Promise|Array}
+ * @param {Number} amountOfAircraftsInvolved
+ * @returns {Promise}
  */
-const filterByMinimumAerials = async (amountOfAerialsInvolved) => {
-  if (amountOfAerialsInvolved < 0) {
+const filterByMinimumAircrafts = async (amountOfAircraftsInvolved) => {
+  const amountOfAircrafts = Number(amountOfAircraftsInvolved);
+  if (Number.isNaN(amountOfAircrafts) || amountOfAircrafts < 0) {
     return Promise.reject();
   }
+
   const events = await getAll();
 
-  return events.filter(({ h: aerials }) => aerials > amountOfAerialsInvolved);
+  return Promise.resolve(events.filter(({ h: aircrafts }) => aircrafts > amountOfAircrafts));
 };
 
 /**
@@ -148,9 +151,9 @@ module.exports = {
   getAll,
   getById,
   getByCityAndLocal,
-  filterByMinimumMans,
-  filterByMinimumCars,
-  filterByMinimumAerials,
+  filterByMinimumOperatives,
+  filterByMinimumVehicles,
+  filterByMinimumAircrafts,
   filterByStatus,
   filterByStatusId,
   statusAbrevToId,

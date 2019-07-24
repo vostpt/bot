@@ -27,13 +27,13 @@ module.exports = {
 
       occurrences.forEach((element) => {
         const {
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           ide: statusId,
         } = element;
 
-        const elementValues = [1, mans, cars, helicopters];
+        const elementValues = [1, operatives, vehicles, aircrafts];
 
         totalCounters = totalCounters.map((val, index) => val + elementValues[index]);
 
