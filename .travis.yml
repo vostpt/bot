@@ -9,5 +9,5 @@ cache:
 
 sudo: false
 
-before_script:
-  - cp .env.example .env
+env:
+  - export TWITTER_CONSUMER_KEY='dummy' TWITTER_CONSUMER_SECRET='dummy' TWITTER_ACCESS_TOKEN_KEY='dummy' TWITTER_ACCESS_TOKEN_SECRET='dummy'
