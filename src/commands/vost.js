@@ -4,14 +4,15 @@ module.exports = {
   name: 'vost',
   args: false,
   cooldown,
-  allowerdArgs: [
-    'irmaos',
+  allowedArgs: [
     'registo',
+    'rs',
+    'irmaos',
   ],
   usage: `
-    **!vost irmaos** - *Lista de twitter com as contas VOST europeias.*
-    **!vost rs** - *Links das Redes Sociais do VOST Portugal.* 
     **!vost registo** - *Mostra o link para inscrição de novos voluntários.*
+    **!vost rs** - *Links das Redes Sociais do VOST Portugal.*
+    **!vost irmaos** - *Lista de twitter com as contas VOST europeias.*
   `,
   description: '',
 
