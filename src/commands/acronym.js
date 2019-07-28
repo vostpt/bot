@@ -2,7 +2,7 @@ const { Acronyms } = require('../services');
 const { cooldown } = require('../../config/bot');
 
 module.exports = {
-  active: false,
+  active: true,
   args: true,
   cooldown,
   name: 'acronimo',
