@@ -19,14 +19,15 @@ const sociolNetworks = [
 ];
 
 module.exports = {
-  name: 'vost',
-  args: false,
-  cooldown,
+  active: true,
   allowedArgs: [
     'registo',
     'rs',
     'irmaos',
   ],
+  args: false,
+  cooldown,
+  name: 'vost',
   usage: `
     **!vost registo** - *Mostra o link para inscrição de novos voluntários.*
     **!vost rs** - *Links das Redes Sociais do VOST Portugal.*

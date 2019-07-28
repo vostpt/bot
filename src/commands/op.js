@@ -28,9 +28,7 @@ const DISTRICTS = {
 };
 
 module.exports = {
-  name: 'op',
-  args: true,
-  cooldown,
+  active: true,
   allowedArgs: [
     'id',
     'if',
@@ -38,6 +36,9 @@ module.exports = {
     'distrito',
     'vento',
   ],
+  args: true,
+  cooldown,
+  name: 'op',
   usage: `
     **!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*
     **!op if [termo_pesquisa]** - *Mostra os dados relativos às ocorrências num dado concelho/localidade (min. 3 caracteres).*
@@ -47,7 +48,6 @@ module.exports = {
 
     Distritos reconhecíveis: *${Object.keys(DISTRICTS).join(', ')}*
   `,
-  description: '',
 
   /**
   * Send to Discord occurrences, filtered by id, county, town, status or district

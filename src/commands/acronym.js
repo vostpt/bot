@@ -2,13 +2,13 @@ const { Acronyms } = require('../services');
 const { cooldown } = require('../../config/bot');
 
 module.exports = {
-  name: 'acronimo',
+  active: false,
   args: true,
   cooldown,
+  name: 'acronimo',
   usage: `
     **!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*
   `,
-  description: '',
 
   /**
   * Send to Discord acronym definition

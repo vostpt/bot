@@ -3,11 +3,13 @@ const { cooldown } = require('../../config/bot');
 
 
 module.exports = {
-  name: 'rcm',
+  active: true,
+  allowedArgs: [
+    'hoje',
+  ],
   args: true,
-  allowedArgs: ['hoje'],
   cooldown,
-  description: '!rcm',
+  name: 'rcm',
   usage: `
     **!rcm hoje**
   `,
