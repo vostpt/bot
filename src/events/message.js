@@ -75,6 +75,12 @@ const message = async (client, msg) => {
     const command = client.commands.get(commandName);
 
     if (command) {
+      if (!command.active) {
+        msg.author.send(`O comando *${prefix}${commandName}* encontra-se desativado.`);
+
+        return;
+      }
+
       try {
         const now = Date.now();
         const timestamps = client.cooldowns.get(commandName);
@@ -87,6 +93,10 @@ const message = async (client, msg) => {
             const timeLeft = (expirationTime - now) / 1000;
 
             msg.author.send(`Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
+
+            msg.react('📧')
+              .then(() => msg.react('📥'))
+              .catch(() => msg.reply('os comandos foram enviados por DM'));
 
             return;
           }

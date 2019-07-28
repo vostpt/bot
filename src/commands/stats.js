@@ -4,13 +4,13 @@ const {
 const { cooldown } = require('../../config/bot');
 
 module.exports = {
-  name: 'stats',
+  active: true,
   args: true,
   cooldown,
+  name: 'stats',
   usage: `
     **!stats** - *Mostra o número total de meios envolvidos nas ocorrências, descriminado por estado.*
   `,
-  description: '',
 
   /**
   * Send to Discord stats about total number of means

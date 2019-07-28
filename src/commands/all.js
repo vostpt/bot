@@ -7,9 +7,7 @@ const { isSevere } = require('../helpers');
 const { cooldown } = require('../../config/bot');
 
 module.exports = {
-  name: 'all',
-  args: true,
-  cooldown,
+  active: true,
   allowedArgs: [
     'human',
     'ground',
@@ -17,13 +15,15 @@ module.exports = {
     'important',
     'links',
   ],
+  args: true,
+  cooldown,
+  name: 'all',
   usage: `
     **!all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*
     **!all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*
     **!all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*
     **!all important** - *Mostra todas as ocorrências marcadas como importantes na ProCivApi.*
   `,
-  description: '',
 
   /**
   * Send to Discord occurrences, list all (with or without fogos.pt url), or use filters

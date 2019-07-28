@@ -1,20 +1,38 @@
 const { cooldown } = require('../../config/bot');
 
+const siblings = [
+  '🇪🇺 VOST Europe (https://twitter.com/VOSTeurope)',
+  '🇫🇷 VISOV France (https://twitter.com/VISOV1)',
+  '🇧🇪 VOST Belgique (https://twitter.com/VOSTbe)',
+  '🇩🇪 VOST Germany (https://twitter.com/VOST_de)',
+  '🇫🇷 VOST Nice (https://twitter.com/NiceVOST)',
+  '🇬🇧 VOST UK (https://twitter.com/VOSTUK)',
+  '🇮🇹 VOST Italy (https://twitter.com/VOSTitaly)',
+  '🇪🇸 VOST Spain (https://twitter.com/vostSPAIN)',
+  '🇬🇧 DGVost (https://twitter.com/DGVost)',
+];
+
+const socialNetworks = [
+  'Twitter: https://twitter.com/vostpt',
+  'Facebook: https://pt-pt.facebook.com/Vostpt/',
+  'Instagram: https://www.instagram.com/vostpt/',
+];
+
 module.exports = {
-  name: 'vost',
-  args: false,
-  cooldown,
+  active: true,
   allowedArgs: [
     'registo',
     'rs',
     'irmaos',
   ],
+  args: true,
+  cooldown,
+  name: 'vost',
   usage: `
     **!vost registo** - *Mostra o link para inscrição de novos voluntários.*
     **!vost rs** - *Links das Redes Sociais do VOST Portugal.*
     **!vost irmaos** - *Lista de twitter com as contas VOST europeias.*
   `,
-  description: '',
 
   /**
   * Send to Discord info intern to VOST Portugal
@@ -31,15 +49,21 @@ module.exports = {
 
     const requestedArgument = args[0].toLowerCase();
 
+    if (!this.allowedArgs.includes(requestedArgument)) {
+      message.reply(`${requestedArgument} não é válido.\n${this.usage}`);
+
+      return;
+    }
+
     if (requestedArgument === 'registo') {
       message.channel.send('Os teus amigos podem se registar neste link: https://t.co/IeLK77Murx?amp=1');
     } else if (requestedArgument === 'rs') {
-      message.author.send('As nossas redes sociais são:\nTwitter: https://twitter.com/vostpt\nFacebook: https://pt-pt.facebook.com/Vostpt/\nInstagram: https://www.instagram.com/vostpt/');
+      message.author.send(`As nossas redes sociais são:\n${socialNetworks.join('\n')}`);
       message.react('📧')
         .then(() => message.react('📥'))
         .catch(() => message.reply('os comandos foram enviados por DM'));
     } else if (requestedArgument === 'irmaos') {
-      message.channel.send('Temos muitos irmãos como podes ver:\n🇪🇺 VOST Europe (https://twitter.com/VOSTeurope)\n🇫🇷 VISOV France (https://twitter.com/VISOV1)\n🇧🇪 VOST Belgique (https://twitter.com/VOSTbe)\n🇩🇪 VOST Germany (https://twitter.com/VOST_de)\n🇫🇷 VOST Nice (https://twitter.com/NiceVOST)\n🇬🇧 VOST UK (https://twitter.com/VOSTUK)\n🇮🇹 VOST Italy (https://twitter.com/VOSTitaly)\n🇪🇸 VOST Spain (https://twitter.com/vostSPAIN)\n🇬🇧 DGVost (https://twitter.com/DGVost)');
+      message.channel.send(`Temos muitos irmãos como podes ver:\n${siblings.join('\n')}`);
     }
   },
 };

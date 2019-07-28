@@ -2,13 +2,13 @@ const { Warnings } = require('../services');
 const { cooldown } = require('../../config/bot');
 
 module.exports = {
-  name: 'alerts',
+  active: true,
   args: false,
   cooldown,
+  name: 'alerts',
   usage: `
     **!alerts**
   `,
-  description: '!alerts',
 
   /**
   * Send to Discord alerts issued by IPMA
