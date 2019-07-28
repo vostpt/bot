@@ -33,7 +33,6 @@ module.exports = {
     **!vost rs** - *Links das Redes Sociais do VOST Portugal.*
     **!vost irmaos** - *Lista de twitter com as contas VOST europeias.*
   `,
-  description: '',
 
   /**
   * Send to Discord info intern to VOST Portugal
