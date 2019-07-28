@@ -74,6 +74,12 @@ const message = async (client, msg) => {
 
     const command = client.commands.get(commandName);
 
+    if (!command.active) {
+      msg.author.send('Esse comando encontra-se desactivo.');
+
+      return;
+    }
+
     if (command) {
       try {
         const now = Date.now();
