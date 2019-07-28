@@ -43,7 +43,7 @@ module.exports = {
     **!op if [termo_pesquisa]** - *Mostra os dados relativos às ocorrências num dado concelho/localidade (min. 3 caracteres).*
     **!op if vento [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
     **!op status [Despacho|Despacho1Alerta|ChegadaTO|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
-    **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.
+    **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.*
 
     Distritos reconhecíveis: *${Object.keys(DISTRICTS).join(', ')}*
   `,
