@@ -12,7 +12,7 @@ const siblings = [
   '🇬🇧 DGVost (https://twitter.com/DGVost)',
 ];
 
-const sociolNetworks = [
+const socialNetworks = [
   'Twitter: https://twitter.com/vostpt',
   'Facebook: https://pt-pt.facebook.com/Vostpt/',
   'Instagram: https://www.instagram.com/vostpt/',
@@ -59,7 +59,7 @@ module.exports = {
     if (requestedArgument === 'registo') {
       message.channel.send('Os teus amigos podem se registar neste link: https://t.co/IeLK77Murx?amp=1');
     } else if (requestedArgument === 'rs') {
-      message.author.send(`As nossas redes sociais são:\n${sociolNetworks.join('\n')}`);
+      message.author.send(`As nossas redes sociais são:\n${socialNetworks.join('\n')}`);
       message.react('📧')
         .then(() => message.react('📥'))
         .catch(() => message.reply('os comandos foram enviados por DM'));
