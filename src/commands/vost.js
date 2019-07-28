@@ -25,7 +25,7 @@ module.exports = {
     'rs',
     'irmaos',
   ],
-  args: false,
+  args: true,
   cooldown,
   name: 'vost',
   usage: `
