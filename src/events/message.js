@@ -98,6 +98,7 @@ const message = async (client, msg) => {
 
         setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
       } catch (e) {
+        // log exception
         msg.reply('infelizmente não consigo satisfazer esse pedido');
       }
     }

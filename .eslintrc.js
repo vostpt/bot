@@ -2,11 +2,12 @@ module.exports = {
   env: {
     commonjs: true,
     es6: true,
-    node: true
+    node: true,
+    'jest/globals': true
   },
   extends: [
-    "airbnb-base"
-    // "prettier"
+    "airbnb-base",
+    "plugin:jest/recommended",
   ],
   globals: {
     Atomics: "readonly",
@@ -15,6 +16,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018
   },
+  "plugins": ["jest"],
   rules: {
     "linebreak-style": "off"
   },

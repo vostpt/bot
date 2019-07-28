@@ -20,18 +20,20 @@ module.exports = {
   async execute(message, args) {
     if (this.args && args.length === 0) {
       message.reply(`falta a data.\n${this.usage}`);
+
       return;
     }
 
-    const [requestedDate] = args;
-
     const events = [];
     const eventsSensed = [];
+
+    const [requestedDate] = args;
 
     const earthquakes = await Earthquakes.getByDate(requestedDate);
 
     if (earthquakes.length === 0) {
       message.reply(`Sem dados acerca do dia ${requestedDate}`);
+
       return;
     }
 

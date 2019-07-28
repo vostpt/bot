@@ -1,11 +1,11 @@
 const Fires = require('../services/Fires');
 const { cooldown } = require('../../config/bot');
 
-const allowedArgs = ['hoje'];
 
 module.exports = {
   name: 'rcm',
   args: true,
+  allowedArgs: ['hoje'],
   cooldown,
   description: '!rcm',
   usage: `
@@ -20,20 +20,16 @@ module.exports = {
   * @param {Array} args
   */
   execute(message, args) {
-    if (args && args.length === 0) {
-      try {
-        message.reply(`falta o dia!\n${this.usage}`);
-      } catch (e) {
-        //
-      }
+    if (this.args && args.length === 0) {
+      message.reply(`falta o dia!\n${this.usage}`);
 
       return;
     }
 
     const [day] = args;
 
-    if (!allowedArgs.includes(day)) {
-      message.reply(`dias disponíveis: ${allowedArgs.join(', ')}`);
+    if (!this.allowedArgs.includes(day)) {
+      message.reply(`opções disponíveis: ${this.allowedArgs.join(', ')}`);
     }
 
     if (day.toLowerCase() === 'hoje') {

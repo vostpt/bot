@@ -63,13 +63,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
@@ -116,9 +116,9 @@ module.exports = {
         return;
       }
 
-      const [, amountOfMans] = args;
+      const [, amountOfOperatives] = args;
 
-      const occurrences = await Prociv.filterByMinimumMans(amountOfMans);
+      const occurrences = await Prociv.filterByMinimumOperatives(amountOfOperatives);
 
       occurrences.forEach((occurrence) => {
         const {
@@ -126,13 +126,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
@@ -149,9 +149,9 @@ module.exports = {
         return;
       }
 
-      const [, amountOfCars] = args;
+      const [, amountOfVehicles] = args;
 
-      const occurrences = await Prociv.filterByMinimumCars(amountOfCars);
+      const occurrences = await Prociv.filterByMinimumVehicles(amountOfVehicles);
 
       occurrences.forEach((occurrence) => {
         const {
@@ -159,13 +159,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);
@@ -182,9 +182,9 @@ module.exports = {
         return;
       }
 
-      const [, amountOfAerials] = args;
+      const [, amountOfAircrafts] = args;
 
-      const occurrences = await Prociv.filterByMinimumAerials(amountOfAerials);
+      const occurrences = await Prociv.filterByMinimumAircrafts(amountOfAircrafts);
 
       occurrences.forEach((occurrence) => {
         const {
@@ -192,13 +192,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           importantEvents.push(`__**${msg}**__`);

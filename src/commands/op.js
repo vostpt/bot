@@ -44,8 +44,8 @@ module.exports = {
     **!op if vento [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
     **!op status [Despacho|Despacho1Alerta|ChegadaTO|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
     **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.
-    
-    Distritos reconhecíveis: ${Object.keys(DISTRICTS).join(', ')}*
+
+    Distritos reconhecíveis: *${Object.keys(DISTRICTS).join(', ')}*
   `,
   description: '',
 
@@ -58,11 +58,7 @@ module.exports = {
   */
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      try {
-        message.reply(`falta o número da ocorrência!\n${this.usage}`);
-      } catch (e) {
-        //
-      }
+      message.reply(`falta o parâmetro de filtro das ocorrências!\n${this.usage}`);
 
       return;
     }
@@ -75,14 +71,16 @@ module.exports = {
     if (requestedArgument === 'id') {
       const [, requestedId] = args;
 
+      if (!requestedId) {
+        message.reply(`falta o id da ocorrência!\n${this.usage}`);
+
+        return;
+      }
+
       const data = await Prociv.getById(requestedId);
 
       if (data.length === 0) {
-        try {
-          message.channel.send(':fire: ***Sem Ocorrências***');
-        } catch (e) {
-          //
-        }
+        message.channel.send(':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -93,13 +91,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           importantEvents.push(`__**${msg}**__`);
@@ -111,6 +109,12 @@ module.exports = {
 
     if (requestedArgument === 'if') {
       const [, requestedCity] = args;
+
+      if (!requestedCity) {
+        message.reply(this.usage);
+
+        return;
+      }
 
       const reqCityFormatted = removeAccent(requestedCity.toLowerCase()).replace('#if', '');
 
@@ -134,13 +138,13 @@ module.exports = {
           d: date,
           l: city,
           s: local,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           importantEvents.push(`__**${msg}**__`);
@@ -151,12 +155,8 @@ module.exports = {
     }
 
     if (requestedArgument === 'vento') {
-      if (args.length < 2) {
-        try {
-          message.reply(`falta argumentos.\n${this.usage}`);
-        } catch (e) {
-          //
-        }
+      if (this.args && args.length < 2) {
+        message.reply(`falta o id da cidade.\n${this.usage}`);
 
         return;
       }
@@ -164,8 +164,10 @@ module.exports = {
       const cityId = args[1].toLowerCase();
 
       const data = await Winds.getById(cityId);
-      if (data.length === 0) {
+
+      if (!data) {
         message.channel.send(':wind_blowing_face: :fire: ***Sem Ocorrência***');
+
         return;
       }
 
@@ -183,6 +185,11 @@ module.exports = {
     if (requestedArgument === 'status') {
       const [, requestedStatus] = args;
 
+      if (!requestedStatus) {
+        message.reply(this.usage);
+        return;
+      }
+
       const reqStatusFormatted = removeAccent(requestedStatus.toLowerCase());
 
       const data = await Prociv.filterByStatus(reqStatusFormatted);
@@ -196,15 +203,15 @@ module.exports = {
         const {
           id,
           d: date,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           l: city,
           s: local,
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           importantEvents.push(`__**${msg}**__`);
@@ -218,11 +225,7 @@ module.exports = {
       const [, district] = args;
 
       if (!district) {
-        try {
-          message.reply(`é necessário fornecer um distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
-        } catch (e) {
-          //
-        }
+        message.reply(`é necessário fornecer um distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
 
         return;
       }
@@ -230,11 +233,7 @@ module.exports = {
       const districtToSearch = DISTRICTS[district.toLowerCase()];
 
       if (!districtToSearch) {
-        try {
-          message.reply(`não foi possível identificar esse distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
-        } catch (e) {
-          //
-        }
+        message.reply(`não foi possível identificar esse distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
 
         return;
       }
@@ -242,11 +241,7 @@ module.exports = {
       const fires = await Fires.getByDistrict(districtToSearch);
 
       if (fires.length === 0) {
-        try {
-          message.channel.send(':fire: ***Sem Ocorrências***');
-        } catch (e) {
-          //
-        }
+        message.channel.send(':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -255,15 +250,15 @@ module.exports = {
         const {
           id,
           d: date,
-          o: mans,
-          t: cars,
-          a: helicopters,
+          o: operatives,
+          t: vehicles,
+          a: aircrafts,
           l: city,
           s: local,
           e: status,
         } = fire;
 
-        const msg = `${date} - ${id} - #IF${city},${local} - ${mans}:man_with_gua_pi_mao: ${cars}:fire_engine: ${helicopters}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IF${city},${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(fire)) {
           importantEvents.push(`__**${msg}**__`);
@@ -273,20 +268,12 @@ module.exports = {
       });
     }
 
-    try {
-      if (importantEvents.length > 0) {
-        message.channel.send(`:fire: ***Ocorrências importantes:***\n${importantEvents.join('\n')}`);
-      }
+    if (importantEvents.length > 0) {
+      message.channel.send(`:fire: ***Ocorrências importantes:***\n${importantEvents.join('\n')}`);
+    }
 
-      if (events.length > 0) {
-        message.channel.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
-      }
-
-      if (events.length === 0 && importantEvents.length === 0) {
-        message.channel.send(':fire: ***Sem Ocorrências***');
-      }
-    } catch (e) {
-      //
+    if (events.length > 0) {
+      message.channel.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
     }
   },
 };
