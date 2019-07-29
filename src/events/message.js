@@ -58,7 +58,9 @@ const message = async (client, msg) => {
     const command = args.shift().toLowerCase();
 
     if (command === 'commands') {
-      const commandUsage = client.commands.map(({ usage }) => usage);
+      const commandUsage = client.commands
+        .filter(({ active }) => active)
+        .map(({ usage }) => usage);
 
       msg.author.send(`***Comandos:***\n${commandUsage.join('')}`);
 
