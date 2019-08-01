@@ -12,8 +12,7 @@ const getAlerts = async () => {
   const data = await fetch(url)
     .then(res => res.text())
     .then((body) => {
-      const html = body;
-      const $ = cheerio.load(html);
+      const $ = cheerio.load(body);
       const $alerts = $('article.alerta');
 
       return $alerts.map((i, el) => (
