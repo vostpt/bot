@@ -4,6 +4,7 @@
   "description": "VOST PT bot",
   "main": "./app.js",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
     "libsodium": "^0.7.4",
