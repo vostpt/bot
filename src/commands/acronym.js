@@ -25,14 +25,16 @@ module.exports = {
     }
 
     const [acronym] = args;
-    const result = await Acronyms.getExactAcronym(acronym);
+    const { data } = await Acronyms.getExactAcronym(acronym);
 
-    if (!result) {
-      message.reply('Esse acrónimo não consta na base de dados!');
+    if (!data || data.length === 0) {
+      message.reply(`Não reconheço o acrónimo \`${acronym}\` !`);
 
       return;
     }
 
-    message.channel.send(`${result.acronym} - ${result.description}`);
+    const [first] = data;
+
+    message.channel.send(`${first.attributes.initials} - ${first.attributes.meaning}`);
   },
 };
