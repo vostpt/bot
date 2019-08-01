@@ -16,18 +16,26 @@ describe('Acronym command', () => {
 
   describe('Args passed', () => {
     test('Valid acronym but no data returned', async () => {
-      AcronymsAPI.get.mockResolvedValue({});
+      AcronymsAPI.get.mockResolvedValue({
+        data: {
+          data: [],
+        },
+      });
       await AcronymCommand.execute(client.message, ['arg']);
 
       expect(client.message.reply).toHaveBeenCalledTimes(1);
-      expect(client.message.reply.mock.calls[0][0]).toContain('Esse acrónimo não consta na base de dados!');
+      expect(client.message.reply.mock.calls[0][0]).toContain('Não reconheço o acrónimo');
     });
 
     test('Valid acronym and data returned', async () => {
       AcronymsAPI.get.mockResolvedValue({
         data: {
-          acronym: 'ok',
-          description: 'desc',
+          data: [{
+            attributes: {
+              initials: 'ok',
+              meaning: 'desc',
+            },
+          }],
         },
       });
       await AcronymCommand.execute(client.message, ['ok']);
