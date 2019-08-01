@@ -23,7 +23,6 @@ module.exports = {
       if (args[0].toLowerCase() !== 'alerts') {
         message.reply(`Desconheço essa opção.\n${this.usage}`);
       } else {
-        const events = [];
         const data = await Sns.getAlerts();
 
         if (data.length === 0) {
@@ -32,9 +31,9 @@ module.exports = {
           return;
         }
 
-        data.forEach((item) => {
-          events.push(`**${item.title} \n** ${item.description}\n${item.link}\n${moment(item.dateTime, moment.ISO_8601)}`);
-        });
+        const events = data.map(item => (
+          `**${item.title}**\n${item.description}\n${item.link}\n${moment(item.dateTime, moment.ISO_8601)}`
+        ));
 
         message.channel.send('***SNS24 Alertas :***\n\n');
         message.channel.send(events.join('\n'));

@@ -14,20 +14,17 @@ const getAlerts = async () => {
     .then((body) => {
       const html = body;
       const $ = cheerio.load(html);
-      const alertsList = [];
       const $alerts = $('article.alerta');
 
-      $alerts.each((i, el) => {
-        alertsList.push({
+      return $alerts.map((i, el) => (
+        {
           title: $(el).find('h2.pag-alertas').text(),
           description: $(el).find('p.pag-alertas').text().trim(),
           link: $(el).find('a.pag-alertar').attr('href'),
           dateTime: $(el).find('time.updated').attr('datetime'),
-        });
-      });
-      return alertsList;
+        }
+      )).get();
     });
-
   return data;
 };
 
