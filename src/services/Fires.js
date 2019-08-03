@@ -5,12 +5,12 @@ const { isSevere } = require('../helpers');
 const EVENT_TYPES = {
   GENERAL: '1',
   UPDATE: '2',
-  IMPORTANT_UPDATE: '3',
+  RELEVANT_UPDATE: '3',
   SEVERITY_UP: '4',
   SEVERITY_DOWN: '5',
-  IMPORTANT_EVENT: '6',
-  IMPORTANT_EVENT_WARN_ALL: '7',
-  IMPORTANT_UPDATE_WARN_ALL: '8',
+  RELEVANT_EVENT: '6',
+  RELEVANT_EVENT_WARN_ALL: '7',
+  RELEVANT_UPDATE_WARN_ALL: '8',
 };
 
 /**
@@ -46,10 +46,10 @@ const getForestFires = async (client) => {
   const { data: fires = [] } = await FireApi.getIF();
 
   const events = [];
-  const importantEvents = [];
+  const relevantEvents = [];
 
   const updatedEvents = [];
-  const updatedImportantEvents = [];
+  const updatedRelevantEvents = [];
 
   fires.forEach((fire) => {
     const {
@@ -70,7 +70,7 @@ const getForestFires = async (client) => {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(fire)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -80,31 +80,31 @@ const getForestFires = async (client) => {
         updatedEvents.push(`${id} - #IF${city}, #${local} - ${previousStatus} :track_next: ${status}`);
         break;
       }
-      case EVENT_TYPES.IMPORTANT_UPDATE: {
-        updatedImportantEvents.push(`__**${id} - #IF${city}, #${local} - ${previousStatus} :track_next: ${status}**__`);
+      case EVENT_TYPES.RELEVANT_UPDATE: {
+        updatedRelevantEvents.push(`__**${id} - #IF${city}, #${local} - ${previousStatus} :track_next: ${status}**__`);
         break;
       }
       case EVENT_TYPES.SEVERITY_UP: {
-        updatedImportantEvents.push(`__**${id} - #IF${city}, #${local} - Subiu para ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter:**__`);
+        updatedRelevantEvents.push(`__**${id} - #IF${city}, #${local} - Subiu para ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter:**__`);
         break;
       }
       case EVENT_TYPES.SEVERITY_DOWN: {
-        updatedImportantEvents.push(`__**${id} - #IF${city}, #${local} - Desceu para ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter:**__`);
+        updatedRelevantEvents.push(`__**${id} - #IF${city}, #${local} - Desceu para ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter:**__`);
         break;
       }
-      case EVENT_TYPES.IMPORTANT_EVENT: {
+      case EVENT_TYPES.RELEVANT_EVENT: {
         const msg = `__**${id} - #IF${city},${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}**__`;
-        client.channels.get(channels.FIRES_CHANNEL_ID).send(`:warning: :fire: ***Ocorrência importante:***\n${msg}`);
+        client.channels.get(channels.FIRES_CHANNEL_ID).send(`:warning: :fire: ***Ocorrência relevante:***\n${msg}`);
         break;
       }
-      case EVENT_TYPES.IMPORTANT_EVENT_WARN_ALL: {
+      case EVENT_TYPES.RELEVANT_EVENT_WARN_ALL: {
         const msg = `__**${id} - #IF${city},${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}**__`;
-        client.channels.get(channels.FIRES_CHANNEL_ID).send(`@here :warning: :fire: ***Ocorrência importante:***\n${msg}`);
+        client.channels.get(channels.FIRES_CHANNEL_ID).send(`@here :warning: :fire: ***Ocorrência relevante:***\n${msg}`);
         break;
       }
-      case EVENT_TYPES.IMPORTANT_UPDATE_WARN_ALL: {
+      case EVENT_TYPES.RELEVANT_UPDATE_WARN_ALL: {
         const msg = `__**${id} - #IF${city},${local} - ${previousStatus} :track_next: ${status}**__`;
-        client.channels.get(channels.FIRES_CHANNEL_ID).send(`@here :warning: :fire: ***Atualização importante:***\n${msg}`);
+        client.channels.get(channels.FIRES_CHANNEL_ID).send(`@here :warning: :fire: ***Atualização relevante:***\n${msg}`);
         break;
       }
       default: {
@@ -113,12 +113,12 @@ const getForestFires = async (client) => {
     }
   });
 
-  if (events.length > 0 || importantEvents.length > 0) {
-    client.channels.get(channels.FIRES_CHANNEL_ID).send(`:fire: ***Novas Ocorrências:***\n${importantEvents.join('\n')}\n${events.join('\n')}`);
+  if (events.length > 0 || relevantEvents.length > 0) {
+    client.channels.get(channels.FIRES_CHANNEL_ID).send(`:fire: ***Novas Ocorrências:***\n${relevantEvents.join('\n')}\n${events.join('\n')}`);
   }
 
-  if (updatedEvents.length > 0 || updatedImportantEvents.length > 0) {
-    client.channels.get(channels.FIRES_CHANNEL_ID).send(`:fire: ***Ocorrências actualizadas:***\n${updatedImportantEvents.join('\n')}\n${updatedEvents.join('\n')}`);
+  if (updatedEvents.length > 0 || updatedRelevantEvents.length > 0) {
+    client.channels.get(channels.FIRES_CHANNEL_ID).send(`:fire: ***Ocorrências actualizadas:***\n${updatedRelevantEvents.join('\n')}\n${updatedEvents.join('\n')}`);
   }
 };
 
