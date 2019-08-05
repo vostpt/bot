@@ -64,7 +64,7 @@ module.exports = {
     }
 
     const events = [];
-    const importantEvents = [];
+    const relevantEvents = [];
 
     const requestedArgument = args[0].toLowerCase();
 
@@ -100,7 +100,7 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -147,7 +147,7 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -214,7 +214,7 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -261,15 +261,15 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city},${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(fire)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
       });
     }
 
-    if (importantEvents.length > 0) {
-      message.channel.send(`:fire: ***Ocorrências importantes:***\n${importantEvents.join('\n')}`);
+    if (relevantEvents.length > 0) {
+      message.channel.send(`:fire: ***Ocorrências relevantes:***\n${relevantEvents.join('\n')}`);
     }
 
     if (events.length > 0) {

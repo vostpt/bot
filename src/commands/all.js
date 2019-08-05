@@ -34,18 +34,18 @@ module.exports = {
   */
   async execute(message, args) {
     const events = [];
-    const importantEvents = [];
+    const relevantEvents = [];
 
     function sendMessages() {
-      if (importantEvents.length > 0) {
-        message.author.send(`:fire::fire: ***Ocorrências Importantes:***\n${importantEvents.join('\n')}`);
+      if (relevantEvents.length > 0) {
+        message.author.send(`:fire::fire: ***Ocorrências Relevantes:***\n${relevantEvents.join('\n')}`);
       }
 
       if (events.length > 0) {
         message.author.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
       }
 
-      if (importantEvents.length === 0 && events.length === 0) {
+      if (relevantEvents.length === 0 && events.length === 0) {
         message.author.send(':fire: ***Sem Ocorrências***');
       }
 
@@ -72,7 +72,7 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -102,7 +102,7 @@ module.exports = {
         const msg = `#IF${city}, #${local} - https://fogos.pt/fogo/2019${id}`;
 
         if (isSevere(occurrence)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -135,7 +135,7 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -168,7 +168,7 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }
@@ -201,7 +201,7 @@ module.exports = {
         const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
-          importantEvents.push(`__**${msg}**__`);
+          relevantEvents.push(`__**${msg}**__`);
         } else {
           events.push(msg);
         }

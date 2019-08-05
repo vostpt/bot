@@ -59,7 +59,7 @@ describe('!op command', () => {
           await opCommand.execute(client.message, ['id', '0']);
 
           expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências importantes:***');
+          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências relevantes:***');
         });
 
         test('it returns at least one regular event', async () => {
@@ -104,7 +104,7 @@ describe('!op command', () => {
           await opCommand.execute(client.message, ['if', 'cityId']);
 
           expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências importantes:***');
+          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências relevantes:***');
         });
 
         test('it returns at least one regular event', async () => {
@@ -179,7 +179,7 @@ describe('!op command', () => {
           await opCommand.execute(client.message, ['status', 'requestedStatus']);
 
           expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências importantes:***');
+          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências relevantes:***');
         });
 
         test('it returns at least one regular event', async () => {
@@ -227,7 +227,7 @@ describe('!op command', () => {
           await opCommand.execute(client.message, ['distrito', 'faro']);
 
           expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências importantes:***');
+          expect(client.message.channel.send.mock.calls[0][0]).toContain('***Ocorrências relevantes:***');
         });
 
         test('it returns at least one regular event', async () => {
