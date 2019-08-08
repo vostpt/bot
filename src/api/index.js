@@ -6,6 +6,7 @@ const EarthquakesApi = require('./Earthquakes');
 const AcronymsApi = require('./Acronyms');
 const WindApi = require('./Wind');
 const WeatherApi = require('./Weather');
+const FuelApi = require('./Fuel');
 
 module.exports = {
   api,
@@ -16,4 +17,5 @@ module.exports = {
   AcronymsApi,
   WindApi,
   WeatherApi,
+  FuelApi,
 };
