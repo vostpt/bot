@@ -1,6 +1,7 @@
 const moment = require('moment');
 const { locale } = require('../../config/locale');
 const { prefix, channels } = require('../../config/bot');
+const { react } = require('../helpers');
 
 moment.locale(locale);
 
@@ -64,9 +65,7 @@ const message = async (client, msg) => {
 
       msg.author.send(`***Comandos:***\n${commandUsage.join('')}`);
 
-      msg.react('📧')
-        .then(() => msg.react('📥'))
-        .catch(() => msg.reply('os comandos foram enviados por DM'));
+      react(msg, ['📧', '📥']);
     }
   }
 
@@ -74,45 +73,52 @@ const message = async (client, msg) => {
     const args = msg.content.slice(prefix.length).split(' ');
     const commandName = args.shift().toLowerCase();
 
-    const command = client.commands.get(commandName);
+    /* eslint-disable max-len */
+    const command = client.commands.find(({ name, aliases = [] }) => (name === commandName) || aliases.includes(commandName));
 
-    if (command) {
-      if (!command.active) {
-        msg.author.send(`O comando *${prefix}${commandName}* encontra-se desativado.`);
+    if (!command) {
+      msg.author.send(`${prefix}${commandName} não existe. Experimenta ${prefixHelp}commands`);
 
-        return;
-      }
+      react(msg, ['📧', '📥']);
 
-      try {
-        const now = Date.now();
-        const timestamps = client.cooldowns.get(commandName);
-        const cooldownAmount = (command.cooldown) * 1000;
+      return;
+    }
 
-        if (timestamps.has(msg.author.id)) {
-          const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+    if (!command.active) {
+      msg.author.send(`O comando *${prefix}${commandName}* encontra-se desativado.`);
 
-          if (now < expirationTime) {
-            const timeLeft = (expirationTime - now) / 1000;
+      react(msg, ['📧', '📥']);
 
-            msg.author.send(`Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
+      return;
+    }
 
-            msg.react('📧')
-              .then(() => msg.react('📥'))
-              .catch(() => msg.reply('os comandos foram enviados por DM'));
+    try {
+      const now = Date.now();
+      const timestamps = client.cooldowns.get(command.name);
+      const cooldownAmount = (command.cooldown) * 1000;
 
-            return;
-          }
+      if (timestamps.has(msg.author.id)) {
+        const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+
+        if (now < expirationTime) {
+          const timeLeft = (expirationTime - now) / 1000;
+
+          msg.author.send(`Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
+
+          react(msg, ['📧', '📥']);
+
+          return;
         }
-
-        await command.execute(msg, args);
-
-        timestamps.set(msg.author.id, now);
-
-        setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
-      } catch (e) {
-        // log exception
-        msg.reply('infelizmente não consigo satisfazer esse pedido');
       }
+
+      await command.execute(msg, args);
+
+      timestamps.set(msg.author.id, now);
+
+      setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+    } catch (e) {
+      // log exception
+      msg.reply('infelizmente não consigo satisfazer esse pedido');
     }
   }
 };
