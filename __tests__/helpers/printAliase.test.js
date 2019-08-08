@@ -1,13 +1,13 @@
 const { printAliases } = require('../../src/helpers');
 
 describe('printAliases helper', () => {
-  test('with aliases', async () => {
+  test('with aliases', () => {
     const aliases = ['a', 'b'];
 
-    expect(await printAliases(aliases)).toMatch(/!a|!b/);
+    expect(printAliases(aliases)).toMatch(/!a|!b/);
   });
 
-  test('without aliases', async () => {
-    expect(await printAliases()).toBe('');
+  test('without aliases', () => {
+    expect(printAliases()).toBe('');
   });
 });
