@@ -1,6 +1,11 @@
 const schedule = require('node-schedule');
 const moment = require('moment');
-const { Fires, Earthquakes, Warnings } = require('../services');
+const {
+  Fires,
+  Earthquakes,
+  Warnings,
+  Fuel,
+} = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter } = require('../services/Twitter');
 
@@ -46,6 +51,7 @@ class Jobs {
     this.warnings();
     this.fireRisk();
 
+    Jobs.fuelStats();
     Jobs.resetSentNotifications();
   }
 
@@ -90,6 +96,41 @@ class Jobs {
       } catch (e) {
         //
       }
+    });
+  }
+
+  /**
+   * Get stats from 'Já Não Dá Para Abastecer' website
+   */
+  static fuelStats() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.hour = new schedule.Range(0, 23, 1);
+    rule.minute = 0;
+    rule.second = 0;
+
+    schedule.scheduleJob(rule, async () => {
+      const stats = await Fuel.getFuelStats();
+
+      const actualTime = moment().format('H:mm');
+
+      const strHeader = `Estado às ${actualTime}`;
+
+      const strStatsTotal = `Total: ${stats.stations_total}`;
+
+      const strGeneral = 'Visão geral';
+      const strStatsNone = ` - Sem qualquer tipo de combustível: ${stats.stations_none}`;
+      const strStatsPartial = ` - Com algum tipo de combustível: ${stats.stations_partial}`;
+      const strStatsAll = ` - Com todos os tipos de combustível: ${stats.stations_all}`;
+
+      const strFaultByType = 'Faltas por tipo de combustível';
+      const strNoGasoline = ` - Sem gasolina: ${stats.stations_no_gasoline}`;
+      const strNoDiesel = ` - Sem gasóleo: ${stats.stations_no_diesel}`;
+      const strNoLpg = ` - Sem GPL: ${stats.stations_no_lpg}`;
+
+      const strMessage = `${strHeader}\n${strStatsTotal}\n\n${strGeneral}\n${strStatsNone}\n${strStatsPartial}\n${strStatsAll}\n${strFaultByType}\n${strNoGasoline}\n${strNoDiesel}\n${strNoLpg}`;
+
+      clientTwitter.post('statuses/update', { status: `️ℹ️⛽#JáNãoDáParaAbastecer\n\n${strMessage}\n\n⛽ℹ️` });
     });
   }
 
