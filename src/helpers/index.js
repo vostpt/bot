@@ -53,9 +53,13 @@ const printAliases = (aliases = []) => {
   return `Aliases: ${aliases.map(alias => `${prefix}${alias}`).join(', ')}`;
 };
 
-const react = (msg, reactions = []) => {
+const react = async (msg, reactions = []) => {
+  if (reactions.length === 0) {
+    msg.reply('os comandos foram enviados por DM');
+  }
+
   try {
-    reactions.forEach(reaction => msg.react(reaction));
+    await reactions.forEach(reaction => msg.react(reaction));
   } catch (e) {
     msg.reply('os comandos foram enviados por DM');
   }
