@@ -106,7 +106,7 @@ class Jobs {
     const rule = new schedule.RecurrenceRule();
 
     rule.hour = new schedule.Range(0, 23, 1);
-    rule.minute = 0;
+    rule.minute = new schedule.Range(0, 59, 1);
     rule.second = 0;
 
     schedule.scheduleJob(rule, async () => {
@@ -114,7 +114,7 @@ class Jobs {
 
       const actualTime = moment().format('H:mm');
 
-      const strHeader = `Estado às ${actualTime}\n`;
+      const strHeader = `Estado às ${actualTime}`;
 
       const strStatsTotal = `Total: ${stats.stations_total}`;
 
@@ -128,9 +128,9 @@ class Jobs {
       const strNoDiesel = ` - Sem gasóleo: ${stats.stations_no_diesel}`;
       const strNoLpg = ` - Sem GPL: ${stats.stations_no_lpg}`;
 
-      const strMessage = `${strHeader}\n${strStatsTotal}\n${strGeneral}\n${strStatsNone}\n${strStatsPartial}\n${strStatsAll}\n\n${strFaultByType}\n${strNoGasoline}\n${strNoDiesel}\n${strNoLpg}`;
+      const strMessage = `${strHeader}\n${strStatsTotal}\n\n${strGeneral}\n${strStatsNone}\n${strStatsPartial}\n${strStatsAll}\n${strFaultByType}\n${strNoGasoline}\n${strNoDiesel}\n${strNoLpg}`;
 
-      clientTwitter.post('statuses/update', { status: `️ℹ️⚠️#JáNãoDáParaAbastecer\n\n${strMessage}\n\n⚠️ℹ️` });
+      clientTwitter.post('statuses/update', { status: `️ℹ️⛽#JáNãoDáParaAbastecer\n\n${strMessage}\n\n⛽ℹ️` });
     });
   }
 
