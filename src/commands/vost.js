@@ -1,4 +1,5 @@
 const { cooldown } = require('../../config/bot');
+const { react } = require('../helpers');
 
 const siblings = [
   '🇪🇺 VOST Europe (https://twitter.com/VOSTeurope)',
@@ -59,9 +60,8 @@ module.exports = {
       message.channel.send('Os teus amigos podem se registar neste link: https://t.co/IeLK77Murx?amp=1');
     } else if (requestedArgument === 'rs') {
       message.author.send(`As nossas redes sociais são:\n${socialNetworks.join('\n')}`);
-      message.react('📧')
-        .then(() => message.react('📥'))
-        .catch(() => message.reply('os comandos foram enviados por DM'));
+
+      react(message, ['📧', '📥']);
     } else if (requestedArgument === 'irmaos') {
       message.channel.send(`Temos muitos irmãos como podes ver:\n${siblings.join('\n')}`);
     }

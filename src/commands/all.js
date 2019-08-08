@@ -3,7 +3,7 @@ const {
   Prociv,
   Fires,
 } = require('../services');
-const { isSevere } = require('../helpers');
+const { isSevere, react } = require('../helpers');
 const { cooldown } = require('../../config/bot');
 
 module.exports = {
@@ -49,9 +49,7 @@ module.exports = {
         message.author.send(':fire: ***Sem Ocorrências***');
       }
 
-      message.react('📧')
-        .then(() => message.react('📥'))
-        .catch(() => message.reply('os comandos foram enviados por DM'));
+      react(message, ['📧', '📥']);
     }
 
     if (this.args && args.length === 0) {

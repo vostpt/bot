@@ -1,13 +1,17 @@
 const { Acronyms } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
+const { printAliases } = require('../helpers');
+const { acronimo: aliases } = require('../../config/commandAliases');
 
 module.exports = {
+  aliases,
   active: true,
   args: true,
   cooldown,
   name: 'acronimo',
   usage: `
-    **!acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. !acronimo ANPC*
+    **${prefix}acronimo [acronimo]** - *Mostra a definição de qualquer acronimo na base de dados, por ex. ${prefix}acronimo ANPC*
+    ${printAliases(aliases)}
   `,
 
   /**

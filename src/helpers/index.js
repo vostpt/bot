@@ -1,4 +1,5 @@
 const moment = require('moment');
+const { prefix } = require('../../config/bot');
 
 moment.prototype.lastsLongerThan = function lastsLongerThan(amount, unit) {
   return this.add(amount, unit).isSameOrBefore(moment());
@@ -39,8 +40,34 @@ const removeAccent = (messageContent) => {
   return strAccentsOut;
 };
 
+/**
+ * Print aliases message. Main use in commands.
+ *
+ * @param {Array<String>} aliases
+ */
+const printAliases = (aliases = []) => {
+  if (aliases.length === 0) {
+    return '';
+  }
+
+  return `Aliases: ${aliases.map(alias => `${prefix}${alias}`).join(', ')}`;
+};
+
+const react = async (msg, reactions = []) => {
+  if (reactions.length === 0) {
+    msg.reply('os comandos foram enviados por DM');
+  }
+
+  try {
+    await Promise.all(reactions.map(reaction => msg.react(reaction)));
+  } catch (e) {
+    msg.reply('os comandos foram enviados por DM');
+  }
+};
+
 module.exports = {
   isSevere,
+  printAliases,
+  react,
   removeAccent,
-
 };
