@@ -18,4 +18,15 @@ describe('react helper', () => {
 
     expect(client.message.reply).toHaveBeenCalledTimes(1);
   });
+
+  test('with reactions but async problem occurs', async () => {
+    client.message.react.mockRejectedValue();
+
+    const reactions = ['📧', '📧'];
+
+    await react(client.message, reactions);
+
+    expect(client.message.reply).toHaveBeenCalledTimes(1);
+    expect(client.message.reply).toHaveBeenCalledTimes(1);
+  });
 });

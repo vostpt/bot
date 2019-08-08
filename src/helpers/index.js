@@ -59,7 +59,7 @@ const react = async (msg, reactions = []) => {
   }
 
   try {
-    await reactions.forEach(reaction => msg.react(reaction));
+    await Promise.all(reactions.map(reaction => msg.react(reaction)));
   } catch (e) {
     msg.reply('os comandos foram enviados por DM');
   }
