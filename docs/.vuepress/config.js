@@ -9,8 +9,8 @@ module.exports = {
   base: '/bot/',
   serviceWorker: true,
   locales: {
+    '/': pt,
     '/en/': en,
-    '/pt/': pt,
   },
   themeConfig: {
     repo: 'vostpt/bot',
@@ -19,8 +19,8 @@ module.exports = {
     lastUpdated: true,
     editLinks: true,
     locales: {
+      '/': PTthemeConfig,
       '/en/': ENthemeConfig,
-      '/pt/': PTthemeConfig,
     },
   },
 };
