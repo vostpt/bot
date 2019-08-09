@@ -26,7 +26,8 @@
     "test": "jest",
     "pretest": "eslint ./src/**/*.js",
     "start": "node src/app",
-    "build-docs": "vuepress build docs/"
+    "build:docs": "vuepress build docs",
+    "dev:docs": "vuepress dev docs"
   },
   "repository": {
     "type": "git",
