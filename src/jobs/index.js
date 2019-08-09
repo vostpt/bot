@@ -110,27 +110,34 @@ class Jobs {
     rule.second = 0;
 
     schedule.scheduleJob(rule, async () => {
-      const stats = await Fuel.getFuelStats();
+      const {
+        stations_all: stationsAll,
+        stations_none: stationsNone,
+        stations_no_diesel: stationsNoDiesel,
+        stations_no_gasoline: stationsNoGasoline,
+        stations_no_lpg: stationsNoLpg,
+        stations_partial: stationsPartial,
+        stations_total: stationsTotal,
+      } = await Fuel.getFuelStats();
 
       const actualTime = moment().format('H:mm');
 
-      const strHeader = `Estado às ${actualTime}`;
+      const messages = [
+        `Estado às ${actualTime}`,
+        `Total: ${stationsTotal}`,
+        'Visão geral',
+        ` - s/ qualquer tipo de combustível: ${stationsNone}`,
+        ` - c/ algum tipo de combustível: ${stationsPartial}`,
+        ` - c/ todos os tipos de combustível: ${stationsAll}`,
+        'Faltas p/ tipo de combustível',
+        ` - s/ gasolina: ${stationsNoGasoline}`,
+        ` - s/ gasóleo: ${stationsNoDiesel}`,
+        ` - s/ GPL: ${stationsNoLpg}`,
+      ];
 
-      const strStatsTotal = `Total: ${stats.stations_total}`;
+      const message = messages.join('\n');
 
-      const strGeneral = 'Visão geral';
-      const strStatsNone = ` - Sem qualquer tipo de combustível: ${stats.stations_none}`;
-      const strStatsPartial = ` - Com algum tipo de combustível: ${stats.stations_partial}`;
-      const strStatsAll = ` - Com todos os tipos de combustível: ${stats.stations_all}`;
-
-      const strFaultByType = 'Faltas por tipo de combustível';
-      const strNoGasoline = ` - Sem gasolina: ${stats.stations_no_gasoline}`;
-      const strNoDiesel = ` - Sem gasóleo: ${stats.stations_no_diesel}`;
-      const strNoLpg = ` - Sem GPL: ${stats.stations_no_lpg}`;
-
-      const strMessage = `${strHeader}\n${strStatsTotal}\n\n${strGeneral}\n${strStatsNone}\n${strStatsPartial}\n${strStatsAll}\n${strFaultByType}\n${strNoGasoline}\n${strNoDiesel}\n${strNoLpg}`;
-
-      clientTwitter.post('statuses/update', { status: `️ℹ️⛽#JáNãoDáParaAbastecer\n\n${strMessage}\n\n⛽ℹ️` });
+      clientTwitter.post('statuses/update', { status: `️ℹ️⛽#JáNãoDáParaAbastecer\n\n${message}\n\n⛽ℹ️` });
     });
   }
 
@@ -190,7 +197,7 @@ class Jobs {
           this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
           noticeableSensedEvents.forEach(event => sentEarthquakesNotifications.add(event));
 
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableSensedEvents.join('\n')}\n\nSentiste este sismo?⚠️ℹ️` });
+          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n(${noticeableSensedEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
         }
 
         if (noticeableEvents.length > 0) {
@@ -198,7 +205,7 @@ class Jobs {
           this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
           noticeableEvents.forEach(event => sentEarthquakesNotifications.add(event));
 
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n')}\n\nSentiste este sismo?⚠️ℹ️` });
+          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
         }
       });
     } catch (e) {
