@@ -65,9 +65,21 @@ const react = async (msg, reactions = []) => {
   }
 };
 
+/**
+ * Verify if provided string is base64 encoded or not
+ *
+ * @param {String} str
+ */
+const isBase64 = (str) => {
+  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+
+  return base64regex.test(str);
+};
+
 module.exports = {
   isSevere,
   printAliases,
   react,
   removeAccent,
+  isBase64,
 };

@@ -7,7 +7,7 @@ const {
   Fuel,
 } = require('../services');
 const { channels } = require('../../config/bot');
-const { clientTwitter } = require('../services/Twitter');
+const { clientTwitter, uploadTweetPhotos } = require('../services/Twitter');
 
 /**
  * Check if the earthquake level above threshold
@@ -135,9 +135,11 @@ class Jobs {
         ` - s/ GPL: ${stationsNoLpg}`,
       ];
 
-      const message = messages.join('\n');
+      const message = `ℹ️⛽#JáNãoDáParaAbastecer\n\n${messages.join('\n')}\n\n⛽ℹ️`;
 
-      clientTwitter.post('statuses/update', { status: `️ℹ️⛽#JáNãoDáParaAbastecer\n\n${message}\n\n⛽ℹ️` });
+      const graphBufferArray = await Fuel.getFuelScreenshot();
+
+      uploadTweetPhotos(message, graphBufferArray);
     });
   }
 

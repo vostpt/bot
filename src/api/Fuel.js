@@ -1,7 +1,13 @@
 const api = require('./api');
 
-const get = () => api.get('https://janaodaparaabastecer.vost.pt/storage/data/stats_global.json');
+const fuelUrl = 'https://janaodaparaabastecer.vost.pt';
+
+const fuelStatsUrl = `${fuelUrl}/graphs/stats`;
+
+const get = () => api.get(`${fuelUrl}/storage/data/stats_global.json`);
 
 module.exports = {
+  fuelUrl,
+  fuelStatsUrl,
   get,
 };
