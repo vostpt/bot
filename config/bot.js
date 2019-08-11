@@ -5,7 +5,6 @@ const channels = {
   FIRES_CHANNEL_ID: process.env.FIRES_CHANNEL_ID,
   WARNINGS_CHANNEL_ID: process.env.WARNINGS_CHANNEL_ID,
   TRIGGERS_CHANNEL_ID: process.env.TRIGGERS_CHANNEL_ID,
-  FUEL_CHANNEL_ID: process.env.FUEL_CHANNEL_ID,
 };
 
 const { COOLDOWN = "" } = process.env;
