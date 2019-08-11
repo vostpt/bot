@@ -28,7 +28,7 @@ const getFuelScreenshot = async () => {
   const page = await browser.newPage();
 
   await page.setJavaScriptEnabled(true);
-  await page.setViewport({ width: 1536, height: 400 });
+  await page.setViewport({ width: 1536, height: 450 });
   await page.goto(FuelApi.fuelStatsUrl, { waitUntil: 'networkidle0' });
 
   const bufStats1 = await page.screenshot({
@@ -46,7 +46,7 @@ const getFuelScreenshot = async () => {
       x: 768,
       y: 0,
       width: 768,
-      height: 400,
+      height: 450,
     },
     encoding: 'base64',
   });
