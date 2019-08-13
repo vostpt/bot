@@ -7,6 +7,7 @@
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
+    "express": "^4.17.1",
     "libsodium": "^0.7.4",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",

@@ -10,6 +10,14 @@ const commands = new Discord.Collection();
 const triggers = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 
+module.exports = {
+  client,
+};
+
+const botAPI = require('./rest');
+
+botAPI.kickstart();
+
 // Load commands
 fs.readdirSync('./src/commands')
   .filter(file => file.endsWith('.js'))
