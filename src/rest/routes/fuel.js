@@ -7,7 +7,7 @@ router.use(validateToken);
 
 router.post('/', async (req, res) => {
   const channel = channels.FUEL_CHANNEL_ID;
-  const message = req.param('');
+  const message = '';
 
   try {
     await client.channels.get(channel).send(message);
