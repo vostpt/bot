@@ -1,8 +1,13 @@
 const schedule = require('node-schedule');
 const moment = require('moment');
-const { Fires, Earthquakes, Warnings } = require('../services');
+const {
+  Fires,
+  Earthquakes,
+  Warnings,
+  Fuel,
+} = require('../services');
 const { channels } = require('../../config/bot');
-const { clientTwitter } = require('../services/Twitter');
+const { clientTwitter, uploadTweetPhotos } = require('../services/Twitter');
 
 /**
  * Check if the earthquake level above threshold
@@ -46,6 +51,7 @@ class Jobs {
     this.warnings();
     this.fireRisk();
 
+    Jobs.fuelStats();
     Jobs.resetSentNotifications();
   }
 
@@ -90,6 +96,50 @@ class Jobs {
       } catch (e) {
         //
       }
+    });
+  }
+
+  /**
+   * Get stats from 'Já Não Dá Para Abastecer' website
+   */
+  static fuelStats() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.hour = new schedule.Range(0, 23, 1);
+    rule.minute = 0;
+    rule.second = 0;
+
+    schedule.scheduleJob(rule, async () => {
+      const {
+        stations_all: stationsAll,
+        stations_none: stationsNone,
+        stations_no_diesel: stationsNoDiesel,
+        stations_no_gasoline: stationsNoGasoline,
+        stations_no_lpg: stationsNoLpg,
+        stations_partial: stationsPartial,
+        stations_total: stationsTotal,
+      } = await Fuel.getFuelStats();
+
+      const actualTime = moment().format('H:mm');
+
+      const messages = [
+        `Estado às ${actualTime}`,
+        `Total: ${stationsTotal}`,
+        'Visão geral',
+        ` - s/ qualquer tipo de combustível: ${stationsNone}`,
+        ` - c/ algum tipo de combustível: ${stationsPartial}`,
+        ` - c/ todos os tipos de combustível: ${stationsAll}`,
+        'Faltas p/ tipo de combustível',
+        ` - s/ gasolina: ${stationsNoGasoline}`,
+        ` - s/ gasóleo: ${stationsNoDiesel}`,
+        ` - s/ GPL: ${stationsNoLpg}`,
+      ];
+
+      const message = `ℹ️⛽#JáNãoDáParaAbastecer\n\n${messages.join('\n')}\n\n⛽ℹ️`;
+
+      const graphBufferArray = await Fuel.getFuelScreenshot();
+
+      uploadTweetPhotos(message, graphBufferArray);
     });
   }
 
@@ -149,7 +199,7 @@ class Jobs {
           this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
           noticeableSensedEvents.forEach(event => sentEarthquakesNotifications.add(event));
 
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableSensedEvents.join('\n')}\n\nSentiste este sismo?⚠️ℹ️` });
+          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n(${noticeableSensedEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
         }
 
         if (noticeableEvents.length > 0) {
@@ -157,7 +207,7 @@ class Jobs {
           this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
           noticeableEvents.forEach(event => sentEarthquakesNotifications.add(event));
 
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n')}\n\nSentiste este sismo?⚠️ℹ️` });
+          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
         }
       });
     } catch (e) {
