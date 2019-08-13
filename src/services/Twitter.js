@@ -18,6 +18,52 @@ const clientTwitter = new Twit({
 });
 
 /**
+* Post thread, each tweet can have text and photos or only text
+*
+* @async
+* @param {Array<Object>} tweetSeq
+*/
+const uploadThreadTwitter = (tweetSeq, tweetId = '') => {
+  if (tweetSeq.length === 0) {
+    return;
+  }
+
+  const tweetToSend = tweetSeq.shift();
+
+  const uploadedMedia = tweetToSend.media !== undefined
+    ? tweetToSend.media.map((filedata) => {
+      const fileContent = isBase64(filedata)
+        ? filedata
+        : fs.readFileSync(`${path.resolve('./src/images')}${path.sep}${filedata}`, { encoding: 'base64' });
+
+      return clientTwitter.post('media/upload', { media_data: fileContent });
+    })
+    : [];
+
+  Promise.all(uploadedMedia).then((results) => {
+    const mediaIds = results.map(({ data }) => {
+      const { media_id_string: mediaId } = data;
+
+      clientTwitter.post('media/metadata/create', { media_id: mediaId });
+
+      return mediaId;
+    });
+
+    const params = {
+      status: tweetToSend.status,
+      media_ids: mediaIds,
+      in_reply_to_status_id: tweetId,
+    };
+
+    clientTwitter.post('statuses/update', params, (err, data, response) => {
+      if (!err && response !== '') {
+        uploadThreadTwitter(tweetSeq, data.id_str);
+      }
+    });
+  });
+};
+
+/**
 * Post tweet with text and photos
 * photoData input can receive both file buffer or filename string arrays
 *
@@ -50,4 +96,5 @@ const uploadTweetPhotos = async (status, photoData) => {
 module.exports = {
   clientTwitter,
   uploadTweetPhotos,
+  uploadThreadTwitter,
 };
