@@ -10,13 +10,15 @@ const commands = new Discord.Collection();
 const triggers = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 
+/**
+ * Export the client object before requiring botAPI
+ * since we need access to it when loading
+ */
 module.exports = {
   client,
 };
 
-const botAPI = require('./rest');
-
-botAPI.kickstart();
+require('./rest').kickstart();
 
 // Load commands
 fs.readdirSync('./src/commands')
