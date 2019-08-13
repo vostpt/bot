@@ -8,12 +8,13 @@
     "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
     "express": "^4.17.1",
+    "helmet": "^3.20.0",
     "libsodium": "^0.7.4",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "node-schedule": "^1.3.2",
-    "twit": "^2.2.11",
-    "puppeteer": "^1.19.0"
+    "puppeteer": "^1.19.0",
+    "twit": "^2.2.11"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",

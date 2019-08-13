@@ -1,4 +1,5 @@
 const app = require('express')();
+const helmet = require('helmet');
 const fuelRoutes = require('./routes/fuel');
 
 const {
@@ -10,6 +11,8 @@ const kickstart = () => {
   if (!isActive) {
     return;
   }
+
+  app.use(helmet());
 
   app.use('/fuel', fuelRoutes);
 
