@@ -90,7 +90,7 @@ const getFileContent = (filedata) => {
   }
 
   return fs.readFileSync(`${path.resolve('./src/images')}${path.sep}${filedata}`, { encoding: 'base64' });
-}
+};
 
 module.exports = {
   isSevere,
