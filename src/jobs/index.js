@@ -139,7 +139,7 @@ class Jobs {
 
       const messageDisclaimer = 'ℹ️⛽#JáNãoDáParaAbastecer Dados recolhidos via input dos utilizadores da plataforma, exceto os dados da rede #PRIO, #OZEnergia, #Ecobrent, #Bxpress, e #Tfuel, que são fornecidos pela marcas automaticamente.⛽ℹ️';
 
-      const graphBufferArray = await Fuel.getFuelScreenshot();
+      const graphBufferArray = await Fuel.getFuelStatsGraphs();
 
       const twitterThreadData = [
         {
