@@ -1,4 +1,6 @@
 const moment = require('moment');
+const path = require('path');
+const fs = require('fs');
 const { prefix } = require('../../config/bot');
 
 moment.prototype.lastsLongerThan = function lastsLongerThan(amount, unit) {
@@ -76,10 +78,25 @@ const isBase64 = (str) => {
   return base64regex.test(str);
 };
 
+/**
+ * Get file content in base64 string
+ *
+ * @param {String} str
+ * @returns {String}
+ */
+const getFileContent = (filedata) => {
+  if (isBase64(filedata)) {
+    return filedata;
+  }
+
+  return fs.readFileSync(`${path.resolve('./src/images')}${path.sep}${filedata}`, { encoding: 'base64' });
+}
+
 module.exports = {
   isSevere,
   printAliases,
   react,
   removeAccent,
   isBase64,
+  getFileContent,
 };
