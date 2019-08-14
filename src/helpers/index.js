@@ -9,6 +9,12 @@ moment.prototype.lastsLongerThan = function lastsLongerThan(amount, unit) {
 
 const OCCURENCE_DATE_FORMAT = 'DD/MM HH:mm';
 
+/**
+ * Return if an occurrence meets a certain criteria to be considered severe.
+ *
+ * @param {Object} messageContent
+ * @returns {Boolean}
+ */
 const isSevere = (occurrence) => {
   const {
     d: date,
@@ -20,6 +26,12 @@ const isSevere = (occurrence) => {
   return (event.lastsLongerThan(1, 'hours') && operatives >= 50);
 };
 
+/**
+ * Remove accents inserted in a string.
+ *
+ * @param {String} messageContent
+ * @returns {String} strAccentsOut
+ */
 const removeAccent = (messageContent) => {
   const strAccents = messageContent.split('');
 
