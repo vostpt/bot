@@ -12,5 +12,12 @@
     "statusBar.background": "#f9e64f",
     "statusBarItem.hoverBackground": "#f7df1e",
     "statusBar.foreground": "#15202b"
-  }
+  },
+  "sqltools.connections": [
+    {
+      "database": "./data/db.dev.sqlite",
+      "dialect": "SQLite",
+      "name": "sqlite"
+    }
+  ]
 }

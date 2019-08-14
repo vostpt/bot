@@ -10,6 +10,8 @@ const { WarningsApi } = require('../api');
 const { clientTwitter, uploadTweetPhotos } = require('./Twitter');
 const { channels } = require('../../config/bot');
 
+const Models = require('../database/models');
+
 const iconsMap = new Map([
   [':dash:', '🌬'],
   [':sunny:️:thermometer:', '☀🌡'],
@@ -33,9 +35,37 @@ const DATE_FORMATS = {
  */
 const getAll = async () => {
   const { data: warnings = [] } = await WarningsApi.getNewWarnings();
-
   return warnings;
 };
+
+/**
+ * Fetch Ipma warnings from Vost API and store in the db
+ *
+ * @returns {Array} warnings
+ */
+const fetchApiIpmaWarnings = async () => {
+  const { data: data = [] } = await WarningsApi.getIpmaWarnings();
+
+  const warnings = data.data;
+
+  return Models.sequelize.transaction((t) => {
+    const promises = [];
+
+    for (let i = 0; i < warnings.length; i += 1) {
+      const newPromise = Models.IpmaWarnings.findOrCreate(
+        {
+          where: { uuid: warnings[i].id },
+          defaults: { uuid: warnings[i].id },
+          transaction: t,
+        },
+      );
+      promises.push(newPromise);
+    }
+
+    return Promise.all(promises);
+  });
+};
+
 
 /**
  * Returns array of updated meteo warnings
@@ -214,4 +244,5 @@ const getWarnings = async (client) => {
 module.exports = {
   getAll,
   getWarnings,
+  fetchApiIpmaWarnings,
 };

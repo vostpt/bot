@@ -69,7 +69,7 @@ class Jobs {
 
     rule.minute = new schedule.Range(0, 59, 10);
 
-    schedule.scheduleJob(rule, () => Warnings.getWarnings(this.client));
+    schedule.scheduleJob(rule, () => Warnings.fetchApiIpmaWarnings(this.client));
   }
 
   /**
