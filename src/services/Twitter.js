@@ -1,7 +1,7 @@
 const Twit = require('twit');
 const path = require('path');
 const fs = require('fs');
-const { isBase64 } = require('../helpers');
+const { getFileContent } = require('../helpers');
 
 const {
   TWITTER_CONSUMER_KEY,
@@ -18,10 +18,13 @@ const clientTwitter = new Twit({
 });
 
 /**
-* Post thread, each tweet can have text and photos or only text
+* Recursive function
+* Send a thread to Twitter 
+* Each tweet can have text and photos or only text
 *
 * @async
 * @param {Array<Object>} tweetSeq
+* @param {String} tweetId
 */
 const uploadThreadTwitter = (tweetSeq, tweetId = '') => {
   if (tweetSeq.length === 0) {
@@ -32,9 +35,7 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '') => {
 
   const uploadedMedia = tweetToSend.media !== undefined
     ? tweetToSend.media.map((filedata) => {
-      const fileContent = isBase64(filedata)
-        ? filedata
-        : fs.readFileSync(`${path.resolve('./src/images')}${path.sep}${filedata}`, { encoding: 'base64' });
+      const fileContent = getFileContent(filedata);
 
       return clientTwitter.post('media/upload', { media_data: fileContent });
     })
