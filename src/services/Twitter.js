@@ -1,7 +1,7 @@
 const Twit = require('twit');
 const path = require('path');
 const fs = require('fs');
-const { getFileContent } = require('../helpers');
+const { getFileContent, isBase64 } = require('../helpers');
 
 const {
   TWITTER_CONSUMER_KEY,
@@ -19,7 +19,7 @@ const clientTwitter = new Twit({
 
 /**
 * Recursive function
-* Send a thread to Twitter 
+* Send a thread to Twitter
 * Each tweet can have text and photos or only text
 *
 * @async

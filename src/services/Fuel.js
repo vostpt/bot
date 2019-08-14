@@ -36,7 +36,7 @@ const getFuelStatsGraphs = async () => {
   await pageEsri.setJavaScriptEnabled(true);
   await pageEsri.setViewport({ width: 1536, height: 768 });
   await pageEsri.goto(FuelApi.esriFuelStatsUrl, { waitUntil: 'networkidle0' });
-  
+
   const generalStatsGraph = await pageJndpa.screenshot({
     clip: {
       x: 0,
