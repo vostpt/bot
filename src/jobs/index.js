@@ -7,7 +7,7 @@ const {
   Fuel,
 } = require('../services');
 const { channels } = require('../../config/bot');
-const { clientTwitter, uploadTweetPhotos } = require('../services/Twitter');
+const { clientTwitter, uploadThreadTwitter } = require('../services/Twitter');
 
 /**
  * Check if the earthquake level above threshold
@@ -124,22 +124,34 @@ class Jobs {
 
       const messages = [
         `Estado às ${actualTime}`,
-        `Total: ${stationsTotal}`,
+        `Total postos na plataforma: ${stationsTotal}\n`,
         'Visão geral',
-        ` - s/ qualquer tipo de combustível: ${stationsNone}`,
-        ` - c/ algum tipo de combustível: ${stationsPartial}`,
-        ` - c/ todos os tipos de combustível: ${stationsAll}`,
+        ` ⛔ Sem combustível: ${stationsNone}`,
+        ` ⚠ Com 1 tipo de combustível: ${stationsPartial}`,
+        ` ✅ Sem restrições: ${stationsAll}`,
         'Faltas p/ tipo de combustível',
-        ` - s/ gasolina: ${stationsNoGasoline}`,
-        ` - s/ gasóleo: ${stationsNoDiesel}`,
-        ` - s/ GPL: ${stationsNoLpg}`,
+        ` - Gasolina: ${stationsNoGasoline}`,
+        ` - Gasóleo: ${stationsNoDiesel}`,
+        ` - GPL: ${stationsNoLpg}`,
       ];
 
-      const message = `ℹ️⛽#JáNãoDáParaAbastecer\n\n${messages.join('\n')}\n\n⛽ℹ️`;
+      const messageStats = `ℹ️⛽#JáNãoDáParaAbastecer\n${messages.join('\n')}\n⛽ℹ️`;
 
-      const graphBufferArray = await Fuel.getFuelScreenshot();
+      const messageDisclaimer = 'ℹ️⛽#JáNãoDáParaAbastecer Dados recolhidos via input dos utilizadores da plataforma, exceto os dados da rede #PRIO, #OZEnergia, #Ecobrent, #Bxpress, e #Tfuel, que são fornecidos pela marcas automaticamente.⛽ℹ️';
 
-      uploadTweetPhotos(message, graphBufferArray);
+      const graphBufferArray = await Fuel.getFuelStatsGraphs();
+
+      const twitterThreadData = [
+        {
+          status: messageStats,
+          media: graphBufferArray,
+        },
+        {
+          status: messageDisclaimer,
+        },
+      ];
+
+      uploadThreadTwitter(twitterThreadData);
     });
   }
 

@@ -1,7 +1,7 @@
 const Twit = require('twit');
 const path = require('path');
 const fs = require('fs');
-const { isBase64 } = require('../helpers');
+const { getFileContent, isBase64 } = require('../helpers');
 
 const {
   TWITTER_CONSUMER_KEY,
@@ -16,6 +16,53 @@ const clientTwitter = new Twit({
   access_token: TWITTER_ACCESS_TOKEN_KEY,
   access_token_secret: TWITTER_ACCESS_TOKEN_SECRET,
 });
+
+/**
+* Recursive function
+* Send a thread to Twitter
+* Each tweet can have text and photos or only text
+*
+* @async
+* @param {Array<Object>} tweetSeq
+* @param {String} tweetId
+*/
+const uploadThreadTwitter = (tweetSeq, tweetId = '') => {
+  if (tweetSeq.length === 0) {
+    return;
+  }
+
+  const tweetToSend = tweetSeq.shift();
+
+  const uploadedMedia = tweetToSend.media !== undefined
+    ? tweetToSend.media.map((filedata) => {
+      const fileContent = getFileContent(filedata);
+
+      return clientTwitter.post('media/upload', { media_data: fileContent });
+    })
+    : [];
+
+  Promise.all(uploadedMedia).then((results) => {
+    const mediaIds = results.map(({ data }) => {
+      const { media_id_string: mediaId } = data;
+
+      clientTwitter.post('media/metadata/create', { media_id: mediaId });
+
+      return mediaId;
+    });
+
+    const params = {
+      status: tweetToSend.status,
+      media_ids: mediaIds,
+      in_reply_to_status_id: tweetId,
+    };
+
+    clientTwitter.post('statuses/update', params, (err, data, response) => {
+      if (!err && response !== '') {
+        uploadThreadTwitter(tweetSeq, data.id_str);
+      }
+    });
+  });
+};
 
 /**
 * Post tweet with text and photos
@@ -50,4 +97,5 @@ const uploadTweetPhotos = async (status, photoData) => {
 module.exports = {
   clientTwitter,
   uploadTweetPhotos,
+  uploadThreadTwitter,
 };

@@ -13,25 +13,31 @@ const getFuelStats = async () => {
 };
 
 /**
-* Take screenshot from website
+* Take graphs screenshot from 'Já Não Dá Para Abastecer' website
 *
 * @async
 * @param {String} url
 * @param {String} photoFilePath
 * @param {Object} customSettings
 */
-const getFuelScreenshot = async () => {
+const getFuelStatsGraphs = async () => {
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
-  const page = await browser.newPage();
+  const pageJndpa = await browser.newPage();
 
-  await page.setJavaScriptEnabled(true);
-  await page.setViewport({ width: 1536, height: 450 });
-  await page.goto(FuelApi.fuelStatsUrl, { waitUntil: 'networkidle0' });
+  await pageJndpa.setJavaScriptEnabled(true);
+  await pageJndpa.setViewport({ width: 1536, height: 450 });
+  await pageJndpa.goto(FuelApi.fuelStatsUrl, { waitUntil: 'networkidle0' });
 
-  const bufStats1 = await page.screenshot({
+  const pageEsri = await browser.newPage();
+
+  await pageEsri.setJavaScriptEnabled(true);
+  await pageEsri.setViewport({ width: 1536, height: 768 });
+  await pageEsri.goto(FuelApi.esriFuelStatsUrl, { waitUntil: 'networkidle0' });
+
+  const generalStatsGraph = await pageJndpa.screenshot({
     clip: {
       x: 0,
       y: 0,
@@ -41,7 +47,7 @@ const getFuelScreenshot = async () => {
     encoding: 'base64',
   });
 
-  const bufStats2 = await page.screenshot({
+  const aggTotalsGraph = await pageJndpa.screenshot({
     clip: {
       x: 768,
       y: 0,
@@ -51,12 +57,22 @@ const getFuelScreenshot = async () => {
     encoding: 'base64',
   });
 
+  const arcgisGraph = await pageEsri.screenshot({
+    clip: {
+      x: 0,
+      y: 0,
+      width: 1536,
+      height: 768,
+    },
+    encoding: 'base64',
+  });
+
   await browser.close();
 
-  return [bufStats1, bufStats2];
+  return [generalStatsGraph, aggTotalsGraph, arcgisGraph];
 };
 
 module.exports = {
   getFuelStats,
-  getFuelScreenshot,
+  getFuelStatsGraphs,
 };
