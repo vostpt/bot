@@ -107,7 +107,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
       strWarning += `#${local}`;
     } else {
       places.forEach(({ local }, index) => {
-        switch (places.length - index) {
+        switch (numPlaces - index) {
           case 1:
             strWarning += `e #${local}`;
             break;
