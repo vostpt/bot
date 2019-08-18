@@ -51,7 +51,6 @@ class Jobs {
     this.warnings();
     this.fireRisk();
 
-    Jobs.fuelStats();
     Jobs.resetSentNotifications();
   }
 
