@@ -31,12 +31,12 @@ moment.locale(locale);
 
 moment.updateLocale(locale, {
   calendar: {
-    lastDay: 'HH:mm [de ontem]',
-    sameDay: 'HH:mm [de hoje]',
-    nextDay: 'HH:mm [de amanhã]',
-    lastWeek: 'HH:mm [do dia]',
-    nextWeek: 'HH:mm [do dia]',
-    sameElse: 'HH:mm [do dia]',
+    lastDay: 'HH:mm[h de ontem]',
+    sameDay: 'HH:mm[h de hoje]',
+    nextDay: 'HH:mm[h de amanhã]',
+    lastWeek: 'HH:mm[h do dia]',
+    nextWeek: 'HH:mm[h do dia]',
+    sameElse: 'HH:mm[h do dia]',
   },
 });
 
@@ -87,11 +87,19 @@ const getWarningsZones = (warningsZone, zone, client) => {
     const strBeginDate = beginTime.format('DDMMMYY').toUpperCase();
     const strEndDate = endTime.format('DDMMMYY').toUpperCase();
 
-    const strTime = beginTime.isSame(endTime, 'day')
-      ? `${strBeginHour} e as ${endTime.calendar(actualTime)} ${strBeginDate}`
-      : `${beginTime.calendar(actualTime)} ${strBeginDate} e as ${endTime.calendar(actualTime)} ${strEndDate}`;
+    const strTime = (() => {
+      if (beginTime.isAfter(actualTime)) {
+        return `até às ${endTime.calendar(actualTime)} ${strEndDate}`;
+      }
 
-    strWarning += `#Aviso${level} devido a #${weatherType} entre as ${strTime} para `;
+      if (beginTime.isSame(endTime, 'day')) {
+        return `entre as ${strBeginHour}h e as ${endTime.calendar(actualTime)} ${strEndDate}`;
+      }
+
+      return `entre as ${beginTime.calendar(actualTime)} ${strBeginDate} e as ${endTime.calendar(actualTime)} ${strEndDate}`;
+    });
+
+    strWarning += `#Aviso${level} devido a #${weatherType} ${strTime()} para `;
 
     const numPlaces = places.length;
 
