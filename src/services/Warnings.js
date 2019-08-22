@@ -90,7 +90,9 @@ const getWarningsZones = (warningsZone, zone, client) => {
     const strTime = (() => {
       if (beginTime.isAfter(actualTime)) {
         return `até às ${endTime.calendar(actualTime)} ${strEndDate}`;
-      } if (beginTime.isSame(endTime, 'day')) {
+      }
+      
+      if (beginTime.isSame(endTime, 'day')) {
         return `entre as ${strBeginHour}h e as ${endTime.calendar(actualTime)} ${strEndDate}`;
       }
       return `entre as ${beginTime.calendar(actualTime)} ${strBeginDate} e as ${endTime.calendar(actualTime)} ${strEndDate}`;
