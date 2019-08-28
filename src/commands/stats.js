@@ -1,7 +1,7 @@
 const {
   Prociv,
 } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 
 module.exports = {
   active: true,
@@ -9,7 +9,7 @@ module.exports = {
   cooldown,
   name: 'stats',
   usage: `
-    **!stats** - *Mostra o número total de meios envolvidos nas ocorrências, descriminado por estado.*
+    **${prefix}stats** - *Mostra o número total de meios envolvidos nas ocorrências, descriminado por estado.*
   `,
 
   /**

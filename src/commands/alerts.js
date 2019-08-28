@@ -1,5 +1,5 @@
 const { Warnings } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 
 module.exports = {
   active: true,
@@ -7,7 +7,7 @@ module.exports = {
   cooldown,
   name: 'alerts',
   usage: `
-    **!alerts**
+    **${prefix}alerts**
   `,
 
   /**

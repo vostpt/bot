@@ -17,9 +17,9 @@ module.exports = {
   cooldown,
   name: 'vostia',
   usage: `
-    **${prefix}${this.name} start activation <activation_name>** - Só disponível para Founders
-    **${prefix}${this.name} stop activation <activation_name>** - Só disponível para Founders
-    **${prefix}${this.name} stats activation <activation name>**
+    **${prefix}vostia start activation <activation_name>** - Só disponível para Founders
+    **${prefix}vostia stop activation <activation_name>** - Só disponível para Founders
+    **${prefix}vostia stats activation <activation name>**
   `,
 
   /**

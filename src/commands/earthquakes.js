@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { Earthquakes } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 
 module.exports = {
   active: true,
@@ -8,7 +8,7 @@ module.exports = {
   cooldown,
   name: 'sismos',
   usage: `
-    **!sismos [data]** - Retorna informação acerca de sismos ocorridos na data específicada: Formato da data: dd/mm/aaaa
+    **${prefix}sismos [data]** - Retorna informação acerca de sismos ocorridos na data específicada: Formato da data: dd/mm/aaaa
   `,
 
   /**

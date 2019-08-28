@@ -4,7 +4,7 @@ const {
   Fires,
 } = require('../services');
 const { isSevere, react } = require('../helpers');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 
 module.exports = {
   active: true,
@@ -19,10 +19,10 @@ module.exports = {
   cooldown,
   name: 'all',
   usage: `
-    **!all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*
-    **!all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*
-    **!all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*
-    **!all important** - *Mostra todas as ocorrências marcadas como importantes na ProCivApi.*
+    **${prefix}all** - *Mostra todas as ocorrências em estado de despacho, em curso ou em resolução.*
+    **${prefix}all [human|ground|air] [numero_filtrar]** - *Igual ao anterior mas com filtro.*
+    **${prefix}all links** - *Mostra todas as ocorrências e o link para o fogos.pt em estado de despacho, em curso ou em resolução.*
+    **${prefix}all important** - *Mostra todas as ocorrências marcadas como importantes na ProCivApi.*
   `,
 
   /**

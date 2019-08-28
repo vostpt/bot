@@ -1,5 +1,5 @@
 const Fires = require('../services/Fires');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
   cooldown,
   name: 'rcm',
   usage: `
-    **!rcm hoje**
+    **${prefix}rcm hoje**
   `,
 
   /**

@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { Sns } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 
 module.exports = {
   active: true,
@@ -8,8 +8,8 @@ module.exports = {
   cooldown,
   name: 'sns24',
   usage: `
-      **!sns24 alerts** - *Mostra os alertas do sns.*
-    `,
+    **${prefix}sns24 alerts** - *Mostra os alertas do sns.*
+  `,
 
   /**
   * Send to Discord SNS24 alerts.

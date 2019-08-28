@@ -1,4 +1,4 @@
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 const { react } = require('../helpers');
 
 const siblings = [
@@ -30,9 +30,9 @@ module.exports = {
   cooldown,
   name: 'vost',
   usage: `
-    **!vost registo** - *Mostra o link para inscrição de novos voluntários.*
-    **!vost rs** - *Links das Redes Sociais do VOST Portugal.*
-    **!vost irmaos** - *Lista de twitter com as contas VOST europeias.*
+    **${prefix}vost registo** - *Mostra o link para inscrição de novos voluntários.*
+    **${prefix}vost rs** - *Links das Redes Sociais do VOST Portugal.*
+    **${prefix}vost irmaos** - *Lista de twitter com as contas VOST europeias.*
   `,
 
   /**

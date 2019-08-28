@@ -1,5 +1,5 @@
 const { Weather } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, prefix } = require('../../config/bot');
 
 const rowsPerMessage = 15;
 
@@ -9,8 +9,8 @@ module.exports = {
   cooldown,
   name: 'weather',
   usage: `
-    **!weather** - *Mostra a meteorologia do dia atual.*
-    **!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*
+    **${prefix}weather** - *Mostra a meteorologia do dia atual.*
+    **${prefix}weather tomorrow** - *Mostra a meteorologia do dia seguinte.*
   `,
 
   /**
