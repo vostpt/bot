@@ -62,11 +62,11 @@ module.exports = {
         const duration = moment.duration(moment().diff(activation.start)).humanize();
 
         message.reply(`${activationName} a decorrer há ${duration}, desde ${activation.start}`);
-
-        return;
+      } else {
+        message.reply(`${activationName} começou às ${activation.start} e terminou às ${activation.stop} tendo durado ${activation.duration}.`);
       }
 
-      message.reply(`${activationName} começou às ${activation.start} e terminou às ${activation.stop} tendo durado ${activation.duration}.`);
+      return;
     }
 
     const allowedRole = message.guild.roles.find(({ name }) => name === 'admins');
