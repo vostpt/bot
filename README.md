@@ -1,6 +1,7 @@
 # VOSTPT Discord bot
 
 [![Build Status](https://travis-ci.com/vostpt/bot.svg?branch=master)](https://travis-ci.com/vostpt/bot)
+[![Coverage Status](https://coveralls.io/repos/github/vostpt/bot/badge.svg?branch=feature/code-coverage)](https://coveralls.io/github/vostpt/bot?branch=feature/code-coverage)
 
 # Installation
 Before anything else, install the dependencies:
@@ -21,7 +22,7 @@ Create a `.env` file in the project root.
 ```sh
 cp .env.example .env
 ```
- 
+
 Add and replace values where needed:
 
 ```
@@ -50,7 +51,7 @@ TWITTER_ACCESS_TOKEN_SECRET=
 
 # Running
 If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
- 
+
 ```sh
 npm start
 ```
