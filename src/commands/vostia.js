@@ -69,7 +69,7 @@ module.exports = {
       return;
     }
 
-    const allowedRole = message.guild.roles.find(({ name }) => name === 'admins');
+    const allowedRole = message.guild.roles.find(({ name }) => name === 'Founders');
 
     if (!allowedRole) {
       return;
