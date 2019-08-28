@@ -1,6 +1,7 @@
 # VOSTPT Discord bot
 
 [![Build Status](https://travis-ci.com/vostpt/bot.svg?branch=master)](https://travis-ci.com/vostpt/bot)
+[![Coverage Status](https://coveralls.io/repos/github/vostpt/bot/badge.svg?branch=feature/code-coverage)](https://coveralls.io/github/vostpt/bot?branch=feature/code-coverage)
 
 ## Installation
 Before anything else, install the dependencies:
