@@ -63,7 +63,13 @@ const message = async (client, msg) => {
         .filter(({ active }) => active)
         .map(({ usage }) => usage);
 
-      msg.author.send(`***Comandos:***\n${commandUsage.join('')}`);
+      // split commands' usage 5 at a time
+      const commands = [];
+      for (let i = 0; i < commandUsage.length; i += 5) {
+        commands.push(commandUsage.slice(i, i + 5).join('\n'));
+      }
+
+      commands.forEach(info => msg.author.send(info));
 
       react(msg, ['📧', '📥']);
     }
