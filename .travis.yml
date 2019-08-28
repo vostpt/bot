@@ -11,3 +11,9 @@ sudo: false
 
 env:
   - export TWITTER_CONSUMER_KEY='dummy' TWITTER_CONSUMER_SECRET='dummy' TWITTER_ACCESS_TOKEN_KEY='dummy' TWITTER_ACCESS_TOKEN_SECRET='dummy'
+
+jobs:
+  include:
+    - stage: Produce Coverage
+      node_js: node
+      script: jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage
