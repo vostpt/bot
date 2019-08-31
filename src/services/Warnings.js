@@ -88,7 +88,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
     const strEndDate = endTime.format('DDMMMYY').toUpperCase();
 
     const strTime = (() => {
-      if (beginTime.isAfter(actualTime)) {
+      if (beginTime.isBefore(actualTime)) {
         return `até às ${endTime.calendar(actualTime)} ${strEndDate}`;
       }
 
