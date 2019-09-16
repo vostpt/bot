@@ -12,6 +12,11 @@ const api = {
 
     return fetch(url, options).then(data => data.json()).then(data => ({ data }));
   },
+  getText(url, customOptions = {}) {
+    const options = { ...defaultOptions, ...customOptions };
+
+    return fetch(url, options).then(data => data.text());
+  },
 };
 
 module.exports = api;

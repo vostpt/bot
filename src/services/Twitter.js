@@ -94,8 +94,37 @@ const uploadTweetPhotos = async (status, photoData) => {
   });
 };
 
+/**
+* Retweet last fogos.pt tweet
+*
+* @async
+* @param {String} tweetText
+*/
+const retweetLastFogosTweet = async (tweetText = '') => {
+  const params = {
+    screen_name: 'FogosPt',
+    count: '20',
+  };
+
+  clientTwitter.get('statuses/user_timeline', params, (err, data, response) => {
+    if (!err && response !== '') {
+      const tweet = data.find(tweet => tweet.text.includes(tweetText));
+
+      const tweetId = tweet.id_str;
+
+      const params = {
+        id: tweetId,
+        trim_user: true,
+      };
+
+      clientTwitter.post('statuses/retweet/:id', params);
+    }
+  });
+};
+
 module.exports = {
   clientTwitter,
   uploadTweetPhotos,
   uploadThreadTwitter,
+  retweetLastFogosTweet,
 };

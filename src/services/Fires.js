@@ -1,6 +1,7 @@
 const { FireApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { isSevere } = require('../helpers');
+const { retweetLastFogosTweet } = require('./Twitter');
 
 const EVENT_TYPES = {
   GENERAL: '1',
@@ -124,9 +125,24 @@ const getForestFires = async (client) => {
 
 const getMap = () => 'http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/RCM24_conc.jpg';
 
+const tweetFogosPt = async () => {
+  const result = await FireApi.tweetFogosPt();
+
+  const beginAfterStr = 'SENDING =>';
+  const firstPos = result.lastIndexOf(beginAfterStr) + beginAfterStr.length;
+
+  const endBeforeStr = ' https://fogos.pt #FogosPT';
+  const lastPos = result.lastIndexOf(endBeforeStr);
+
+  const tweetWithoutLink = result.slice(firstPos, lastPos);
+
+  retweetLastFogosTweet(tweetWithoutLink);
+};
+
 module.exports = {
   getByDistrict,
   getForestFires,
   getImportantForestFires,
   getMap,
+  tweetFogosPt,
 };
