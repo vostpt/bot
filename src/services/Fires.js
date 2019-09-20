@@ -125,6 +125,9 @@ const getForestFires = async (client) => {
 
 const getMap = () => 'http://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/RCM24_conc.jpg';
 
+/**
+ * Tweet stats in fogos.pt account, then retweet in VOST PT account
+ */
 const tweetFogosPt = async () => {
   const result = await FireApi.tweetFogosPt();
 
