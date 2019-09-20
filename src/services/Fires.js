@@ -1,7 +1,7 @@
 const { FireApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { isSevere } = require('../helpers');
-const { retweetLastFogosTweet } = require('./Twitter');
+const { retweetFogosPtStatTweet } = require('./Twitter');
 
 const EVENT_TYPES = {
   GENERAL: '1',
@@ -136,7 +136,7 @@ const tweetFogosPt = async () => {
 
   const tweetWithoutLink = result.slice(firstPos, lastPos);
 
-  retweetLastFogosTweet(tweetWithoutLink);
+  retweetFogosPtStatTweet(tweetWithoutLink);
 };
 
 module.exports = {

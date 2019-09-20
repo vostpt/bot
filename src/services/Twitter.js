@@ -100,13 +100,13 @@ const uploadTweetPhotos = async (status, photoData) => {
 * @async
 * @param {String} tweetText
 */
-const retweetLastFogosTweet = async (tweetText = '') => {
-  const params = {
+const retweetFogosPtStatTweet = async (tweetText = '') => {
+  const searchParams = {
     screen_name: 'FogosPt',
     count: '20',
   };
 
-  clientTwitter.get('statuses/user_timeline', params, (err, data, response) => {
+  clientTwitter.get('statuses/user_timeline', searchParams, (err, data, response) => {
     if (!err && response !== '') {
       const tweet = data.find(tweet => tweet.text.includes(tweetText));
 
@@ -126,5 +126,5 @@ module.exports = {
   clientTwitter,
   uploadTweetPhotos,
   uploadThreadTwitter,
-  retweetLastFogosTweet,
+  retweetFogosPtStatTweet,
 };
