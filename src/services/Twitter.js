@@ -108,9 +108,9 @@ const retweetFogosPtStatTweet = async (tweetText = '') => {
 
   clientTwitter.get('statuses/user_timeline', searchParams, (err, data, response) => {
     if (!err && response !== '') {
-      const tweet = data.find(tweet => tweet.text.includes(tweetText));
+      const statTweet = data.find(tweet => tweet.text.includes(tweetText));
 
-      const tweetId = tweet.id_str;
+      const tweetId = statTweet.id_str;
 
       const params = {
         id: tweetId,
