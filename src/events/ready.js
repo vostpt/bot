@@ -1,5 +1,6 @@
 const Jobs = require('../jobs');
 const { locale } = require('../../config/locale');
+const { betaMode } = require('../../config/bot');
 
 /**
 * Start bot scheduled jobs
@@ -7,7 +8,13 @@ const { locale } = require('../../config/locale');
 * @param {Client} client
 */
 const ready = (client) => {
-  (new Jobs(client)).startAll();
+  if (!betaMode) {
+    (new Jobs(client)).startProd();
+  } else {
+    (new Jobs(client)).startBeta();
+    // eslint-disable-next-line no-console
+    console.log('Beta mode enabled');
+  }
 
   const currentDate = new Date().toLocaleString(locale);
 
