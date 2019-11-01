@@ -42,14 +42,20 @@ class Jobs {
   }
 
   /**
-   * Start all jobs
+   * Start all production (non-beta) jobs
    */
-  startAll() {
+  startProd() {
     this.forestFires();
-    this.earthquakes();
-    this.noticeableEarthquakes({ threshold: 2.5 });
     this.warnings();
     this.fireRisk();
+  }
+
+  /**
+   * Start all beta jobs
+   */
+  startBeta() {
+    this.earthquakes();
+    this.noticeableEarthquakes({ threshold: 2.5 });
 
     Jobs.resetSentNotifications();
   }
