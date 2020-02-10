@@ -84,6 +84,10 @@ const message = async (client, msg) => {
       return;
     }
 
+    if (command.limitToChannels && command.limitToChannels.length > 0 && !command.limitToChannels.includes(channelId)) {
+      return;
+    }
+
     if (!command.active) {
       msg.author.send(`O comando *${prefix}${commandName}* encontra-se desativado.`);
 
