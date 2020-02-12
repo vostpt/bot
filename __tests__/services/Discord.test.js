@@ -50,9 +50,9 @@ describe('Send message to channel', () => {
     expect(client.message.channel.send).toHaveBeenCalledTimes(2);
   });
   test('Message with > 4000 and < 6000 characters', () => {
-    DiscordService.sendMessageToChannel(client.message, largeMessage.concat(largeMessage));
+    DiscordService.sendMessageToChannel(client.message.channel, largeMessage.concat(largeMessage));
 
-    expect(client.message.reply).toHaveBeenCalledTimes(3);
+    expect(client.message.channel.send).toHaveBeenCalledTimes(3);
   });
 });
 
