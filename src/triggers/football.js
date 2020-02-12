@@ -1,6 +1,12 @@
+const { channels } = require('../../config/bot');
+
 module.exports = {
   name: 'football',
   description: 'Football related replies',
+  limitToChannels: [
+    channels.TRIGGERS_CHANNEL_ID,
+    channels.VOLUNTEERS_CHANNEL_ID,
+  ],
 
   /**
   * Send to Discord a custom message according to football club

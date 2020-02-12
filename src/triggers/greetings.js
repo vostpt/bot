@@ -1,4 +1,5 @@
 const moment = require('moment');
+const { channels } = require('../../config/bot');
 const { removeAccent } = require('../helpers');
 
 const PERSONAL_MESSAGES = {
@@ -44,6 +45,10 @@ const GREETINGS_BOA_NOITE = [
 module.exports = {
   name: 'greetings',
   description: 'Greeting people',
+  limitToChannels: [
+    channels.TRIGGERS_CHANNEL_ID,
+    channels.VOLUNTEERS_CHANNEL_ID,
+  ],
 
   /**
   * Send to Discord a greeting message according to time and/or user,
