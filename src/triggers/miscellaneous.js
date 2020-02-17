@@ -1,6 +1,12 @@
+const { channels } = require('../../config/bot');
+
 module.exports = {
   name: 'Miscellaneous',
   description: 'Miscellaneous things',
+  limitToChannels: [
+    channels.TRIGGERS_CHANNEL_ID,
+    channels.VOLUNTEERS_CHANNEL_ID,
+  ],
 
   /**
   * Send to Discord a custom message according to the trigger or the content of the message
