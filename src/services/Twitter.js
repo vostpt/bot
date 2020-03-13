@@ -77,6 +77,8 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
 */
 
 const sendNewTweets = async (client, reference, screenName, data) => {
+  data.pop();
+
   if (data.length > 0) {
     const tweetIds = data.map(tweet => tweet.id);
 
