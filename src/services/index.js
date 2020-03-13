@@ -7,6 +7,7 @@ const Sns = require('./Sns');
 const Winds = require('./Winds');
 const Weather = require('./Weather');
 const Fuel = require('./Fuel');
+const Discord = require('./Discord');
 
 module.exports = {
   Acronyms,
@@ -18,4 +19,5 @@ module.exports = {
   Winds,
   Weather,
   Fuel,
+  Discord,
 };
