@@ -8,6 +8,7 @@ const Winds = require('./Winds');
 const Weather = require('./Weather');
 const Fuel = require('./Fuel');
 const Discord = require('./Discord');
+const Twitter = require('./Twitter');
 
 module.exports = {
   Acronyms,
@@ -20,4 +21,5 @@ module.exports = {
   Weather,
   Fuel,
   Discord,
+  Twitter,
 };
