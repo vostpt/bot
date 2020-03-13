@@ -7,6 +7,7 @@ const channels = {
   TRIGGERS_CHANNEL_ID: process.env.TRIGGERS_CHANNEL_ID,
   MGMT_CHANNEL_ID: process.env.MGMT_CHANNEL_ID,
   VOLUNTEERS_CHANNEL_ID: process.env.VOLUNTEERS_CHANNEL_ID,
+  TWFEED_CHANNEL_ID: process.env.TWFEED_CHANNEL_ID,
 };
 
 const { COOLDOWN = '' } = process.env;
