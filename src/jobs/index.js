@@ -5,6 +5,7 @@ const {
   Earthquakes,
   Warnings,
   Fuel,
+  Twitter,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter, uploadThreadTwitter } = require('../services/Twitter');
@@ -48,6 +49,7 @@ class Jobs {
     this.forestFires();
     this.warnings();
     this.fireRisk();
+    this.getTweets();
   }
 
   /**
@@ -157,6 +159,19 @@ class Jobs {
       ];
 
       uploadThreadTwitter(twitterThreadData);
+    });
+  }
+
+  /**
+   * Update new tweets made by VOST accounts
+   */
+  getTweets() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(1, 59, 1);
+
+    schedule.scheduleJob(rule, () => {
+      Twitter.getVostTweets(this.client);
     });
   }
 
