@@ -1,3 +1,4 @@
+const { channels } = require('../../config/bot');
 const { removeAccent } = require('../helpers');
 
 const LOUSY_WORDS = [
@@ -12,7 +13,9 @@ const LOUSY_WORDS = [
 module.exports = {
   name: 'lousy language',
   description: 'Avoid lousy language',
-  limitToChannels: [],
+  limitToChannels: [
+    channels.TRIGGERS_CHANNEL_ID,
+  ],
 
   /**
   * Send to Discord a message when someone uses lousy language in the server
