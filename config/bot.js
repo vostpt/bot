@@ -8,6 +8,7 @@ const channels = {
   MGMT_CHANNEL_ID: process.env.MGMT_CHANNEL_ID,
   VOLUNTEERS_CHANNEL_ID: process.env.VOLUNTEERS_CHANNEL_ID,
   TWFEED_CHANNEL_ID: process.env.TWFEED_CHANNEL_ID,
+  DGSCORONA_CHANNEL_ID: process.env.DGSCORONA_CHANNEL_ID,
 };
 
 const { COOLDOWN = '' } = process.env;

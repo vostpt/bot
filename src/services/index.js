@@ -9,6 +9,7 @@ const Weather = require('./Weather');
 const Fuel = require('./Fuel');
 const Discord = require('./Discord');
 const Twitter = require('./Twitter');
+const Corona = require('./Corona');
 
 module.exports = {
   Acronyms,
@@ -22,4 +23,5 @@ module.exports = {
   Fuel,
   Discord,
   Twitter,
+  Corona,
 };
