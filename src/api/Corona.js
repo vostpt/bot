@@ -7,14 +7,19 @@ const { ftpCorona } = require('../../config/ftp');
 const dgsReports = 'https://covid19.min-saude.pt/relatorio-de-situacao/';
 
 const getReports = async () => {
+  const data = [];
   const pageHtml = await api.getHtml(dgsReports);
 
   const $ = cheerio.load(pageHtml);
 
-  return $('.single_content ul li').map((i, elem) => ({
-    link: $(elem).find('a').prop('href'),
-    title: $(elem).text(),
-  }));
+  $('.single_content ul li').each((i, elem) => {
+    data.push({
+      link: $(elem).find('a').prop('href'),
+      title: $(elem).text(),
+    });
+  });
+
+  return data;
 };
 
 const uploadToFtp = async (report) => {
