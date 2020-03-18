@@ -12,6 +12,9 @@ const api = {
 
     return fetch(url, options).then(data => data.json()).then(data => ({ data }));
   },
+  getHtml(url) {
+    return fetch(url).then(res => res.text());
+  },
 };
 
 module.exports = api;
