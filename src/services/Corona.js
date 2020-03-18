@@ -49,7 +49,7 @@ const updateReports = async (client) => {
 
   db.CoronaReports.bulkCreate(newReports);
 
-  const channel = client.channels.get(channels.EARTHQUAKES_CHANNEL_ID);
+  const channel = client.channels.get(channels.DGSCORONA_CHANNEL_ID);
 
   const startMessage = '**Novo relatório de situação:**';
 
