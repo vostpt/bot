@@ -45,7 +45,7 @@ const updateReports = async (client) => {
 
   const newSearchResults = await Promise.all(reports.map(report => reportNotInDb(report)));
 
-  const newReports = reports.filter(((_report, i) => newSearchResults[i]));
+  const newReports = reports.filter((_report, i) => newSearchResults[i]);
 
   db.CoronaReports.bulkCreate(newReports);
 
@@ -53,10 +53,12 @@ const updateReports = async (client) => {
 
   const startMessage = '**Novo relatório de situação:**';
 
-  newReports.forEach((report) => {
+  newReports.forEach(async (report) => {
     const repMessage = `${startMessage}\n${report.title}`;
 
     sendMessageToChannel(channel, repMessage, report.link);
+
+    CoronaApi.uploadToFtp(report);
   });
 };
 

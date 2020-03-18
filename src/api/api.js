@@ -15,6 +15,9 @@ const api = {
   getHtml(url) {
     return fetch(url).then(res => res.text());
   },
+  getFileStream(url) {
+    return fetch(url).then(res => res.body);
+  },
 };
 
 module.exports = api;
