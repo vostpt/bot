@@ -12,14 +12,16 @@ const splitMessageString = (msgString) => {
   let lastSentCharacter = 0;
   const msgStringLength = msgString.length;
 
+  const charLimit = 1950;
+
   while (lastSentCharacter < msgStringLength) {
-    if (msgStringLength - lastSentCharacter > 2000) {
-      const nextMessageSubset = msgString.substr(lastSentCharacter, lastSentCharacter + 2000);
+    if (msgStringLength - lastSentCharacter > charLimit) {
+      const nextMessageSubset = msgString.substr(lastSentCharacter, lastSentCharacter + charLimit);
 
       const lastNewLinePos = nextMessageSubset.lastIndexOf('\n');
 
       const finalStrSubsetPos = lastNewLinePos < 0
-        ? lastSentCharacter + 2000
+        ? lastSentCharacter + charLimit
         : lastNewLinePos;
 
       const messageToSend = nextMessageSubset.substr(0, finalStrSubsetPos);
@@ -41,11 +43,16 @@ const splitMessageString = (msgString) => {
 *
 * @param {Object} channel
 * @param {String} message
+* @param {String} fileUrl
 */
-const sendMessageToChannel = (channel, message) => {
+const sendMessageToChannel = (channel, message, fileUrl = undefined) => {
   const messageArray = splitMessageString(message);
 
   messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
+
+  if (fileUrl) {
+    channel.send({ files: [fileUrl] });
+  }
 };
 
 /**
