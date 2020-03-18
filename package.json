@@ -18,7 +18,8 @@
     "sequelize": "^5.21.3",
     "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.1",
-    "npx": "^10.2.2"
+    "npx": "^10.2.2",
+    "basic-ftp": "^4.5.3"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",
