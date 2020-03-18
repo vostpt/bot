@@ -23,6 +23,12 @@ Create a `.env` file in the project root.
 cp .env.example .env
 ```
 
+Execute Sequelize migrations:
+
+`npx sequelize-cli db:migrate --env ENVIRONMENT`
+
+ENVIRONMENT: development | test | production
+
 Add and replace values where needed:
 
 ```
@@ -32,21 +38,59 @@ Add and replace values where needed:
 BOT_TOKEN=
 
 #
+# Cooldown interval in seconds
+#
+COOLDOWN=30
+
+#
 # The channels to where messages should be sent
 #
 MAIN_CHANNEL_ID=
 EARTHQUAKES_CHANNEL_ID=
 FIRES_CHANNEL_ID=
 WARNINGS_CHANNEL_ID=
+FUEL_CHANNEL_ID=
 TRIGGERS_CHANNEL_ID=
+MGMT_CHANNEL_ID=
+VOLUNTEERS_CHANNEL_ID=
+TWFEED_CHANNEL_ID=
+DGSCORONA_CHANNEL_ID=
+
 
 #
-# Twitter configurations
+# Twitter configurations (Main account)
 #
 TWITTER_CONSUMER_KEY=
 TWITTER_CONSUMER_SECRET=
 TWITTER_ACCESS_TOKEN_KEY=
 TWITTER_ACCESS_TOKEN_SECRET=
+
+#
+# Twitter configurations (Azores account)
+#
+TWITTER_AZ_CONSUMER_KEY=
+TWITTER_AZ_CONSUMER_SECRET=
+TWITTER_AZ_ACCESS_TOKEN_KEY=
+TWITTER_AZ_ACCESS_TOKEN_SECRET=
+
+#
+# FTP configuration
+#
+
+FTPSERVER=
+FTPUSER=
+FTPPASSWORD=
+
+# Node environment (for Sequelize)
+# test/development/production
+
+NODE_ENV=
+
+#
+# Beta mode (run only beta commands, disable all other functions)
+# When disabled ('false' or empty), run all but beta commands
+#
+BETA_MODE=
 ```
 
 # Running
