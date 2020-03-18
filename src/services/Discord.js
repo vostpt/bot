@@ -45,7 +45,7 @@ const splitMessageString = (msgString) => {
 * @param {String} message
 * @param {String} fileUrl
 */
-const sendMessageToChannel = (channel, message, fileUrl = undefined) => {
+const sendMessageToChannel = (channel, message, fileUrl) => {
   const messageArray = splitMessageString(message);
 
   messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
