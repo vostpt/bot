@@ -6,6 +6,7 @@ const {
   Warnings,
   Fuel,
   Twitter,
+  Corona,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter, uploadThreadTwitter } = require('../services/Twitter');
@@ -47,6 +48,7 @@ class Jobs {
    */
   startProd() {
     this.forestFires();
+    this.getCoronaReports();
     this.warnings();
     this.fireRisk();
     this.getTweets();
@@ -172,6 +174,20 @@ class Jobs {
 
     schedule.scheduleJob(rule, () => {
       Twitter.getVostTweets(this.client);
+    });
+  }
+
+  /**
+   * Update new DGS coronavirus reports and send to Discord
+   */
+  getCoronaReports() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(0, 59, 2);
+    rule.second = 30;
+
+    schedule.scheduleJob(rule, () => {
+      Corona.updateReports(this.client);
     });
   }
 
