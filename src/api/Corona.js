@@ -1,8 +1,11 @@
 const cheerio = require('cheerio');
 const ftp = require('basic-ftp');
+const neatCsv = require('neat-csv');
 
 const api = require('./api');
+
 const { ftpCorona } = require('../../config/ftp');
+const { faqsURL } = require('../../config/api');
 
 const dgsReports = 'https://covid19.min-saude.pt/relatorio-de-situacao/';
 
@@ -41,7 +44,13 @@ const uploadToFtp = async (report) => {
   await client.uploadFrom(fileStream, fileName);
 };
 
+const getFaq = async () => neatCsv(await api.getFileStream(faqsURL), {
+  headers: ['question', 'answer', 'entity', 'hashtag'],
+  skipLines: 1,
+});
+
 module.exports = {
   getReports,
   uploadToFtp,
+  getFaq,
 };

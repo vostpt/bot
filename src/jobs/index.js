@@ -52,6 +52,7 @@ class Jobs {
     this.warnings();
     this.fireRisk();
     this.getTweets();
+    this.getCoronaFaqs();
   }
 
   /**
@@ -188,6 +189,20 @@ class Jobs {
 
     schedule.scheduleJob(rule, () => {
       Corona.updateReports(this.client);
+    });
+  }
+
+  /**
+   * Update new answered FAQS in Covid-19 spreadsheet
+   */
+  getCoronaFaqs() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(1, 57, 3);
+    rule.second = 15;
+
+    schedule.scheduleJob(rule, () => {
+      Corona.getAnsweredFaqs(this.client);
     });
   }
 
