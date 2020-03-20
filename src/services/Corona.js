@@ -62,7 +62,41 @@ const updateReports = async (client) => {
   });
 };
 
+/**
+ * Send new answers inserted in Covid19 FAQ spreadsheet to Discord
+ *
+ * @async
+ * @param {Object} client
+ */
+const getAnsweredFaqs = async (client) => {
+  const results = await CoronaApi.getFaq();
+
+  const channel = client.channels.get(channels.CORONAFAQ_CHANNEL_ID);
+
+  results.forEach(async (result, id) => {
+    const record = await db.CoronaFaqs.findByPk(id) || { answer: '' };
+
+    if (result.answer !== record.answer) {
+      const startMessage = record.answer === ''
+        ? 'Nova resposta'
+        : 'Resposta alterada';
+
+      const recMessage = `**${startMessage}:**\nPergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}`;
+
+      sendMessageToChannel(channel, recMessage);
+    }
+
+    await db.CoronaFaqs.upsert({
+      id,
+      question: result.question,
+      answer: result.answer,
+      entity: result.entity,
+    });
+  });
+};
+
 module.exports = {
   getAll,
   updateReports,
+  getAnsweredFaqs,
 };
