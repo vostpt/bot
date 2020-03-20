@@ -81,6 +81,13 @@ FTPSERVER=
 FTPUSER=
 FTPPASSWORD=
 
+#
+# Corona FAQ sheet IDs
+#
+
+CORONAFAQID=
+CORONAFAQGID=
+
 # Node environment (for Sequelize)
 # test/development/production
 
