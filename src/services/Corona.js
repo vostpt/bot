@@ -63,23 +63,26 @@ const updateReports = async (client) => {
 };
 
 /**
- * Send new answers inserted in Covid19 FAQ spreadsheet to Discord
+ * Send new answers inserted in both Covid19 FAQ spreadsheets to Discord
  *
  * @async
  * @param {Object} client
  */
 const getAnsweredFaqs = async (client) => {
-  const results = await CoronaApi.getFaq();
+  const {
+    coronaResults,
+    govResults,
+  } = await CoronaApi.getFaqs();
 
   const channel = client.channels.get(channels.CORONAFAQ_CHANNEL_ID);
 
-  results.forEach(async (result, id) => {
+  coronaResults.forEach(async (result, id) => {
     const record = await db.CoronaFaqs.findByPk(id) || { answer: '' };
 
     if (result.answer !== record.answer) {
       const startMessage = record.answer === ''
-        ? 'Nova resposta'
-        : 'Resposta alterada';
+        ? 'FAQ Covid-19 - Nova resposta'
+        : 'FAQ Covid-19 - Resposta alterada';
 
       const recMessage = `**${startMessage}:**\nPergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}`;
 
@@ -91,6 +94,33 @@ const getAnsweredFaqs = async (client) => {
       question: result.question,
       answer: result.answer,
       entity: result.entity,
+    });
+  });
+
+  govResults.forEach(async (result, id) => {
+    const record = await db.GovFaqs.findByPk(id) || { answer: '' };
+
+    if (result.answer !== record.answer) {
+      const startMessage = record.answer === ''
+        ? 'FAQ Ministérios - Nova resposta'
+        : 'FAQ Ministérios - Resposta alterada';
+
+      const insertedOnSite = result.onsite === 'TRUE'
+        ? 'Sim'
+        : 'Não';
+
+      const recMessage = `**${startMessage}:**\nÁrea: ${result.area}\nPergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}\nInserido no site: ${insertedOnSite}`;
+
+      sendMessageToChannel(channel, recMessage);
+    }
+
+    await db.GovFaqs.upsert({
+      id,
+      area: result.area,
+      question: result.question,
+      answer: result.answer,
+      entity: result.entity,
+      onsite: result.onsite,
     });
   });
 };
