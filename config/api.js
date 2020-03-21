@@ -5,9 +5,17 @@ const coronaFaqRefs = {
   gid: process.env.CORONAFAQGID,
 };
 
-const faqsURL = `https://docs.google.com/spreadsheets/d/e/${coronaFaqRefs.id}/pub?gid=${coronaFaqRefs.gid}&single=true&output=csv`;
+const coronaFaqsURL = `https://docs.google.com/spreadsheets/d/e/${coronaFaqRefs.id}/pub?gid=${coronaFaqRefs.gid}&single=true&output=csv`;
+
+const govFaqRefs = {
+  id: process.env.GOVFAQID,
+  gid: process.env.GOVFAQGID,
+};
+
+const govFaqsURL = `https://docs.google.com/spreadsheets/d/e/${govFaqRefs.id}/pub?gid=${govFaqRefs.gid}&single=true&output=csv`;
 
 module.exports = {
   baseURL,
-  faqsURL,
+  coronaFaqsURL,
+  govFaqsURL,
 };
