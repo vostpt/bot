@@ -76,13 +76,17 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
 * @param {Object} data
 */
 
-const sendNewTweets = async (client, reference, screenName, data) => {
-  data.pop();
+const sendNewTweets = async (client, data, reference, screenName, lastTweetId) => {
+  const filteredData = lastTweetId
+    ? data.filter(tweet => tweet.id !== lastTweetId).reverse()
+    : data.reverse();
 
-  if (data.length > 0) {
-    const tweetIds = data.map(tweet => tweet.id);
+  const filteredDataLength = filteredData.length;
 
-    const strArray = data.map(tweet => tweet.text);
+  if (filteredDataLength > 0) {
+    const tweetIds = filteredData.map(tweet => tweet.id);
+
+    const strArray = filteredData.map(tweet => tweet.text);
 
     const introStr = `***Novo(s) tweets da conta @${screenName}:***\n`;
 
@@ -93,12 +97,10 @@ const sendNewTweets = async (client, reference, screenName, data) => {
       sendMessageToChannel(client.channels.get(channels.TWFEED_CHANNEL_ID), string);
     });
 
-    const lastTweetId = tweetIds[0];
-
-    if (lastTweetId && reference) {
+    if (reference) {
       db.Tweets.upsert({
         reference,
-        lastTweetId,
+        lastTweetId: tweetIds[filteredDataLength - 1],
       });
     }
   }
@@ -129,24 +131,18 @@ const getVostTweets = async (discordClient) => {
     const params = {
       screen_name: screenName,
       trim_user: true,
-      count: 50,
+      count: 20,
       exclude_replies: false,
       include_rts: true,
     };
 
-    if (result.length > 0) {
-      const {
-        lastTweetId,
-      } = result[0].dataValues;
-
-      params.since_id = lastTweetId !== 'null'
-        ? lastTweetId
-        : undefined;
-    }
+    params.since_id = result.length > 0 && result[0].dataValues.lastTweetId !== 'null'
+      ? result[0].dataValues.lastTweetId
+      : undefined;
 
     client.get('statuses/user_timeline', params, (err, data, response) => {
       if (!err && response !== '') {
-        sendNewTweets(discordClient, reference, screenName, data);
+        sendNewTweets(discordClient, data, reference, screenName, params.since_id);
       }
     });
   }
