@@ -4,9 +4,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       primaryKey: true,
     },
+    area: DataTypes.STRING,
     question: DataTypes.STRING,
     answer: DataTypes.STRING,
     entity: DataTypes.STRING,
+    onsite: DataTypes.STRING,
+    awaiting: DataTypes.BOOLEAN,
+    newAnswer: DataTypes.BOOLEAN,
   }, {});
   return CoronaFaqs;
 };

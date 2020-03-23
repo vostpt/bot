@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('GovFaqs', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('CoronaFaqs', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -20,6 +20,12 @@ module.exports = {
     onsite: {
       type: Sequelize.STRING,
     },
+    awaiting: {
+      type: Sequelize.BOOLEAN,
+    },
+    newAnswer: {
+      type: Sequelize.BOOLEAN,
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,
@@ -29,5 +35,5 @@ module.exports = {
       type: Sequelize.DATE,
     },
   }),
-  down: queryInterface => queryInterface.dropTable('GovFaqs'),
+  down: queryInterface => queryInterface.dropTable('CoronaFaqs'),
 };

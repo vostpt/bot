@@ -3,8 +3,10 @@
  */
 const { db } = require('../database/models');
 const { CoronaApi } = require('../api');
-const { sendMessageToChannel } = require('./Discord');
 const { channels } = require('../../config/bot');
+const { sendMessageToChannel } = require('./Discord');
+const { uploadThreadTwitter } = require('./Twitter');
+const { splitMessageString } = require('../helpers');
 
 /**
  * Get all reports
@@ -64,64 +66,85 @@ const updateReports = async (client) => {
 
 /**
  * Send new answers inserted in both Covid19 FAQ spreadsheets to Discord
+ * The function should check if answer was written entirely
  *
  * @async
  * @param {Object} client
  */
 const getAnsweredFaqs = async (client) => {
-  const {
-    coronaResults,
-    govResults,
-  } = await CoronaApi.getFaqs();
+  const results = await CoronaApi.getFaqs();
 
   const channel = client.channels.get(channels.CORONAFAQ_CHANNEL_ID);
 
-  coronaResults.forEach(async (result, id) => {
-    const record = await db.CoronaFaqs.findByPk(id) || { answer: '' };
+  const maxLength = {
+    question: 205,
+    answer: 155,
+  };
 
-    if (result.answer !== record.answer) {
-      const startMessage = record.answer === ''
-        ? 'FAQ Covid-19 - Nova resposta'
-        : 'FAQ Covid-19 - Resposta alterada';
-
-      const recMessage = `**${startMessage}:**\nPergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}`;
-
-      sendMessageToChannel(channel, recMessage);
-    }
-
-    await db.CoronaFaqs.upsert({
+  await results.data.feed.entry.forEach(async (row, id) => {
+    const result = {
       id,
-      question: result.question,
-      answer: result.answer,
-      entity: result.entity,
-    });
-  });
+      area: row['gsx$área'].$t,
+      question: row.gsx$pergunta.$t,
+      answer: row.gsx$resposta.$t,
+      entity: row.gsx$entidade.$t,
+    };
 
-  govResults.forEach(async (result, id) => {
-    const record = await db.GovFaqs.findByPk(id) || { answer: '' };
+    const startTweet = 'ℹ️🦠 #COVID19PT #COVID19PTFAQ';
 
-    if (result.answer !== record.answer) {
-      const startMessage = record.answer === ''
-        ? 'FAQ Ministérios - Nova resposta'
-        : 'FAQ Ministérios - Resposta alterada';
+    const endTweet = '🦠ℹ️';
 
-      const insertedOnSite = result.onsite === 'TRUE'
-        ? 'Sim'
-        : 'Não';
+    const websiteURL = 'https://covid19estamoson.gov.pt/perguntas-frequentes/';
 
-      const recMessage = `**${startMessage}:**\nÁrea: ${result.area}\nPergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}\nInserido no site: ${insertedOnSite}`;
+    const record = await db.CoronaFaqs.findByPk(id) || { answer: '', newAnswer: true };
 
-      sendMessageToChannel(channel, recMessage);
+    if (result.answer === record.answer) {
+      if (record.awaiting) {
+        const recNewAnswer = record.newAnswer;
+
+        const startMessage = recNewAnswer
+          ? 'FAQ Covid-19 - Nova resposta'
+          : 'FAQ Covid-19 - Resposta alterada';
+
+        const recMessage = `**${startMessage}:**\nÁrea: ${result.area}\nPergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}`;
+
+        sendMessageToChannel(channel, recMessage);
+
+        if (recNewAnswer) {
+          const questionString = result.question.length > maxLength.question
+            ? `"${splitMessageString(result.question, maxLength.question - 63, true)[0]}(...)" (pergunta completa disponível no site #COVID19EstamosON)`
+            : `"${result.question}"`;
+
+          const answerString = result.answer.length + result.entity.length > maxLength.answer
+            ? `${splitMessageString(result.answer, maxLength.answer - 62, true)[0]}(...) (resposta completa disponível no site #COVID19EstamosON)\n\nEntidade responsável: ${result.entity}`
+            : `${result.answer}\n\nEntidade responsável: ${result.entity}`;
+
+          const thread = [{
+            status: `${startTweet}\n\nNova resposta à pergunta ${questionString} 👇\n\n${endTweet}`,
+          }, {
+            status: `${startTweet}\n\n${answerString}\n\n${websiteURL}\n\n${endTweet}`,
+          }];
+
+          uploadThreadTwitter(thread, undefined, 'main');
+        }
+
+        if (result.answer === '') {
+          await record.destroy();
+        } else {
+          result.awaiting = false;
+          result.newAnswer = false;
+
+          await db.CoronaFaqs.upsert(result);
+        }
+      }
+    } else {
+      result.awaiting = true;
+
+      const newAnswer = record.answer === '' && record.newAnswer;
+      result.newAnswer = newAnswer;
+
+      await db.CoronaFaqs.upsert(result);
     }
-
-    await db.GovFaqs.upsert({
-      id,
-      area: result.area,
-      question: result.question,
-      answer: result.answer,
-      entity: result.entity,
-      onsite: result.onsite,
-    });
   });
 };
 
