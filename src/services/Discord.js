@@ -1,42 +1,6 @@
+const { splitMessageString } = require('../helpers');
 
-/**
-* Split message to avoid passing Discord API character limit
-* (2000 characters)
-*
-* @param {String} msgString
-*/
-
-const splitMessageString = (msgString) => {
-  const messageArray = [];
-
-  let lastSentCharacter = 0;
-  const msgStringLength = msgString.length;
-
-  const charLimit = 1950;
-
-  while (lastSentCharacter < msgStringLength) {
-    if (msgStringLength - lastSentCharacter > charLimit) {
-      const nextMessageSubset = msgString.substr(lastSentCharacter, lastSentCharacter + charLimit);
-
-      const lastNewLinePos = nextMessageSubset.lastIndexOf('\n');
-
-      const finalStrSubsetPos = lastNewLinePos < 0
-        ? lastSentCharacter + charLimit
-        : lastNewLinePos;
-
-      const messageToSend = nextMessageSubset.substr(0, finalStrSubsetPos);
-
-      messageArray.push(messageToSend);
-
-      lastSentCharacter = finalStrSubsetPos;
-    } else {
-      messageArray.push(msgString.substr(lastSentCharacter, msgStringLength));
-      lastSentCharacter = msgStringLength;
-    }
-  }
-
-  return messageArray;
-};
+const discordApiLimit = 1950;
 
 /**
 * Send message to Discord channel
@@ -46,7 +10,7 @@ const splitMessageString = (msgString) => {
 * @param {String} fileUrl
 */
 const sendMessageToChannel = (channel, message, fileUrl) => {
-  const messageArray = splitMessageString(message);
+  const messageArray = splitMessageString(message, discordApiLimit);
 
   messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
 
@@ -62,9 +26,13 @@ const sendMessageToChannel = (channel, message, fileUrl) => {
 * @param {String} message
 */
 const sendMessageAnswer = (msgInstance, message) => {
-  const messageArray = splitMessageString(message);
+  const messageArray = splitMessageString(message, discordApiLimit);
 
-  messageArray.forEach((msgSubSet) => { msgInstance.reply(msgSubSet); });
+  const firstMessage = messageArray.shift();
+
+  msgInstance.reply(firstMessage);
+
+  messageArray.forEach((msgSubSet) => { msgInstance.channel.send(msgSubSet); });
 };
 
 module.exports = {

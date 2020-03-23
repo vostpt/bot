@@ -104,6 +104,52 @@ const getFileContent = (filedata) => {
   return fs.readFileSync(`${path.resolve('./src/images')}${path.sep}${filedata}`, { encoding: 'base64' });
 };
 
+/**
+* Split message to avoid passing API character limits (Discord and Twitter)
+* (If returnFirst == true, return only first position of message array)
+*
+* @param {String} msgString
+* @param {Number} charLimit
+* @param {Boolean} returnFirst
+*/
+
+const splitMessageString = (msgString, charLimit = 1950, returnFirst = false) => {
+  const messageArray = [];
+
+  let lastSentCharacter = 0;
+
+  const msgStringLength = returnFirst
+    ? charLimit + 1
+    : msgString.length;
+
+  while (lastSentCharacter < msgStringLength) {
+    if (msgStringLength - lastSentCharacter > charLimit) {
+      const nextMessageSubset = msgString.substr(lastSentCharacter, lastSentCharacter + charLimit);
+
+      let lastPos = nextMessageSubset.lastIndexOf('\n');
+
+      if (lastPos < 0) {
+        const lastWord = nextMessageSubset.lastIndexOf(' ');
+
+        lastPos = lastWord < 0
+          ? lastSentCharacter + charLimit
+          : lastSentCharacter + lastWord;
+      }
+
+      const messageToSend = nextMessageSubset.substr(0, lastPos);
+
+      messageArray.push(messageToSend);
+
+      lastSentCharacter = lastPos;
+    } else {
+      messageArray.push(msgString.substr(lastSentCharacter, msgStringLength));
+      lastSentCharacter = msgStringLength;
+    }
+  }
+
+  return messageArray;
+};
+
 module.exports = {
   isSevere,
   printAliases,
@@ -111,4 +157,5 @@ module.exports = {
   removeAccent,
   isBase64,
   getFileContent,
+  splitMessageString,
 };
