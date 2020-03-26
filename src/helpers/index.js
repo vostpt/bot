@@ -140,7 +140,7 @@ const splitMessageString = (msgString, charLimit = 1950, returnFirst = false) =>
 
       messageArray.push(messageToSend);
 
-      lastSentCharacter = lastPos;
+      lastSentCharacter = lastSentCharacter + lastPos;
     } else {
       messageArray.push(msgString.substr(lastSentCharacter, msgStringLength));
       lastSentCharacter = msgStringLength;
