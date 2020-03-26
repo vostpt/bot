@@ -23,9 +23,12 @@ Create a `.env` file in the project root.
 cp .env.example .env
 ```
 
-Execute Sequelize migrations:
+Create the database directory and execute Sequelize migrations:
 
-`npx sequelize-cli db:migrate --env ENVIRONMENT`
+```bash
+mkdir ./data
+npx sequelize-cli db:migrate --env ENVIRONMENT
+```
 
 ENVIRONMENT: development | test | production
 
