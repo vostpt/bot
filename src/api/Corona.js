@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const crypto = require('crypto');
 const ftp = require('basic-ftp');
 
 const api = require('./api');
@@ -8,20 +9,43 @@ const { coronaFaqsURL } = require('../../config/api');
 
 const dgsReports = 'https://covid19.min-saude.pt/relatorio-de-situacao/';
 
-const getReports = async () => {
-  const data = [];
-  const pageHtml = await api.getHtml(dgsReports);
+const md5FromUrl = async (url) => {
+  const fileStream = await api.getFileStream(url);
 
-  const $ = cheerio.load(pageHtml);
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash('md5');
 
-  $('.single_content ul li').each((i, elem) => {
-    data.push({
-      link: $(elem).find('a').prop('href'),
-      title: $(elem).text(),
+    fileStream.on('data', data => hash.update(data));
+    fileStream.on('end', () => resolve(hash.digest('hex')));
+
+    hash.on('error', (err) => {
+      reject(new Error(`Unable to get MD5 hash from report with URL: ${url}\n${err}`));
     });
   });
+};
 
-  return data;
+const getReport = async ($elem) => {
+  const url = encodeURI($elem.find('a').prop('href'));
+  const md5sum = await md5FromUrl(url);
+
+  return new Promise((resolve) => {
+    resolve({
+      link: url,
+      title: $elem.text(),
+      md5sum,
+    });
+  });
+};
+
+const getReports = async () => {
+  const pageHtml = await api.getHtml(dgsReports);
+
+  // Cheerio is not async, so we need to convert each report entry
+  // into a promise, which we can then collect with Promise.all(...)
+  const $ = cheerio.load(pageHtml);
+  const elements = $('.single_content ul li').get();
+
+  return Promise.all(elements.map(elem => getReport($(elem))));
 };
 
 const uploadToFtp = async (report) => {
@@ -46,6 +70,7 @@ const uploadToFtp = async (report) => {
 const getFaqs = async () => api.get(coronaFaqsURL);
 
 module.exports = {
+  md5FromUrl,
   getReports,
   uploadToFtp,
   getFaqs,

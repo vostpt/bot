@@ -125,6 +125,7 @@ const message = async (client, msg) => {
     } catch (e) {
       // log exception
       msg.reply('infelizmente não consigo satisfazer esse pedido');
+      console.error(e);
     }
   }
 };

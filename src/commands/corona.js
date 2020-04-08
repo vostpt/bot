@@ -35,8 +35,7 @@ module.exports = {
 
       const string = 'aqui estão os relatórios de situação:\n';
 
-      const msgReportArray = reports.map(report => `${report.title}: ${report.link}`).join('\n');
-
+      const msgReportArray = reports.map(report => `\`${report.md5sum.slice(0, 8)}\` | ${report.title}: ${report.link}`).join('\n');
       sendMessageAnswer(message, string.concat(msgReportArray));
     } else {
       message.reply(`desconheço essa opção.\n${this.usage}`);

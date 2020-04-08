@@ -31,7 +31,7 @@ const getAll = async () => {
  */
 const reportNotInDb = report => db.CoronaReports.findOne({
   where: {
-    title: report.title,
+    md5sum: report.md5sum,
   },
 })
   .then(result => result === null);
@@ -56,8 +56,8 @@ const updateReports = async (client) => {
   const startMessage = '**Novo relatório de situação:**';
 
   newReports.forEach(async (report) => {
-    const repMessage = `${startMessage}\n${report.title}`;
-
+    // Using the first 8 characters of the checksum looks better on Discord
+    const repMessage = `${startMessage}\n\`${report.md5sum.slice(0, 8)}\` | ${report.title}`;
     sendMessageToChannel(channel, repMessage, report.link);
 
     CoronaApi.uploadToFtp(report);
