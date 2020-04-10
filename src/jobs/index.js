@@ -188,7 +188,6 @@ class Jobs {
     }
   }
 
-
   /**
    * Checks for new earthquakes
   */
