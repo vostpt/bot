@@ -1,6 +1,7 @@
 const moment = require('moment');
 const { Earthquakes } = require('../services');
 const { cooldown } = require('../../config/bot');
+const { sendMessageAnswer, sendMessageToChannel } = require('../services/Discord');
 
 module.exports = {
   active: true,
@@ -20,54 +21,40 @@ module.exports = {
   */
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      message.reply(`falta a data.\n${this.usage}`);
+      sendMessageAnswer(message, `falta a data.\n${this.usage}`);
 
       return;
     }
-
-    const events = [];
-    const eventsSensed = [];
 
     const [requestedDate] = args;
 
-    const earthquakes = await Earthquakes.getByDate(requestedDate);
+    const formattedDate = moment(requestedDate, 'DD/MM/AAAA');
 
-    if (earthquakes.length === 0) {
-      message.reply(`Sem dados acerca do dia ${requestedDate}`);
+    if (!formattedDate.isValid()) {
+      sendMessageAnswer(message, `o formato da data é inválido.\n${this.usage}`);
 
       return;
     }
 
-    earthquakes.forEach((element) => {
-      const {
-        sensed,
-        time,
-        magType,
-        magnitud,
-        depth,
-        local,
-        degree,
-        shakemapref,
-        lat,
-        lon,
-        obsRegion,
-      } = element;
+    const { events, eventsSensed } = await Earthquakes.getByDate(formattedDate);
 
-      const formattedTime = moment(time).format('LT');
+    const numEvents = events.length;
+    const numEventsSensed = eventsSensed.length;
 
-      if (sensed) {
-        eventsSensed.push(`${formattedTime}h - M${magType} **${magnitud}** em ${obsRegion} a ${depth}Km prof. **Sentido em ${local} com Int. ${degree}** ${shakemapref} // ${lat},${lon}`);
-      } else {
-        events.push(`${formattedTime}h - M${magType} **${magnitud}** em ${obsRegion} a ${depth}Km prof. // ${lat},${lon}`);
-      }
-    });
+    if (numEvents + numEventsSensed === 0) {
+      sendMessageAnswer(message, `Sem dados acerca do dia ${requestedDate}`);
 
-    if (eventsSensed.length > 0) {
-      message.channel.send(`***Sismos sentidos dia ${requestedDate}:***\n${eventsSensed.join('\n')}`);
+      return;
     }
 
-    if (events.length > 0) {
-      message.channel.send(`***Sismos de ${requestedDate}:***\n${events.join('\n')}`);
+    if (numEventsSensed > 0) {
+      const eventsSensedMsg = eventsSensed.map(event => event.message);
+
+      sendMessageToChannel(message.channel, `***Sismos sentidos dia ${requestedDate}:***\n${eventsSensedMsg.join('\n')}`);
+    }
+
+    if (numEvents > 0) {
+      sendMessageToChannel(message.channel, `***Sismos de ${requestedDate}:***\n${events.join('\n')}`);
     }
   },
 };

@@ -1,8 +1,7 @@
 const api = require('./api');
-const { baseURL } = require('../../config/api');
 
-const getAll = () => api.get(`${baseURL}/getSismos.php`);
+const getIpma = zone => api.get(`http://api.ipma.pt/open-data/observation/seismic/${zone}.json`).then(data => data.data);
 
 module.exports = {
-  getAll,
+  getIpma,
 };
