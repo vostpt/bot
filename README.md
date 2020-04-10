@@ -95,12 +95,6 @@ CORONAFAQGID=
 # test/development/production
 
 NODE_ENV=
-
-#
-# Beta mode (run only beta commands, disable all other functions)
-# When disabled ('false' or empty), run all but beta commands
-#
-BETA_MODE=
 ```
 
 # Running
