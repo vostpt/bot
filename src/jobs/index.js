@@ -9,34 +9,7 @@ const {
   Corona,
 } = require('../services');
 const { channels } = require('../../config/bot');
-const { clientTwitter, uploadThreadTwitter } = require('../services/Twitter');
-
-/**
- * Check if the earthquake level above threshold
- *
- * @param {String} event
- * @param {Number} threshold
- */
-const eventAboveThreshold = (event, threshold = 0) => {
-  const regexp = /\*\*(\d\.\d)\*\*/;
-
-  const matchs = event.match(regexp) || [];
-  const [, intensity = 0] = matchs;
-
-  return intensity >= threshold;
-};
-
-/**
- * In memory Set to track already sent notifications
- */
-const sentEarthquakesNotifications = new Set();
-
-/**
- * Check if notification has already been sent
- *
- * @param {String} event
- */
-const checkNotSentYet = event => !sentEarthquakesNotifications.has(event);
+const { uploadThreadTwitter } = require('../services/Twitter');
 
 class Jobs {
   constructor(client) {
@@ -44,25 +17,16 @@ class Jobs {
   }
 
   /**
-   * Start all production (non-beta) jobs
+   * Start all jobs
    */
-  startProd() {
+  startJobs() {
     this.forestFires();
     this.getCoronaReports();
     this.warnings();
     this.fireRisk();
     this.getTweets();
     this.getCoronaFaqs();
-  }
-
-  /**
-   * Start all beta jobs
-   */
-  startBeta() {
     this.earthquakes();
-    this.noticeableEarthquakes({ threshold: 2.5 });
-
-    Jobs.resetSentNotifications();
   }
 
   /**
@@ -207,87 +171,39 @@ class Jobs {
   }
 
   /**
-   * Checks for yesterday's earthquakes
-   */
+   * Checks for new earthquakes
+  */
   earthquakes() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.hour = 0;
-    rule.minute = 0;
-    rule.second = 10;
+    rule.minute = new schedule.Range(5, 55, 1);
 
     try {
       schedule.scheduleJob(rule, () => {
-        const yesterday = moment().subtract(1, 'days').format('L');
-        const { events, eventsSensed } = Earthquakes.getEarthquakes(yesterday);
-
-        if (eventsSensed.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) sentido(s) dia ${yesterday}:***\n${eventsSensed.join('\n')}`);
-        }
-
-        if (events.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) de ${yesterday}:***\n${events.join('\n')}`);
-        }
+        Earthquakes.getEarthquakes(this.client, 3);
+        Earthquakes.getEarthquakes(this.client, 7);
       });
     } catch (e) {
       //
     }
   }
 
-  /**
-   * Checks for noticeable earthquakes worthing immediate annoucement
-   *
-   * @param {Object} config
-   */
-  noticeableEarthquakes({ threshold } = {}) {
-    const rule = new schedule.RecurrenceRule();
-
-    rule.minute = new schedule.Range(0, 59, 1); // every minute
-
-    try {
-      schedule.scheduleJob(rule, async () => {
-        const today = moment().format('L');
-        const { events, eventsSensed } = await Earthquakes.getEarthquakes(today);
-
-        const noticeableEvents = events
-          .filter(checkNotSentYet)
-          .filter(event => eventAboveThreshold(event, threshold));
-
-        const noticeableSensedEvents = eventsSensed
-          .filter(checkNotSentYet)
-          .filter(event => eventAboveThreshold(event, threshold));
-
-        if (noticeableSensedEvents.length > 0) {
-          const message = `***Sismo(s) sentido(s) dia ${today}:***\n${noticeableSensedEvents.join('\n')}`;
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableSensedEvents.forEach(event => sentEarthquakesNotifications.add(event));
-
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n(${noticeableSensedEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
-        }
-
-        if (noticeableEvents.length > 0) {
-          const message = `***Sismo(s) de ${today}:***\n${noticeableEvents.join('\n')}`;
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableEvents.forEach(event => sentEarthquakesNotifications.add(event));
-
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
-        }
-      });
-    } catch (e) {
-      //
-    }
-  }
 
   /**
-   * Clear yesterday's notifications
-   */
-  static resetSentNotifications() {
+   * Checks for new earthquakes
+  */
+  deleteOldEarthquakes() {
     const rule = new schedule.RecurrenceRule();
 
     rule.hour = 0;
-    rule.minute = 0;
 
-    schedule.scheduleJob(rule, () => sentEarthquakesNotifications.clear());
+    try {
+      schedule.scheduleJob(rule, () => {
+        Earthquakes.deleteOldEarthquakes(this.client, 31);
+      });
+    } catch (e) {
+      //
+    }
   }
 }
 
