@@ -9,7 +9,15 @@ const coronaFaqRefs = {
 
 const coronaFaqsURL = baseFaqsURL(coronaFaqRefs.id, coronaFaqRefs.gid);
 
+const coronaFaqDgsRefs = {
+  id: process.env.CORONAFAQDGSID,
+  gid: process.env.CORONAFAQDGSGID,
+};
+
+const coronaFaqsDgsURL = baseFaqsURL(coronaFaqDgsRefs.id, coronaFaqDgsRefs.gid);
+
 module.exports = {
   baseURL,
   coronaFaqsURL,
+  coronaFaqsDgsURL,
 };

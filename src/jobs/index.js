@@ -193,12 +193,12 @@ class Jobs {
   }
 
   /**
-   * Update new answered FAQS in Covid-19 spreadsheet
+   * Update new answered FAQS in Covid-19 spreadsheets
    */
   getCoronaFaqs() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(1, 57, 3);
+    rule.minute = new schedule.Range(1, 55, 5);
     rule.second = 15;
 
     schedule.scheduleJob(rule, () => {

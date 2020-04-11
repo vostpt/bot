@@ -5,7 +5,7 @@ const ftp = require('basic-ftp');
 const api = require('./api');
 
 const { ftpCorona } = require('../../config/ftp');
-const { coronaFaqsURL } = require('../../config/api');
+const { coronaFaqsURL, coronaFaqsDgsURL } = require('../../config/api');
 
 const dgsReports = 'https://covid19.min-saude.pt/relatorio-de-situacao/';
 
@@ -67,7 +67,10 @@ const uploadToFtp = async (report) => {
   await client.uploadFrom(fileStream, fileName);
 };
 
-const getFaqs = async () => api.get(coronaFaqsURL);
+const getFaqs = async () => ({
+  coronaFaqs: await api.get(coronaFaqsURL),
+  coronaDgsFaqs: await api.get(coronaFaqsDgsURL),
+});
 
 module.exports = {
   md5FromUrl,
