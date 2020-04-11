@@ -5,8 +5,6 @@ const { db } = require('../database/models');
 const { CoronaApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { sendMessageToChannel } = require('./Discord');
-const { uploadThreadTwitter } = require('./Twitter');
-const { splitMessageString } = require('../helpers');
 
 /**
  * Get all reports
@@ -72,79 +70,70 @@ const updateReports = async (client) => {
  * @param {Object} client
  */
 const getAnsweredFaqs = async (client) => {
-  const results = await CoronaApi.getFaqs();
+  const { coronaFaqs, coronaDgsFaqs } = await CoronaApi.getFaqs();
+
+  const faqLists = [{
+    title: 'Ministérios / Áreas',
+    faqs: coronaFaqs.data.feed.entry,
+    database: db.CoronaFaqs,
+  },
+  {
+    title: 'DGS',
+    faqs: coronaDgsFaqs.data.feed.entry,
+    database: db.CoronaDgsFaqs,
+  }];
 
   const channel = client.channels.get(channels.CORONAFAQ_CHANNEL_ID);
 
-  const maxLength = {
-    question: 205,
-    answer: 155,
-  };
+  faqLists.forEach(async (list) => {
+    list.faqs.forEach(async (row, id) => {
+      const result = {
+        id,
+        question: row.gsx$pergunta.$t,
+        answer: row.gsx$resposta.$t,
+        entity: row.gsx$entidade.$t,
+      };
 
-  await results.data.feed.entry.forEach(async (row, id) => {
-    const result = {
-      id,
-      area: row['gsx$área'].$t,
-      question: row.gsx$pergunta.$t,
-      answer: row.gsx$resposta.$t,
-      entity: row.gsx$entidade.$t,
-    };
-
-    const startTweet = 'ℹ️🦠 #COVID19PT #COVID19PTFAQ';
-
-    const endTweet = '🦠ℹ️';
-
-    const websiteURL = 'https://covid19estamoson.gov.pt/perguntas-frequentes/';
-
-    const record = await db.CoronaFaqs.findByPk(id) || { answer: '', newAnswer: true };
-
-    if (result.answer === record.answer) {
-      if (record.awaiting) {
-        const recNewAnswer = record.newAnswer;
-
-        const startMessage = recNewAnswer
-          ? 'FAQ Covid-19 - Nova resposta'
-          : 'FAQ Covid-19 - Resposta alterada';
-
-        const recMessage = `**${startMessage}:**\nÁrea: ${result.area}\nPergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}`;
-
-        sendMessageToChannel(channel, recMessage);
-
-        if (recNewAnswer) {
-          const questionString = result.question.length > maxLength.question
-            ? `"${splitMessageString(result.question, maxLength.question - 63, true)[0]}(...)" (pergunta completa disponível no site #COVID19EstamosON)`
-            : `"${result.question}"`;
-
-          const answerString = result.answer.length + result.entity.length > maxLength.answer
-            ? `${splitMessageString(result.answer, maxLength.answer - 62, true)[0]}(...) (resposta completa disponível no site #COVID19EstamosON)\n\nEntidade responsável: ${result.entity}`
-            : `${result.answer}\n\nEntidade responsável: ${result.entity}`;
-
-          const thread = [{
-            status: `${startTweet}\n\nNova resposta à pergunta ${questionString} 👇\n\n${endTweet}`,
-          }, {
-            status: `${startTweet}\n\n${answerString}\n\n${websiteURL}\n\n${endTweet}`,
-          }];
-
-          uploadThreadTwitter(thread, undefined, 'main');
-        }
-
-        if (result.answer === '') {
-          await record.destroy();
-        } else {
-          result.awaiting = false;
-          result.newAnswer = false;
-
-          await db.CoronaFaqs.upsert(result);
-        }
+      if (row['gsx$área']) {
+        result.area = row['gsx$área'].$t;
       }
-    } else {
-      result.awaiting = true;
 
-      const newAnswer = record.answer === '' && record.newAnswer;
-      result.newAnswer = newAnswer;
+      const record = await list.database.findByPk(id) || { answer: '', newAnswer: true };
 
-      await db.CoronaFaqs.upsert(result);
-    }
+      if (result.answer === record.answer) {
+        if (record.awaiting) {
+          const recNewAnswer = record.newAnswer;
+
+          const startMessage = recNewAnswer
+            ? `FAQ ${list.title} - Nova resposta`
+            : `FAQ ${list.title} - Resposta alterada`;
+
+          const strArea = result.area
+            ? `Área: ${result.area}\n`
+            : '';
+
+          const recMessage = `**${startMessage}:**\n${strArea}Pergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}`;
+
+          sendMessageToChannel(channel, recMessage);
+
+          if (result.answer === '') {
+            await record.destroy();
+          } else {
+            result.awaiting = false;
+            result.newAnswer = false;
+
+            await list.database.upsert(result);
+          }
+        }
+      } else {
+        result.awaiting = true;
+
+        const newAnswer = record.answer === '' && record.newAnswer;
+        result.newAnswer = newAnswer;
+
+        await list.database.upsert(result);
+      }
+    });
   });
 };
 
