@@ -124,7 +124,7 @@ const splitMessageString = (msgString, charLimit = 1950, returnFirst = false) =>
 
   while (lastSentCharacter < msgStringLength) {
     if (msgStringLength - lastSentCharacter > charLimit) {
-      const nextMessageSubset = msgString.substr(lastSentCharacter, lastSentCharacter + charLimit);
+      const nextMessageSubset = msgString.slice(lastSentCharacter, lastSentCharacter + charLimit);
 
       let lastPos = nextMessageSubset.lastIndexOf('\n');
 
@@ -136,13 +136,13 @@ const splitMessageString = (msgString, charLimit = 1950, returnFirst = false) =>
           : lastSentCharacter + lastWord;
       }
 
-      const messageToSend = nextMessageSubset.substr(0, lastPos);
+      const messageToSend = nextMessageSubset.slice(0, lastPos);
 
       messageArray.push(messageToSend);
 
       lastSentCharacter += lastPos;
     } else {
-      messageArray.push(msgString.substr(lastSentCharacter, msgStringLength));
+      messageArray.push(msgString.slice(lastSentCharacter, msgStringLength));
       lastSentCharacter = msgStringLength;
     }
   }
