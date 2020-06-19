@@ -9,7 +9,7 @@ const discordApiLimit = 1950;
 * @param {String} message
 * @param {String} fileUrl
 */
-const sendMessageToChannel = (channel, message, fileUrl) => {
+const sendMessageToChannel = async (channel, message, fileUrl) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
   messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
@@ -25,7 +25,7 @@ const sendMessageToChannel = (channel, message, fileUrl) => {
 * @param {Object} msgInstance
 * @param {String} message
 */
-const sendMessageAnswer = (msgInstance, message) => {
+const sendMessageAnswer = async (msgInstance, message) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
   const firstMessage = messageArray.shift();
@@ -35,7 +35,20 @@ const sendMessageAnswer = (msgInstance, message) => {
   messageArray.forEach((msgSubSet) => { msgInstance.channel.send(msgSubSet); });
 };
 
+/**
+* Send DM to the message author
+*
+* @param {Object} msgInstance
+* @param {String} message
+*/
+const sendMessageToAuthor = async (msgInstance, message) => {
+  const messageArray = splitMessageString(message, discordApiLimit);
+
+  messageArray.forEach((msgSubSet) => { msgInstance.author.send(msgSubSet); });
+};
+
 module.exports = {
   sendMessageToChannel,
   sendMessageAnswer,
+  sendMessageToAuthor,
 };
