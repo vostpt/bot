@@ -2,6 +2,11 @@ const moment = require('moment');
 const { locale } = require('../../config/locale');
 const { prefix } = require('../../config/bot');
 const { react } = require('../helpers');
+const {
+  sendMessageToAuthor,
+  sendMessageAnswer,
+  sendMessageToChannel,
+} = require('../services/Discord');
 
 moment.locale(locale);
 
@@ -45,7 +50,7 @@ const message = async (client, msg) => {
   }
 
   if (msg.isMemberMentioned(client.user)) {
-    msg.channel.send(getRandomMessage());
+    sendMessageToChannel(msg.channel, getRandomMessage());
   }
 
   const { id: channelId } = msg.channel;
@@ -65,7 +70,7 @@ const message = async (client, msg) => {
         .filter(({ active }) => active)
         .map(({ usage }) => usage);
 
-      msg.author.send(`***Comandos:***\n${commandUsage.join('')}`);
+      sendMessageToAuthor(msg, `***Comandos:***\n${commandUsage.join('')}`);
 
       react(msg, ['📧', '📥']);
     }
@@ -79,7 +84,7 @@ const message = async (client, msg) => {
     const command = client.commands.find(({ name, aliases = [] }) => (name === commandName) || aliases.includes(commandName));
 
     if (!command) {
-      msg.author.send(`${prefix}${commandName} não existe. Experimenta ${prefixHelp}commands`);
+      sendMessageToAuthor(msg, `${prefix}${commandName} não existe. Experimenta ${prefixHelp}commands`);
 
       react(msg, ['📧', '📥']);
 
@@ -91,7 +96,7 @@ const message = async (client, msg) => {
     }
 
     if (!command.active) {
-      msg.author.send(`O comando *${prefix}${commandName}* encontra-se desativado.`);
+      sendMessageToAuthor(msg, `O comando *${prefix}${commandName}* encontra-se desativado.`);
 
       react(msg, ['📧', '📥']);
 
@@ -109,7 +114,7 @@ const message = async (client, msg) => {
         if (now < expirationTime) {
           const timeLeft = (expirationTime - now) / 1000;
 
-          msg.author.send(`Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
+          sendMessageToAuthor(msg, `Por favor espera ${Math.ceil(timeLeft)} segundo(s) antes de requisitares \`${prefix}${command.name}\` novamente.`);
 
           react(msg, ['📧', '📥']);
 
@@ -124,7 +129,7 @@ const message = async (client, msg) => {
       setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
     } catch (e) {
       // log exception
-      msg.reply('infelizmente não consigo satisfazer esse pedido');
+      sendMessageAnswer(msg, 'infelizmente não consigo satisfazer esse pedido');
       console.error(e);
     }
   }
