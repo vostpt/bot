@@ -20,7 +20,8 @@ const GREETINGS_BOM_DIA = [
   'buenosdias',
   'goodmorning',
   'bonjour',
-
+  'bomdjia',
+  'boumdia',
 ];
 
 const GREETINGS_BOA_TARDE = [
