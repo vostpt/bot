@@ -31,6 +31,7 @@ module.exports = {
   active: true,
   allowedArgs: [
     'id',
+    'ir',
     'if',
     'status',
     'distrito',
@@ -41,8 +42,8 @@ module.exports = {
   name: 'op',
   usage: `
     **!op id [numero_id]** - *Mostra os dados relativos à ocorrência com esse id.*
-    **!op if [termo_pesquisa]** - *Mostra os dados relativos às ocorrências num dado concelho/localidade (min. 3 caracteres).*
-    **!op if vento [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
+    **!op ir [termo_pesquisa]** - *Mostra os dados relativos às ocorrências num dado concelho/localidade (min. 3 caracteres).*
+    **!op ir vento [cidade]** - *Mostra os dados relativos ao vento no local escolhido.*
     **!op status [Despacho|Despacho1Alerta|ChegadaTO|Curso|Resolução|Conclusão|Vigilância]** - *Mostra as ocorrências com o estado indicado.*
     **!op distrito [nome_distrito]** - *Mostra as ocorrências no distrito indicado.*
 
@@ -107,7 +108,7 @@ module.exports = {
       });
     }
 
-    if (requestedArgument === 'if') {
+    if (requestedArgument === 'ir' || requestedArgument === 'if') {
       const [, requestedCity] = args;
 
       if (!requestedCity) {
