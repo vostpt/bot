@@ -97,7 +97,7 @@ module.exports = {
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           relevantEvents.push(`__**${msg}**__`);
@@ -116,7 +116,7 @@ module.exports = {
         return;
       }
 
-      const reqCityFormatted = removeAccent(requestedCity.toLowerCase()).replace('#if', '');
+      const reqCityFormatted = removeAccent(requestedCity.toLowerCase()).replace('#ir', '');
 
       if (reqCityFormatted.length < 3) {
         message.reply('o nº mínimo de caracteres para pesquisa são 3 (sem espaços). Tenta outra vez\n');
@@ -144,7 +144,7 @@ module.exports = {
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           relevantEvents.push(`__**${msg}**__`);
@@ -179,7 +179,7 @@ module.exports = {
         sentido: direction,
       } = data;
 
-      message.channel.send(`:wind_blowing_face: :fire: ***Ocorrência:***\n${id} - #IF${city},${local} - ${speed} KM/H ${direction}`);
+      message.channel.send(`:wind_blowing_face: :fire: ***Ocorrência:***\n${id} - #IR${city},${local} - ${speed} KM/H ${direction}`);
     }
 
     if (requestedArgument === 'status') {
@@ -211,7 +211,7 @@ module.exports = {
           e: status,
         } = element;
 
-        const msg = `${date} - ${id} - #IF${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(element)) {
           relevantEvents.push(`__**${msg}**__`);
@@ -258,7 +258,7 @@ module.exports = {
           e: status,
         } = fire;
 
-        const msg = `${date} - ${id} - #IF${city},${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city},${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(fire)) {
           relevantEvents.push(`__**${msg}**__`);
