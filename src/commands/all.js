@@ -67,7 +67,7 @@ module.exports = {
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_firefighter: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           relevantEvents.push(`__**${msg}**__`);
@@ -130,7 +130,7 @@ module.exports = {
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_firefighter: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           relevantEvents.push(`__**${msg}**__`);
@@ -163,7 +163,7 @@ module.exports = {
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_firefighter: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           relevantEvents.push(`__**${msg}**__`);
@@ -196,7 +196,7 @@ module.exports = {
           e: status,
         } = occurrence;
 
-        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_with_gua_pi_mao: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
+        const msg = `${date} - ${id} - #IR${city}, #${local} - ${operatives}:man_firefighter: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}`;
 
         if (isSevere(occurrence)) {
           relevantEvents.push(`__**${msg}**__`);
