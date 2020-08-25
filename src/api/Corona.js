@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const crypto = require('crypto');
 const ftp = require('basic-ftp');
+const FileType = require('file-type');
 
 const api = require('./api');
 
@@ -11,6 +12,12 @@ const dgsReports = 'https://covid19.min-saude.pt/relatorio-de-situacao/';
 
 const md5FromUrl = async (url) => {
   const fileStream = await api.getFileStream(url);
+
+  const fileType = await FileType.fromStream(fileStream);
+
+  if (!fileType || fileType.ext !== 'pdf') {
+    return '';
+  }
 
   return new Promise((resolve, reject) => {
     const hash = crypto.createHash('md5');
@@ -26,13 +33,11 @@ const md5FromUrl = async (url) => {
 
 const getReport = async ($elem) => {
   const url = encodeURI($elem.find('a').prop('href'));
-  const md5sum = await md5FromUrl(url);
 
   return new Promise((resolve) => {
     resolve({
       link: url,
       title: $elem.text(),
-      md5sum,
     });
   });
 };

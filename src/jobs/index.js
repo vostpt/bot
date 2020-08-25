@@ -48,11 +48,11 @@ class Jobs {
    */
   startProd() {
     this.forestFires();
-    this.getCoronaReports();
+    this.checkNewCoronaReports();
+    this.checkUpdatesCoronaReports();
     this.warnings();
     this.fireRisk();
     this.getTweets();
-    this.getCoronaFaqs();
   }
 
   /**
@@ -181,28 +181,28 @@ class Jobs {
   /**
    * Update new DGS coronavirus reports and send to Discord
    */
-  getCoronaReports() {
+  checkNewCoronaReports() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = [0, 30];
+    rule.minute = new schedule.Range(1, 59, 2);
     rule.second = 30;
 
     schedule.scheduleJob(rule, () => {
-      Corona.updateReports(this.client);
+      Corona.checkNewReports(this.client);
     });
   }
 
   /**
-   * Update new answered FAQS in Covid-19 spreadsheets
+   * Update new DGS coronavirus reports and send to Discord
    */
-  getCoronaFaqs() {
+  checkUpdatesCoronaReports() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(1, 55, 5);
-    rule.second = 15;
+    rule.minute = new schedule.Range(1, 31, 30);
+    rule.second = 0;
 
     schedule.scheduleJob(rule, () => {
-      Corona.getAnsweredFaqs(this.client);
+      Corona.checkOldReports(this.client);
     });
   }
 
