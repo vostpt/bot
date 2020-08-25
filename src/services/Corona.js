@@ -69,7 +69,7 @@ const sendReports = async (client, startMessage, reports) => {
  * @param {Object} client
  */
 const checkNewReports = async (client) => {
-  const reports = (await CoronaApi.getReports()).slice(-30);
+  const reports = await CoronaApi.getReports();
 
   const newSearchResults = await Promise.all(reports.map(report => reportLinkNotInDb(report)));
 
