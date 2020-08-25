@@ -23,122 +23,112 @@ const getAll = async () => {
 };
 
 /**
- * Check if report is not in database
+ * Check if report link/URL is not in database
  *
  * @param {Object} report
  */
-const reportNotInDb = report => db.CoronaReports.findOne({
+const reportLinkNotInDb = report => db.CoronaReports.findOne({
   where: {
-    md5sum: report.md5sum,
+    link: report.link,
   },
 })
   .then(result => result === null);
 
 /**
- * Send new reports to Discord and Twitter
+ * Send reports to Discord
  *
- * @async
  * @param {Object} client
+ * @param {String} startMessage
+ * @param {Object} reports
  */
-const updateReports = async (client) => {
-  const reports = await CoronaApi.getReports();
-
-  const newSearchResults = await Promise.all(reports.map(report => reportNotInDb(report)));
-
-  const newReports = reports.filter((_report, i) => newSearchResults[i]);
-
-  db.CoronaReports.bulkCreate(newReports);
-
+const sendReports = async (client, startMessage, reports) => {
   const channel = client.channels.get(channels.DGSCORONA_CHANNEL_ID);
 
-  const startMessage = '**Novo relatório de situação:**';
-
-  newReports.forEach(async (report) => {
+  reports.forEach(async (report) => {
     // Using the first 8 characters of the checksum looks better on Discord
-    const repMessage = `${startMessage}\n\`${report.md5sum.slice(0, 8)}\` | ${report.title}`;
-    sendMessageToChannel(channel, repMessage, report.link);
+    const strMd5sum = report.md5sum === ''
+      ? '*Indisponível*'
+      : `\`${report.md5sum.slice(0, 8)}\``;
 
-    CoronaApi.uploadToFtp(report);
+    const repMessage = `${startMessage}\n${strMd5sum} | ${report.title}`;
+
+    const reportLink = report.md5sum === ''
+      ? undefined
+      : report.link;
+
+    sendMessageToChannel(channel, repMessage, reportLink);
+
+    // CoronaApi.uploadToFtp(report);
   });
 };
 
 /**
- * Send new answers inserted in both Covid19 FAQ spreadsheets to Discord
- * The function should check if answer was written entirely
+ * Check new reports. If exists, send to Discord
  *
  * @async
  * @param {Object} client
  */
-const getAnsweredFaqs = async (client) => {
-  const { coronaFaqs, coronaDgsFaqs } = await CoronaApi.getFaqs();
+const checkNewReports = async (client) => {
+  const reports = (await CoronaApi.getReports()).slice(-30);
 
-  const faqLists = [{
-    title: 'Ministérios / Áreas',
-    faqs: coronaFaqs.data.feed.entry,
-    database: db.CoronaFaqs,
-  },
-  {
-    title: 'DGS',
-    faqs: coronaDgsFaqs.data.feed.entry,
-    database: db.CoronaDgsFaqs,
-  }];
+  const newSearchResults = await Promise.all(reports.map(report => reportLinkNotInDb(report)));
 
-  const channel = client.channels.get(channels.CORONAFAQ_CHANNEL_ID);
+  const newReports = await Promise.all(reports.filter((_report, i) => newSearchResults[i]));
 
-  faqLists.forEach(async (list) => {
-    list.faqs.forEach(async (row, id) => {
-      const result = {
-        id,
-        question: row.gsx$pergunta.$t,
-        answer: row.gsx$resposta.$t,
-        entity: row.gsx$entidade.$t,
-      };
+  const newReportsWithMd5 = await Promise.all(newReports.map(async (report) => {
+    const md5sum = await CoronaApi.md5FromUrl(report.link);
 
-      if (row['gsx$área']) {
-        result.area = row['gsx$área'].$t;
-      }
+    return {
+      link: report.link,
+      title: report.title,
+      md5sum,
+    };
+  }));
 
-      const record = await list.database.findByPk(id) || { answer: '', newAnswer: true };
+  db.CoronaReports.bulkCreate(newReportsWithMd5);
 
-      if (result.answer === record.answer) {
-        if (record.awaiting) {
-          const recNewAnswer = record.newAnswer;
+  const startMessage = '**Novo relatório de situação:**';
 
-          const startMessage = recNewAnswer
-            ? `FAQ ${list.title} - Nova resposta`
-            : `FAQ ${list.title} - Resposta alterada`;
+  sendReports(client, startMessage, newReportsWithMd5);
+};
 
-          const strArea = result.area
-            ? `Área: ${result.area}\n`
-            : '';
+/**
+ * Check updated reports. If exists, send to Discord
+ *
+ * @async
+ * @param {Object} client
+ */
+const checkOldReports = async (client) => {
+  const reports = await getAll();
 
-          const recMessage = `**${startMessage}:**\n${strArea}Pergunta: ${result.question}\nResposta: ${result.answer}\nEntidade responsável: ${result.entity}`;
+  const getReportMd5 = await Promise.all(reports.map(async (report) => {
+    const newMd5sum = await CoronaApi.md5FromUrl(report.link);
 
-          sendMessageToChannel(channel, recMessage);
+    return {
+      link: report.link,
+      title: report.title,
+      oldMd5: report.md5sum,
+      md5sum: newMd5sum,
+    };
+  }));
 
-          if (result.answer === '') {
-            await record.destroy();
-          } else {
-            result.awaiting = false;
-            result.newAnswer = false;
+  const updatedReports = await Promise.all(getReportMd5.filter(rep => rep.oldMd5 !== rep.md5sum));
 
-            await list.database.upsert(result);
-          }
-        }
-      } else {
-        result.awaiting = true;
-
-        const newAnswer = record.answer === '' && record.newAnswer;
-        result.newAnswer = newAnswer;
-
-        await list.database.upsert(result);
-      }
-    });
+  updatedReports.forEach((report) => {
+    db.CoronaReports.update({
+      title: report.title,
+      md5sum: report.md5sum,
+    },
+    { where: { link: report.link } });
   });
+
+  const startMessage = '**Relatório de situação atualizado:**';
+
+  sendReports(client, startMessage, updatedReports);
 };
 
 module.exports = {
   getAll,
-  updateReports,
-  getAnsweredFaqs,
+  checkNewReports,
+  checkOldReports,
 };
