@@ -1,5 +1,20 @@
+#Dependecy directories
+
 node_modules/
-*.env
+
+# Coverage tools
 coverage/
-**/dist/*
+
+# Database queries
 data/
+
+# Distribuition Files
+**/dist/*
+
+# Environment Files
+*.env
+
+# VSCode Config Files (keep launch.json)
+
+!.vscode/launch.json
+.vscode/*
