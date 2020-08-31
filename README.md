@@ -85,11 +85,11 @@ FTPUSER=
 FTPPASSWORD=
 
 #
-# Corona FAQ sheet IDs
+# DGS unavailable reports tweet sentences
 #
 
-CORONAFAQID=
-CORONAFAQGID=
+DGSSENTENCESID=
+DGSSENTENCESGID=
 
 # Node environment (for Sequelize)
 # test/development/production
