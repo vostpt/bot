@@ -4,7 +4,9 @@
 const { db } = require('../database/models');
 const { CoronaApi } = require('../api');
 const { channels } = require('../../config/bot');
+const { uploadThreadTwitter } = require('./Twitter');
 const { sendMessageToChannel } = require('./Discord');
+const { splitMessageString } = require('../helpers');
 
 /**
  * Get all reports
@@ -15,6 +17,26 @@ const { sendMessageToChannel } = require('./Discord');
 const getAll = async () => {
   try {
     const result = await db.CoronaReports.findAll();
+
+    return result.map(report => report.dataValues);
+  } catch (e) {
+    throw e;
+  }
+};
+
+/**
+ * Get all unavailable reports
+ *
+ * @returns {Object}
+ * @async
+ */
+const getUnavailable = async () => {
+  try {
+    const result = await db.CoronaReports.findAll({
+      where: {
+        md5sum: '',
+      },
+    });
 
     return result.map(report => report.dataValues);
   } catch (e) {
@@ -34,14 +56,51 @@ const reportLinkNotInDb = report => db.CoronaReports.findOne({
 })
   .then(result => result === null);
 
+
 /**
- * Send reports to Discord
+ * Generate thread array with unavailable reports
+ * in DGS website
+ *
+ * @returns {Array}
+ * @async
+ */
+const genUnavlThread = async () => {
+  const unavlReports = await getUnavailable();
+
+  if (unavlReports.length < 1) {
+    return [];
+  }
+
+  const unavlReportsTitle = await unavlReports.map(report => report.title).sort();
+
+  const reportListStr = `\n - ${unavlReportsTitle.join('\n - ')}`;
+
+  const reportListArr = splitMessageString(reportListStr, 182);
+
+  const reportListLength = reportListArr.length + 1;
+
+  const sentences = (await CoronaApi.getDgsSentences()).data.feed.entry;
+
+  const sentencesArr = sentences.map(sentence => sentence.gsx$frases.$t);
+
+  const startMsg = sentencesArr[Math.floor(Math.random() * sentencesArr.length)];
+
+  const firstTweet = { status: `ℹ️🦠 #COVID19PT (1/${reportListLength})\n\n${startMsg}\n\n🦠ℹ️` };
+
+  const reportListThread = reportListArr.map((str, i) => ({ status: `ℹ️🦠 #COVID19PT (${i + 2}/${reportListLength})\n${str}\n\n🦠ℹ️` }));
+
+  return [].concat(firstTweet, reportListThread);
+};
+
+/**
+ * Send reports to Discord,
+ * also remind of unavailable reports on Twitter
  *
  * @param {Object} client
  * @param {String} startMessage
  * @param {Object} reports
  */
-const sendReports = async (client, startMessage, reports) => {
+const sendDiscord = async (client, startMessage, reports) => {
   const channel = client.channels.get(channels.DGSCORONA_CHANNEL_ID);
 
   reports.forEach(async (report) => {
@@ -58,7 +117,7 @@ const sendReports = async (client, startMessage, reports) => {
 
     sendMessageToChannel(channel, repMessage, reportLink);
 
-    // CoronaApi.uploadToFtp(report);
+    CoronaApi.uploadToFtp(report);
   });
 };
 
@@ -85,11 +144,21 @@ const checkNewReports = async (client) => {
     };
   }));
 
-  db.CoronaReports.bulkCreate(newReportsWithMd5);
+  if (newReportsWithMd5.length > 0) {
+    db.CoronaReports.bulkCreate(newReportsWithMd5);
 
-  const startMessage = '**Novo relatório de situação:**';
+    const startMessage = '**Novo relatório de situação:**';
 
-  sendReports(client, startMessage, newReportsWithMd5);
+    sendDiscord(client, startMessage, newReportsWithMd5);
+
+    // Remind unavailable tweets
+
+    const unavlReportsThread = await genUnavlThread();
+
+    if (unavlReportsThread.length > 0) {
+      uploadThreadTwitter(unavlReportsThread);
+    }
+  }
 };
 
 /**
@@ -124,7 +193,7 @@ const checkOldReports = async (client) => {
 
   const startMessage = '**Relatório de situação atualizado:**';
 
-  sendReports(client, startMessage, updatedReports);
+  sendDiscord(client, startMessage, updatedReports);
 };
 
 module.exports = {
