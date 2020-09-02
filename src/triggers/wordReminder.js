@@ -13,7 +13,7 @@ module.exports = {
     const messageContent = message.content.toLowerCase();
 
     if (messageContent === 'aprosoc') {
-      message.reply('Outra vez aprosoc? vou dizer à Isa <@502617955100786709> [Teste ID] para iniciar o teu processo de expulsão :fuga:');
+      message.reply('Outra vez aprosoc? vou dizer à <@502617955100786709> para iniciar o teu processo de expulsão :fuga:');
     }
   },
 };
