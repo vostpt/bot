@@ -25,6 +25,10 @@ module.exports = {
       message.channel.send(`@everyone A pedido de ${message.author} vamos todos celebrar :champagne: :champagne_glass:`);
     }
 
+    if (messageContent === '!bolo') {
+      message.channel.send(`A pedido de ${message.author}, aqui está o bolo! :cake:\nhttps://media1.tenor.com/images/930e055fd80ba465ad20ee13e5badb1d/tenor.gif`);
+    }
+
     // Teaching
     if (messageContent.includes('voluntários')) {
       message.reply('Desculpa interromper, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência');
