@@ -8,7 +8,7 @@ coverage/
 # Database queries
 data/
 
-# Distribuition Files
+# Distribution Files
 **/dist/*
 
 # Environment Files
