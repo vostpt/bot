@@ -1,3 +1,5 @@
+const { removeAccent } = require('../helpers');
+
 module.exports = {
   name: 'Word reminder',
   description: 'Remind something when someone sends a predetermined word',
@@ -10,9 +12,9 @@ module.exports = {
   * @param {Message} message
   */
   async execute(message) {
-    const messageContent = message.content.toLowerCase();
+    const messageContent = removeAccent(message.content.toLowerCase());
 
-    if (messageContent === 'aprosoc') {
+    if (messageContent.includes('aprosoc')) {
       message.reply('Outra vez aprosoc? vou dizer à <@502617955100786709> para iniciar o teu processo de expulsão :fuga:');
     }
   },
