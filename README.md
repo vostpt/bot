@@ -84,13 +84,6 @@ FTPSERVER=
 FTPUSER=
 FTPPASSWORD=
 
-#
-# DGS unavailable reports tweet sentences
-#
-
-DGSSENTENCESID=
-DGSSENTENCESGID=
-
 # Node environment (for Sequelize)
 # test/development/production
 
