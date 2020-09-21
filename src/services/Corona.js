@@ -4,9 +4,7 @@
 const { db } = require('../database/models');
 const { CoronaApi } = require('../api');
 const { channels } = require('../../config/bot');
-const { uploadThreadTwitter } = require('./Twitter');
 const { sendMessageToChannel } = require('./Discord');
-const { splitMessageString } = require('../helpers');
 
 /**
  * Get all reports
@@ -25,26 +23,6 @@ const getAll = async () => {
 };
 
 /**
- * Get all unavailable reports
- *
- * @returns {Object}
- * @async
- */
-const getUnavailable = async () => {
-  try {
-    const result = await db.CoronaReports.findAll({
-      where: {
-        md5sum: '',
-      },
-    });
-
-    return result.map(report => report.dataValues);
-  } catch (e) {
-    throw e;
-  }
-};
-
-/**
  * Check if report link/URL is not in database
  *
  * @param {Object} report
@@ -55,42 +33,6 @@ const reportLinkNotInDb = report => db.CoronaReports.findOne({
   },
 })
   .then(result => result === null);
-
-
-/**
- * Generate thread array with unavailable reports
- * in DGS website
- *
- * @returns {Array}
- * @async
- */
-const genUnavlThread = async () => {
-  const unavlReports = await getUnavailable();
-
-  if (unavlReports.length < 1) {
-    return [];
-  }
-
-  const unavlReportsTitle = await unavlReports.map(report => report.title).sort();
-
-  const reportListStr = `\n - ${unavlReportsTitle.join('\n - ')}`;
-
-  const reportListArr = splitMessageString(reportListStr, 182);
-
-  const reportListLength = reportListArr.length + 1;
-
-  const sentences = (await CoronaApi.getDgsSentences()).data.feed.entry;
-
-  const sentencesArr = sentences.map(sentence => sentence.gsx$frases.$t);
-
-  const startMsg = sentencesArr[Math.floor(Math.random() * sentencesArr.length)];
-
-  const firstTweet = { status: `ℹ️🦠 #COVID19PT (1/${reportListLength})\n\n${startMsg}\n\n🦠ℹ️` };
-
-  const reportListThread = reportListArr.map((str, i) => ({ status: `ℹ️🦠 #COVID19PT (${i + 2}/${reportListLength})\n${str}\n\n🦠ℹ️` }));
-
-  return [].concat(firstTweet, reportListThread);
-};
 
 /**
  * Send reports to Discord,
@@ -150,14 +92,6 @@ const checkNewReports = async (client) => {
     const startMessage = '**Novo relatório de situação:**';
 
     sendDiscord(client, startMessage, newReportsWithMd5);
-
-    // Remind unavailable tweets
-
-    const unavlReportsThread = await genUnavlThread();
-
-    if (unavlReportsThread.length > 0) {
-      uploadThreadTwitter(unavlReportsThread);
-    }
   }
 };
 
