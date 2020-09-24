@@ -16,7 +16,7 @@ module.exports = {
   name: 'corona',
   usage: `
     **!corona reports** - Retorna todos os relatórios de situação acerca do COVID-19 emitidos pela DGS.
-    **!corona resumo <data>** - Retorna o resumo do relatório da DGS do dia especificado ('hoje', ou data no formato VOSTPT -> DDMMMAAAA).
+    **!corona resumo <data>** - Retorna o resumo do relatório da DGS da data especificada ('hoje', ou data no formato VOSTPT -> DDMMMAAAA).
   `,
 
   /**
