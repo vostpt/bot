@@ -5,6 +5,8 @@ const FileType = require('file-type');
 
 const api = require('./api');
 
+const { dgsResumesURL } = require('../../config/api');
+
 const { ftpCorona } = require('../../config/ftp');
 
 const dgsReports = 'https://covid19.min-saude.pt/relatorio-de-situacao/';
@@ -71,8 +73,14 @@ const uploadToFtp = async (report) => {
   await client.uploadFrom(fileStream, fileName);
 };
 
+const getDgsResumes = async () => (await api.get(dgsResumesURL)).data.feed.entry.map(resume => ({
+  date: resume.gsx$data.$t,
+  text: resume.gsx$resumo.$t,
+}));
+
 module.exports = {
   md5FromUrl,
   getReports,
   uploadToFtp,
+  getDgsResumes,
 };
