@@ -130,8 +130,23 @@ const checkOldReports = async (client) => {
   sendDiscord(client, startMessage, updatedReports);
 };
 
+/**
+ * Get resume from a certain date
+ *
+ * @async
+ * @param {Object} date
+ * @returns {String}
+ */
+
+const getResume = async (date) => {
+  const resumes = await CoronaApi.getDgsResumes();
+
+  return resumes.find(resume => resume.date === date);
+};
+
 module.exports = {
   getAll,
   checkNewReports,
   checkOldReports,
+  getResume,
 };

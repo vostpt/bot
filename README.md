@@ -84,6 +84,13 @@ FTPSERVER=
 FTPUSER=
 FTPPASSWORD=
 
+#
+# DGS resume spreadsheet
+#
+
+DGSRESUMESID=
+DGSRESUMESGID=
+
 # Node environment (for Sequelize)
 # test/development/production
 

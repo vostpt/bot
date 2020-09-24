@@ -2,6 +2,9 @@ const moment = require('moment');
 const path = require('path');
 const fs = require('fs');
 const { prefix } = require('../../config/bot');
+const { locale } = require('../../config/locale');
+
+moment.locale(locale);
 
 moment.prototype.lastsLongerThan = function lastsLongerThan(amount, unit) {
   return this.add(amount, unit).isSameOrBefore(moment());
@@ -150,6 +153,17 @@ const splitMessageString = (msgString, charLimit = 1950, returnFirst = false) =>
   return messageArray;
 };
 
+/**
+* Parse VOST formatted date, and return a moment object
+* (VOST format - DDMMMYYYY - example: 08SET2020)
+* Moment's strict mode is enabled
+*
+* @param {String} date
+* @returns {Object}
+*/
+
+const parseVostDate = async strDate => moment(strDate, 'DDMMMYYYY', true);
+
 module.exports = {
   isSevere,
   printAliases,
@@ -158,4 +172,5 @@ module.exports = {
   isBase64,
   getFileContent,
   splitMessageString,
+  parseVostDate,
 };
