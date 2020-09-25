@@ -59,6 +59,11 @@ VOLUNTEERS_CHANNEL_ID=
 TWFEED_CHANNEL_ID=
 DGSCORONA_CHANNEL_ID=
 
+#
+# Discord roles
+#
+
+COREROLE=
 
 #
 # Twitter configurations (Main account)
@@ -90,6 +95,13 @@ FTPPASSWORD=
 
 DGSRESUMESID=
 DGSRESUMESGID=
+
+#
+# Firebase keys
+#
+
+FBASESENDERID=
+FBASETOKEN=
 
 # Node environment (for Sequelize)
 # test/development/production
