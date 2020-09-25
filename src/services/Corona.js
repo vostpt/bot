@@ -164,6 +164,8 @@ const sendNotification = async (notification) => {
 
     return 0;
   } catch (err) {
+    console.log(err);
+
     return -1;
   }
 };
