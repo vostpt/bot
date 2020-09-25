@@ -156,7 +156,7 @@ const sendNotification = async (notification) => {
   const firebaseMsg = {
     name: 'String',
     notification,
-    topic: 'all',
+    topic: '/topics/all',
   };
 
   try {
