@@ -21,7 +21,7 @@ const sendNotification = async (notifMsg) => {
     method: 'post',
     body: JSON.stringify(body),
     headers,
-  }).then(res => res.json());
+  }).then(res => res.text());
 };
 
 module.exports = {
