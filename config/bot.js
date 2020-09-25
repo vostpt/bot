@@ -12,6 +12,10 @@ const channels = {
   CORONAFAQ_CHANNEL_ID: process.env.CORONAFAQ_CHANNEL_ID,
 };
 
+const roles = {
+  core: process.env.COREROLE,
+};
+
 const { COOLDOWN = '' } = process.env;
 
 const cooldown = COOLDOWN.length === 0 ? 10 : COOLDOWN;
@@ -21,6 +25,7 @@ const betaMode = (/true/i).test(process.env.BETA_MODE);
 module.exports = {
   prefix,
   channels,
+  roles,
   cooldown,
   betaMode,
 };

@@ -8,6 +8,7 @@ const WindApi = require('./Wind');
 const WeatherApi = require('./Weather');
 const FuelApi = require('./Fuel');
 const CoronaApi = require('./Corona');
+const FirebaseApi = require('./Firebase');
 
 module.exports = {
   api,
@@ -20,4 +21,5 @@ module.exports = {
   WeatherApi,
   FuelApi,
   CoronaApi,
+  FirebaseApi,
 };

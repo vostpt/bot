@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 const { Corona } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, roles } = require('../../config/bot');
 const { sendMessageAnswer } = require('../services/Discord');
 const { parseVostDate } = require('../helpers');
 
@@ -10,6 +10,7 @@ module.exports = {
   allowedArgs: [
     'reports',
     'resumo',
+    'notificacao',
   ],
   args: true,
   cooldown,
@@ -67,8 +68,49 @@ module.exports = {
         : `aqui está o resumo do relatório de ${searchDate}:\n${result.text}`;
 
       sendMessageAnswer(message, string);
-    } else {
-      sendMessageAnswer(message, `desconheço essa opção.\n${this.usage}`);
+
+      return;
     }
+
+    if (requestedParam === 'notificacao') {
+      if (message.member.roles.has(roles.core)) {
+        const searchDateFormat = 'DD/MM/YYYY';
+
+        const searchDate = moment().format(searchDateFormat);
+
+        const result = await Corona.getResume(searchDate);
+
+        if (typeof result !== 'undefined' && result.text !== '') {
+          const notifyDate = moment().format('DDMMMYYYY').toUpperCase();
+
+          const footer = '* Variação % comparada com o dia anterior\nSaiba mais em covid19estamoson.gov.pt';
+
+          const notification = {
+            title: `Dados de ${notifyDate}`,
+            body: `${result.text}\n${footer}`,
+          };
+
+          const notifyResult = await Corona.sendNotification(notification);
+
+          if (notifyResult > -1) {
+            sendMessageAnswer(message, 'notificação enviada');
+
+            return;
+          }
+
+          sendMessageAnswer(message, 'ocorreu um erro, notificação não enviada');
+
+          return;
+        }
+        sendMessageAnswer(message, 'não existem dados de hoje, notificação não enviada');
+
+        return;
+      }
+      sendMessageAnswer(message, 'não tens permissão para usar o comando');
+
+      return;
+    }
+
+    sendMessageAnswer(message, `desconheço essa opção.\n${this.usage}`);
   },
 };
