@@ -155,8 +155,8 @@ const getResume = async (date) => {
 const sendNotification = async (notification) => {
   const firebaseMsg = {
     name: 'String',
-    ...notification,
-    topic: '/topics/all',
+    notification,
+    topic: 'all',
   };
 
   try {
