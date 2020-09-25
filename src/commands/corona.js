@@ -93,7 +93,7 @@ module.exports = {
           const notifyResult = await Corona.sendNotification(notification);
 
           if (notifyResult > -1) {
-            sendMessageAnswer(message, 'notificação enviada');
+            sendMessageAnswer(message, `notificação enviada.\n**${notification.title}**\n${notification.body}`);
 
             return;
           }
