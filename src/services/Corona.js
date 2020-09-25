@@ -2,7 +2,7 @@
   Coronavirus-related services
  */
 const { db } = require('../database/models');
-const { CoronaApi } = require('../api');
+const { CoronaApi, FirebaseApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { sendMessageToChannel } = require('./Discord');
 
@@ -144,9 +144,34 @@ const getResume = async (date) => {
   return resumes.find(resume => resume.date === date);
 };
 
+/**
+ * Send notification to Estamos On app
+ *
+ * @async
+ * @param {Object} notification
+ * @returns {Number}
+ */
+
+const sendNotification = async (notification) => {
+  const firebaseMsg = {
+    name: 'String',
+    notification,
+    topic: '/topics/all',
+  };
+
+  try {
+    await FirebaseApi.sendNotification(firebaseMsg);
+
+    return 0;
+  } catch (err) {
+    return -1;
+  }
+};
+
 module.exports = {
   getAll,
   checkNewReports,
   checkOldReports,
   getResume,
+  sendNotification,
 };
