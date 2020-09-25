@@ -97,12 +97,6 @@ DGSRESUMESID=
 DGSRESUMESGID=
 
 #
-# Firebase keys
-#
-
-FBASESENDERID=
-FBASETOKEN=
-
 # Node environment (for Sequelize)
 # test/development/production
 
