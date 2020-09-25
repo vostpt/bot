@@ -160,7 +160,9 @@ const sendNotification = async (notification) => {
   };
 
   try {
-    await FirebaseApi.sendNotification(firebaseMsg);
+    const result = await FirebaseApi.sendNotification(firebaseMsg);
+
+    console.log(result.toString());
 
     return 0;
   } catch (err) {
