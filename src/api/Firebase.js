@@ -1,6 +1,11 @@
 const firebAdmin = require('firebase-admin');
 
-const { firebaseConfig } = require('../../config/Firebase');
+const serviceAccount = require('../../data/auth/estamos-on-covid19-firebase-adminsdk-94dr5-549675da43.json');
+
+const firebaseConfig = {
+  credential: firebAdmin.credential.cert(serviceAccount),
+  databaseURL: 'https://estamos-on-covid19.firebaseio.com',
+};
 
 const sendNotification = async (notifMsg) => {
   const msgObject = notifMsg;
