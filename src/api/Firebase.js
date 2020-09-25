@@ -5,7 +5,7 @@ const { fbaseKey } = require('../../config/firebase');
 const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
-  Authorization: fbaseKey,
+  Authorization: `key=${fbaseKey}`,
 };
 
 const sendNotification = async (notifMsg) => {
