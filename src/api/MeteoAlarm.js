@@ -67,13 +67,15 @@ class MeteoAlarm {
       // eslint-disable-next-line no-restricted-syntax
       for (const entry of entries) {
         const cheerioElement = $(entry);
-        const type = cheerioElement.find('cap\\:msgType').text();
+        const type = cheerioElement.find('cap\\:event').text();
+        const status = cheerioElement.find('cap\\:msgType').text();
         const start = cheerioElement.find('cap\\:effective').text();
         const end = cheerioElement.find('cap\\:expires').text();
         const severity = cheerioElement.find('cap\\:severity').text();
         const region = cheerioElement.find('cap\\:areaDesc').text();
         warnings.push({
           type,
+          status,
           start,
           end,
           severity,
