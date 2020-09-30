@@ -1,19 +1,28 @@
-const firebAdmin = require('firebase-admin');
+const fetch = require('node-fetch');
 
-const serviceAccount = require('../../data/auth/estamos-on-covid19-firebase-adminsdk-94dr5-549675da43.json');
+const { fbaseKey } = require('../../config/firebase');
 
-const firebaseConfig = {
-  credential: firebAdmin.credential.cert(serviceAccount),
-  databaseURL: 'https://estamos-on-covid19.firebaseio.com',
+const headers = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+  Authorization: `key=${fbaseKey}`,
 };
 
 const sendNotification = async (notifMsg) => {
-  const msgObject = notifMsg;
+  const body = {
+    to: notifMsg.topic,
+    notification: {
+      ...notifMsg.notification,
+      sound: 'default',
+    },
+  };
 
-  return firebAdmin.messaging().send(msgObject);
+  return fetch('https://fcm.googleapis.com/fcm/send', {
+    method: 'post',
+    body: JSON.stringify(body),
+    headers,
+  }).then(res => res.text());
 };
-
-firebAdmin.initializeApp(firebaseConfig);
 
 module.exports = {
   sendNotification,
