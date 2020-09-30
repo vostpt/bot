@@ -1,10 +1,15 @@
 /**
   Coronavirus-related services
  */
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+const moment = require('moment');
+
 const { db } = require('../database/models');
 const { CoronaApi, FirebaseApi } = require('../api');
 const { channels } = require('../../config/bot');
+const { dgsResumes } = require('../../config/api');
 const { sendMessageToChannel } = require('./Discord');
+const authFile = require('../../data/auth/vostpt-bot');
 
 /**
  * Get all reports
@@ -145,6 +150,49 @@ const getResume = async (date) => {
 };
 
 /**
+ * Add coronavirus daily numbers to spreadsheet
+ *
+ * @async
+ * @param {Object} notification
+ */
+
+const updateSpreadsheet = async (reportValues) => {
+  try {
+    const doc = new GoogleSpreadsheet(dgsResumes.id);
+
+    await doc.useServiceAccountAuth(authFile);
+
+    await doc.loadInfo();
+
+    const sheet = await doc.sheetsByIndex[dgsResumes.dataGid - 1];
+
+    await sheet.loadCells(['A1:1', 'A5:5', 'A6:6', 'A8:8', 'A9:9', 'A10:10']);
+
+    const googleEpoch = moment('30/12/1899', 'DD/MM/YYYY');
+
+    const updateDate = (reportValues.date).diff(googleEpoch, 'days');
+
+    const { columnCount } = sheet;
+
+    for (let i = 0; i < columnCount; i += 1) {
+      const cell = sheet.getCell(0, i);
+
+      if (cell.value === updateDate) {
+        (sheet.getCell(4, i)).value = Number(reportValues.deaths);
+        (sheet.getCell(5, i)).value = Number(reportValues.recovered);
+        (sheet.getCell(7, i)).value = Number(reportValues.confirmed);
+        (sheet.getCell(8, i)).value = Number(reportValues.atHospital);
+        (sheet.getCell(9, i)).value = Number(reportValues.atICU);
+      }
+    }
+
+    await sheet.saveUpdatedCells();
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+/**
  * Send notification to Estamos On app
  *
  * @async
@@ -177,5 +225,6 @@ module.exports = {
   checkNewReports,
   checkOldReports,
   getResume,
+  updateSpreadsheet,
   sendNotification,
 };

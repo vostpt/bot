@@ -21,6 +21,7 @@
     "npx": "^10.2.2",
     "basic-ftp": "^4.5.3",
     "file-type": "^14.7.1",
+    "google-spreadsheet": "^3.0.13",
     "firebase-admin": "^9.2.0"
   },
   "devDependencies": {
