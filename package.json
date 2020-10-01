@@ -20,7 +20,8 @@
     "sqlite3": "^5.0.0",
     "npx": "^10.2.2",
     "basic-ftp": "^4.5.3",
-    "file-type": "^14.7.1"
+    "file-type": "^14.7.1",
+    "axios": "^0.20.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",
