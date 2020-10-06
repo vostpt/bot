@@ -56,7 +56,6 @@ class Jobs {
     this.getTweets();
     Jobs.warningsMeteoAlarm();
     Jobs.clearMeteoAlarmDb();
-
   }
 
   /**
