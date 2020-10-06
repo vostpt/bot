@@ -3,6 +3,8 @@ const WarningsService = require('../../src/services/Warnings');
 const alertsCommand = require('../../src/commands/alerts');
 
 jest.mock('../../src/services/Warnings');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
+
 
 const client = new Discord.Client();
 

@@ -3,6 +3,8 @@ const debugCommand = require('../../src/commands/debug');
 const DiscordService = require('../../src/services/Discord');
 
 jest.mock('../../src/services/Discord');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
+
 
 const client = new Discord.Client();
 

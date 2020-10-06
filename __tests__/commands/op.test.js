@@ -8,6 +8,8 @@ const opCommand = require('../../src/commands/op');
 jest.mock('../../src/services/Fires');
 jest.mock('../../src/services/Winds');
 jest.mock('../../src/services/ProCiv');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
+
 
 const client = new Discord.Client();
 

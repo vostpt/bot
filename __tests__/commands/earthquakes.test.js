@@ -3,6 +3,7 @@ const EarthquakesService = require('../../src/services/Earthquakes');
 const earthquakesCommand = require('../../src/commands/earthquakes');
 
 jest.mock('../../src/services/Earthquakes');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
 
 const client = new Discord.Client();
 

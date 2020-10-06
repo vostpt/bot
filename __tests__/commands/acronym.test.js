@@ -3,6 +3,7 @@ const AcronymsAPI = require('../../src/api/Acronyms');
 const AcronymCommand = require('../../src/commands/acronym');
 
 jest.mock('../../src/api/Acronyms');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
 
 const client = new Discord.Client();
 
