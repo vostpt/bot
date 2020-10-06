@@ -7,6 +7,8 @@ const { parseVostDate } = require('../helpers');
 
 const searchDateFormat = 'DD/MM/YYYY';
 
+const vostDateFormat = 'DDMMMYYYY';
+
 module.exports = {
   active: true,
   allowedArgs: [
@@ -59,14 +61,14 @@ module.exports = {
       }
 
       const resSearchDate = args[1] === 'hoje'
-        ? moment().format(searchDateFormat)
-        : (await parseVostDate(args[1])).format(searchDateFormat);
+        ? moment()
+        : await parseVostDate(args[1]);
 
-      const result = await Corona.getResume(resSearchDate);
+      const result = await Corona.getResume(await resSearchDate.format(searchDateFormat));
 
       const string = typeof result === 'undefined' || result.text === ''
         ? 'não foi encontrado nenhum resumo nesta data'
-        : `aqui está o resumo do relatório:\n**Boletim DGS ${args[1]}**:\n${result.text}`;
+        : `aqui está o resumo do relatório:\n**Boletim DGS ${await resSearchDate.format(vostDateFormat).toUpperCase()}**:\n${result.text}`;
 
       sendMessageAnswer(message, string);
 
@@ -99,7 +101,7 @@ module.exports = {
 
           const result = await Corona.getResume(updSearchDate.format(searchDateFormat));
 
-          const updateDate = updSearchDate.format('DDMMMYYYY').toUpperCase();
+          const updateDate = updSearchDate.format(vostDateFormat).toUpperCase();
 
           sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n**Boletim DGS ${updateDate}**\n${result.text}`);
         } catch (e) {
@@ -119,7 +121,7 @@ module.exports = {
         const result = await Corona.getResume(searchDate);
 
         if (typeof result !== 'undefined' && result.text !== '') {
-          const notifyDate = moment().format('DDMMMYYYY').toUpperCase();
+          const notifyDate = moment().format(vostDateFormat).toUpperCase();
 
           const footer = '* Variação % comparada com o dia anterior\nSaiba mais em covid19estamoson.gov.pt';
 
