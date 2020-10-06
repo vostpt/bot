@@ -36,10 +36,10 @@ class MeteoAlarm {
       'RS',
       'SE',
       'SI',
+      'UK',
+      'SK',
       // 'CY',
       // 'DE',
-      // 'SK',
-      // 'GB',
     ];
   }
 
@@ -73,23 +73,27 @@ class MeteoAlarm {
         const end = cheerioElement.find('cap\\:expires').text();
         const severity = cheerioElement.find('cap\\:severity').text();
         const region = cheerioElement.find('cap\\:areaDesc').text();
-        warnings.push({
-          type,
-          status,
-          start,
-          end,
-          severity,
-          region,
-        });
+
+        if (severity === 'Severe' || severity === 'Extreme') {
+          warnings.push({
+            type,
+            status,
+            start,
+            end,
+            severity,
+            region,
+          });
+        }
       }
     } catch (error) {
       if (error.status !== 404) {
         // eslint-disable-next-line no-console
         console.error(error);
-      } else {
-        // eslint-disable-next-line no-console
-        console.log(`MeteoAlarm: Missing countrycode ${countryShortcode}`);
+        return [];
       }
+
+      // eslint-disable-next-line no-console
+      console.log(`MeteoAlarm: Missing countrycode ${countryShortcode}`);
     }
     return warnings;
   }

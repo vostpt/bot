@@ -7,6 +7,10 @@ const {
   TWITTER_AZ_CONSUMER_SECRET,
   TWITTER_AZ_ACCESS_TOKEN_KEY,
   TWITTER_AZ_ACCESS_TOKEN_SECRET,
+  TWITTER_EU_CONSUMER_KEY,
+  TWITTER_EU_CONSUMER_SECRET,
+  TWITTER_EU_ACCESS_TOKEN_KEY,
+  TWITTER_EU_ACCESS_TOKEN_SECRET,
 } = process.env;
 
 const twitterKeys = [{
@@ -28,6 +32,16 @@ const twitterKeys = [{
     access_token: TWITTER_AZ_ACCESS_TOKEN_KEY,
     access_token_secret: TWITTER_AZ_ACCESS_TOKEN_SECRET,
   },
+},
+{
+  reference: 'europe',
+  screenName: 'VOSTeurope',
+  keys: {
+    consumer_key: TWITTER_EU_CONSUMER_KEY,
+    consumer_secret: TWITTER_EU_CONSUMER_SECRET,
+    access_token: TWITTER_EU_ACCESS_TOKEN_KEY,
+    access_token_secret: TWITTER_EU_ACCESS_TOKEN_SECRET,
+  }
 }];
 
 module.exports = {

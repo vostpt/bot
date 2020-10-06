@@ -4,6 +4,7 @@ const {
   Fires,
   Earthquakes,
   Warnings,
+  MeteoAlarm,
   Fuel,
   Twitter,
   Corona,
@@ -53,6 +54,9 @@ class Jobs {
     this.warnings();
     this.fireRisk();
     this.getTweets();
+    Jobs.warningsMeteoAlarm();
+    Jobs.clearMeteoAlarmDb();
+
   }
 
   /**
@@ -86,6 +90,28 @@ class Jobs {
     rule.minute = new schedule.Range(0, 59, 10);
 
     schedule.scheduleJob(rule, () => Warnings.getWarnings(this.client));
+  }
+
+  /**
+   * Check for MeteoAlarm warnings
+   */
+  static warningsMeteoAlarm() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(3, 59, 10);
+
+    schedule.scheduleJob(rule, () => MeteoAlarm.getWarnings());
+  }
+
+  /**
+   * Clean MeteoAlarm DB
+   */
+  static clearMeteoAlarmDb() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.hour = new schedule.Range(0, 23, 4);
+
+    schedule.scheduleJob(rule, () => MeteoAlarm.clearDb());
   }
 
   /**
