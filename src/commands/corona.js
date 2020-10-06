@@ -66,7 +66,7 @@ module.exports = {
 
       const string = typeof result === 'undefined' || result.text === ''
         ? 'não foi encontrado nenhum resumo nesta data'
-        : `aqui está o resumo do relatório de ${resSearchDate}:\n${result.text}`;
+        : `aqui está o resumo do relatório:\n**Boletim DGS ${args[1]}**:\n${result.text}`;
 
       sendMessageAnswer(message, string);
 
@@ -99,7 +99,9 @@ module.exports = {
 
           const result = await Corona.getResume(updSearchDate.format(searchDateFormat));
 
-          sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n${result.text}`);
+          const updateDate = updSearchDate.format('DDMMMYYYY').toUpperCase();
+
+          sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n**Boletim DGS ${updateDate}**\n${result.text}`);
         } catch (e) {
           sendMessageAnswer(message, `não foi possível atualizar os dados. Erro:\n'''${e}'''`);
         }
@@ -122,7 +124,7 @@ module.exports = {
           const footer = '* Variação % comparada com o dia anterior\nSaiba mais em covid19estamoson.gov.pt';
 
           const notification = {
-            title: `Dados de ${notifyDate}`,
+            title: `Boletim DGS ${notifyDate}`,
             body: `${result.text}\n${footer}`,
           };
 
