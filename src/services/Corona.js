@@ -4,6 +4,7 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const moment = require('moment');
 
+const authFile = require('../../data/auth/vostpt-bot');
 const { db } = require('../database/models');
 const { CoronaApi, FirebaseApi } = require('../api');
 const { channels } = require('../../config/bot');
