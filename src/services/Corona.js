@@ -9,7 +9,6 @@ const { CoronaApi, FirebaseApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { dgsResumes } = require('../../config/api');
 const { sendMessageToChannel } = require('./Discord');
-const authFile = require('../../data/auth/vostpt-bot');
 
 /**
  * Get all reports
@@ -208,12 +207,11 @@ const sendNotification = async (notification) => {
   };
 
   try {
-    const result = await FirebaseApi.sendNotification(firebaseMsg);
-
-    console.log(result.toString());
+    await FirebaseApi.sendNotification(firebaseMsg);
 
     return 0;
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.log(err);
 
     return -1;
