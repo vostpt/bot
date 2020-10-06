@@ -15,8 +15,7 @@
     "twit": "^2.2.11",
     "puppeteer": "^1.19.0",
     "ip": "^1.1.5",
-    "sequelize": "^5.21.3",
-    "sequelize-cli": "^5.5.1",
+    "sequelize": "^6.3.5",
     "sqlite3": "^5.0.0",
     "npx": "^10.2.2",
     "basic-ftp": "^4.5.3",
@@ -31,7 +30,7 @@
     "eslint-plugin-import": "^2.17.0",
     "eslint-plugin-jest": "^22.4.1",
     "jest": "^25.5.4",
-    "sequelize-cli": "^5.5.1",
+    "sequelize-cli": "^6.2.0",
     "vuepress": "^1.0.3"
   },
   "scripts": {
