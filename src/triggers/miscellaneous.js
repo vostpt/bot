@@ -29,6 +29,10 @@ module.exports = {
       message.channel.send(`A pedido de ${message.author}, aqui está o bolo! :cake:\nhttps://media1.tenor.com/images/930e055fd80ba465ad20ee13e5badb1d/tenor.gif`);
     }
 
+    if (messageContent === '!alheira') {
+      message.channel.send(`A pedido de ${message.author}, aqui está a alheira!\nhttps://www.teleculinaria.pt/wp-content/uploads/2016/01/alheiras-no-forno-com-grelos-e-batatas-cozidas.jpg`);
+    }
+
     // Teaching
     if (messageContent.includes('voluntários')) {
       message.reply('Desculpa interromper, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência');
