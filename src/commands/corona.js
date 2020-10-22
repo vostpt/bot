@@ -1,15 +1,20 @@
 const moment = require('moment');
 
 const { Corona } = require('../services');
-const { cooldown } = require('../../config/bot');
+const { cooldown, roles } = require('../../config/bot');
 const { sendMessageAnswer } = require('../services/Discord');
 const { parseVostDate } = require('../helpers');
+
+const searchDateFormat = 'DD/MM/YYYY';
+
+const vostDateFormat = 'DDMMMYYYY';
 
 module.exports = {
   active: true,
   allowedArgs: [
     'reports',
     'resumo',
+    'notificacao',
   ],
   args: true,
   cooldown,
@@ -17,6 +22,7 @@ module.exports = {
   usage: `
     **!corona reports** - Retorna todos os relatórios de situação acerca do COVID-19 emitidos pela DGS.
     **!corona resumo <data>** - Retorna o resumo do relatório da DGS da data especificada ('hoje', ou data no formato VOSTPT -> DDMMMAAAA).
+    **!corona update <data> <num_confirmados> <num_hospitalizados> <num_UCI> <num_óbitos> <num_recuperados>** *[comando restrito]* - Atualiza a spreadsheet Covid-19 com os valores fornecidos, na data especificada ('hoje', ou data no formato VOSTPT -> DDMMMAAAA).
   `,
 
   /**
@@ -54,21 +60,60 @@ module.exports = {
         return;
       }
 
-      const searchDateFormat = 'DD/MM/YYYY';
+      const resSearchDate = args[1] === 'hoje'
+        ? moment()
+        : await parseVostDate(args[1]);
 
-      const searchDate = args[1] === 'hoje'
-        ? moment().format(searchDateFormat)
-        : (await parseVostDate(args[1])).format(searchDateFormat);
-
-      const result = await Corona.getResume(searchDate);
+      const result = await Corona.getResume(await resSearchDate.format(searchDateFormat));
 
       const string = typeof result === 'undefined' || result.text === ''
         ? 'não foi encontrado nenhum resumo nesta data'
-        : `aqui está o resumo do relatório de ${searchDate}:\n${result.text}`;
+        : `aqui está o resumo do relatório:\n**Boletim DGS ${await resSearchDate.format(vostDateFormat).toUpperCase()}**:\n${result.text}`;
 
       sendMessageAnswer(message, string);
-    } else {
-      sendMessageAnswer(message, `desconheço essa opção.\n${this.usage}`);
+
+      return;
     }
+
+    if (requestedParam === 'update') {
+      if (message.member.roles.has(roles.core)) {
+        if (args.length < 7) {
+          sendMessageAnswer(message, `falta introduzir valores.\n${this.usage}`);
+
+          return;
+        }
+
+        try {
+          const updSearchDate = args[1] === 'hoje'
+            ? moment()
+            : (await parseVostDate(args[1])).add(12, 'hours');
+
+          const reportValues = {
+            date: updSearchDate,
+            confirmed: args[2],
+            atHospital: args[3],
+            atICU: args[4],
+            deaths: args[5],
+            recovered: args[6],
+          };
+
+          await Corona.updateSpreadsheet(reportValues);
+
+          const result = await Corona.getResume(updSearchDate.format(searchDateFormat));
+
+          const updateDate = updSearchDate.format(vostDateFormat).toUpperCase();
+
+          sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n**Boletim DGS ${updateDate}**\n${result.text}`);
+        } catch (e) {
+          sendMessageAnswer(message, `não foi possível atualizar os dados. Erro:\n'''${e}'''`);
+        }
+        return;
+      }
+      sendMessageAnswer(message, 'não tens permissão para usar o comando');
+
+      return;
+    }
+
+    sendMessageAnswer(message, `desconheço essa opção.\n${this.usage}`);
   },
 };

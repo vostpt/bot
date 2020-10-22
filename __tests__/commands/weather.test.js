@@ -3,6 +3,8 @@ const weatherCommand = require('../../src/commands/weather');
 const WeatherService = require('../../src/services/Weather');
 
 jest.mock('../../src/services/Weather');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
+
 
 const client = new Discord.Client();
 
