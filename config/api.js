@@ -4,12 +4,14 @@ const baseFaqsURL = (id, gid) => `https://spreadsheets.google.com/feeds/list/${i
 
 const dgsResumes = {
   id: process.env.DGSRESUMESID,
-  gid: process.env.DGSRESUMESGID,
+  resumeGid: process.env.DGSRESUMESGID,
+  dataGid: process.env.DGSRESUMESDATAGID,
 };
 
-const dgsResumesURL = baseFaqsURL(dgsResumes.id, dgsResumes.gid);
+const dgsResumesURL = baseFaqsURL(dgsResumes.id, dgsResumes.resumeGid);
 
 module.exports = {
   baseURL,
+  dgsResumes,
   dgsResumesURL,
 };

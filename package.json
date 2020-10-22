@@ -9,6 +9,7 @@
     "discord.js": "^11.4.2",
     "dotenv": "^7.0.0",
     "file-type": "^14.7.1",
+    "google-spreadsheet": "^3.0.13",
     "ip": "^1.1.5",
     "libsodium": "^0.7.4",
     "messaging-api-telegram": "^1.0.1",
