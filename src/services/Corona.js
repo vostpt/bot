@@ -7,7 +7,7 @@ const moment = require('moment');
 // eslint-disable-next-line import/no-unresolved
 const authFile = require('../../data/auth/vostpt-bot');
 const { db } = require('../database/models');
-const { CoronaApi, FirebaseApi } = require('../api');
+const { CoronaApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { dgsResumes } = require('../../config/api');
 const { sendMessageToChannel } = require('./Discord');
@@ -193,38 +193,10 @@ const updateSpreadsheet = async (reportValues) => {
   }
 };
 
-/**
- * Send notification to Estamos On app
- *
- * @async
- * @param {Object} notification
- * @returns {Number}
- */
-
-const sendNotification = async (notification) => {
-  const firebaseMsg = {
-    name: 'String',
-    notification,
-    topic: '/topics/all',
-  };
-
-  try {
-    await FirebaseApi.sendNotification(firebaseMsg);
-
-    return 0;
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-
-    return -1;
-  }
-};
-
 module.exports = {
   getAll,
   checkNewReports,
   checkOldReports,
   getResume,
   updateSpreadsheet,
-  sendNotification,
 };

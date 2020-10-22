@@ -114,43 +114,6 @@ module.exports = {
       return;
     }
 
-    if (requestedParam === 'notificacao') {
-      if (message.member.roles.has(roles.core)) {
-        const searchDate = moment().format(searchDateFormat);
-
-        const result = await Corona.getResume(searchDate);
-
-        if (typeof result !== 'undefined' && result.text !== '') {
-          const notifyDate = moment().format(vostDateFormat).toUpperCase();
-
-          const footer = '* Variação % comparada com o dia anterior\nSaiba mais em covid19estamoson.gov.pt';
-
-          const notification = {
-            title: `Boletim DGS ${notifyDate}`,
-            body: `${result.text}\n${footer}`,
-          };
-
-          const notifyResult = await Corona.sendNotification(notification);
-
-          if (notifyResult > -1) {
-            sendMessageAnswer(message, `notificação enviada.\n**${notification.title}**\n${notification.body}`);
-
-            return;
-          }
-
-          sendMessageAnswer(message, 'ocorreu um erro, notificação não enviada');
-
-          return;
-        }
-        sendMessageAnswer(message, 'não existem dados de hoje, notificação não enviada');
-
-        return;
-      }
-      sendMessageAnswer(message, 'não tens permissão para usar o comando');
-
-      return;
-    }
-
     sendMessageAnswer(message, `desconheço essa opção.\n${this.usage}`);
   },
 };
