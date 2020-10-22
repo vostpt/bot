@@ -152,7 +152,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
         media: [fileName],
       }]);
 
-      await tClient.sendMessage(telegramKeys.chat_id, strTwitter, {});
+      tClient.sendMessage(telegramKeys.chat_id, strTwitter, {});
     }
 
     strDiscord += `:information_source: :warning: ${icon} ${strWarning} ${icon} :warning: :information_source:\n\n`;
