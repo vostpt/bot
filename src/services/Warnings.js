@@ -11,6 +11,12 @@ const { clientTwitter, uploadThreadTwitter } = require('./Twitter');
 const { channels } = require('../../config/bot');
 const { locale } = require('../../config/locale');
 const { removeAccent } = require('../helpers');
+const { TelegramClient } = require('messaging-api-telegram');
+const { telegramKeys } = require('../../config/telegram');
+
+const tClient = new TelegramClient({
+  accessToken: telegramKeys.key,
+});
 
 const iconsMap = new Map([
   [':dash:', '🌬'],
@@ -145,6 +151,8 @@ const getWarningsZones = (warningsZone, zone, client) => {
         status: strTwitter,
         media: [fileName],
       }]);
+
+      tClient.sendMessage(telegramKeys.chat_id, strTwitter, {});
     }
 
     strDiscord += `:information_source: :warning: ${icon} ${strWarning} ${icon} :warning: :information_source:\n\n`;
