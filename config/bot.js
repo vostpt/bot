@@ -17,7 +17,7 @@ const roles = {
 };
 
 const userLists = {
-  coronaUpdate: (process.env.CORONAUPDATEUSERS).split(','),
+  coronaUpdate: process.env.CORONAUPDATEUSERS.split(','),
 };
 
 const { COOLDOWN = '' } = process.env;
