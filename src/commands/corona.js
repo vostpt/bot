@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 const { Corona } = require('../services');
-const { cooldown, roles } = require('../../config/bot');
+const { cooldown, roles, userLists } = require('../../config/bot');
 const { sendMessageAnswer } = require('../services/Discord');
 const { parseVostDate } = require('../helpers');
 
@@ -76,7 +76,9 @@ module.exports = {
     }
 
     if (requestedParam === 'update') {
-      if (message.member.roles.has(roles.core)) {
+      const userId = message.author.id;
+
+      if (message.member.roles.has(roles.core) || userLists.coronaUpdate.includes(userId)) {
         if (args.length < 7) {
           sendMessageAnswer(message, `falta introduzir valores.\n${this.usage}`);
 

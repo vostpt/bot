@@ -66,6 +66,12 @@ DGSCORONA_CHANNEL_ID=
 COREROLE=
 
 #
+# Discord user permission list
+#
+
+CORONAUPDATEUSERS=
+
+#
 # Twitter configurations (Main account)
 #
 TWITTER_CONSUMER_KEY=

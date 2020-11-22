@@ -15,7 +15,7 @@ module.exports = {
     const messageContent = removeAccent(message.content.toLowerCase());
 
     if (messageContent.includes('aprosoc')) {
-      message.reply('Outra vez aprosoc? vou dizer à <@502617955100786709> para iniciar o teu processo de expulsão :fuga:');
+      message.reply('Outra vez aprosoc? vou dizer à <@502617955100786709> para iniciar o teu processo de expulsão <:fuga:680920290297118753>');
     }
   },
 };

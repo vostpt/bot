@@ -6,12 +6,12 @@
  */
 
 const moment = require('moment');
+const { TelegramClient } = require('messaging-api-telegram');
 const { WarningsApi } = require('../api');
 const { clientTwitter, uploadThreadTwitter } = require('./Twitter');
 const { channels } = require('../../config/bot');
 const { locale } = require('../../config/locale');
 const { removeAccent } = require('../helpers');
-const { TelegramClient } = require('messaging-api-telegram');
 const { telegramKeys } = require('../../config/telegram');
 
 const tClient = new TelegramClient({
