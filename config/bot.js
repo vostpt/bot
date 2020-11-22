@@ -16,6 +16,10 @@ const roles = {
   core: process.env.COREROLE,
 };
 
+const userLists = {
+  coronaUpdate: (process.env.CORONAUPDATEUSERS).split(','),
+};
+
 const { COOLDOWN = '' } = process.env;
 
 const cooldown = COOLDOWN.length === 0 ? 10 : COOLDOWN;
@@ -26,6 +30,7 @@ module.exports = {
   prefix,
   channels,
   roles,
+  userLists,
   cooldown,
   betaMode,
 };
