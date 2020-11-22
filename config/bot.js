@@ -16,8 +16,12 @@ const roles = {
   core: process.env.COREROLE,
 };
 
+const coronaUpdateUsers = process.env.CORONAUPDATEUSERS;
+
 const userLists = {
-  coronaUpdate: process.env.CORONAUPDATEUSERS.split(','),
+  coronaUpdate: typeof coronaUpdateUsers !== 'undefined'
+    ? coronaUpdateUsers.split(',')
+    : [],
 };
 
 const { COOLDOWN = '' } = process.env;
