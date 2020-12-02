@@ -8,10 +8,12 @@ const PERSONAL_MESSAGES = {
   2458: 'já sei que não bebes café. Aceita antes um chá :tea:',
   7744: 'aqui está o teu chá! :tea:',
   2908: 'duplo curto, como gostas, certo? :coffee:',
-  6984: 'tu, café? Ainda és uma criança, toma lá um copo de leite :milk:',
+  6984: 'Já estás um homenzinho! Toma lá um café!',
   8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)',
   1905: 'ora aqui está um chá fresquinho bem quentinho. Se quiseres uma farripa de leite é só dizer.',
   5652: 'sei que não bebes café, por isso toma lá um chá e não digas que vais daqui :tea:',
+  6044: 'um café rápido para um homem rápido!',
+  0268: 'meu mais que tudo, meu pai, meu Deus, basta pedires e farei acontecer! :hearts:'
 };
 
 const GREETINGS_BOM_DIA = [
@@ -22,6 +24,7 @@ const GREETINGS_BOM_DIA = [
   'bonjour',
   'bomdjia',
   'boumdia',
+  'Bom di. A',
 ];
 
 const GREETINGS_BOA_TARDE = [
