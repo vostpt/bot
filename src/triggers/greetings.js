@@ -25,6 +25,10 @@ const GREETINGS_BOM_DIA = [
   'bomdjia',
   'boumdia',
   'Bom di. A',
+  'Kaliméra',
+  'G”Day',
+  'GM',
+  'Buongiorno',
 ];
 
 const GREETINGS_BOA_TARDE = [
