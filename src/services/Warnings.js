@@ -172,10 +172,6 @@ const getWarningsZones = async (warningsZone, zone, client) => {
 
     const photoURL = `${baseImagesURL}/warnings/${fileName}`;
 
-    const bottomFileName = `VOSTPT_Telegram_${level}_Warning_BottomBar_TranspFinal_1024px.png`;
-
-    const bottomPhotoURL = `${baseImagesURL}/warnings/telegram/${bottomFileName}`;
-
     const splitStrTwitter = splitMessageString(strTwitter, 280).map(string => ({
       status: string,
     }));
@@ -190,10 +186,6 @@ const getWarningsZones = async (warningsZone, zone, client) => {
       options: {
         caption: strTelegram,
       },
-    },
-    {
-      chatId: telegramKeys.chat_id,
-      photoURL: bottomPhotoURL,
     });
   });
 
