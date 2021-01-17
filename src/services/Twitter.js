@@ -132,7 +132,7 @@ const getVostTweets = async (discordClient) => {
       screen_name: screenName,
       trim_user: true,
       count: 20,
-      exclude_replies: false,
+      exclude_replies: true,
       include_rts: true,
     };
 
