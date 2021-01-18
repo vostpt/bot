@@ -192,11 +192,11 @@ const getWarningsZones = async (warningsZone, zone, client) => {
   // Send messages to Discord and Telegram
   if (warningsZone.length > 0) {
     if (zone === 'continente') {
-      sendMessageToChannel(client.channels.get(channels.WARNINGS_CHANNEL_ID), `***Novos Alertas do Continente:***\n${strDiscord}`);
+      sendMessageToChannel(client.channels.get(channels.WARNINGS_CHANNEL_ID), `***Novos Avisos do Continente:***\n${strDiscord}`);
     } else if (zone === 'acores') {
-      sendMessageToChannel(client.channels.get(channels.WARNINGS_AZ_CHANNEL_ID), `***Novos Alertas dos Açores:***\n${strDiscord}`);
+      sendMessageToChannel(client.channels.get(channels.WARNINGS_AZ_CHANNEL_ID), `***Novos Avisos dos Açores:***\n${strDiscord}`);
     } else if (zone === 'madeira') {
-      sendMessageToChannel(client.channels.get(channels.WARNINGS_MD_CHANNEL_ID), `***Novos Alertas da Madeira:***\n${strDiscord}`);
+      sendMessageToChannel(client.channels.get(channels.WARNINGS_MD_CHANNEL_ID), `***Novos Avisos da Madeira:***\n${strDiscord}`);
     }
 
     await sendMessagesTelegram(tlgMessages);
