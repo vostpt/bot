@@ -51,9 +51,9 @@ module.exports = {
     });
 
     if (events.length > 0) {
-      message.channel.send(`***Alertas:***\n${events.join('\n')}`);
+      message.channel.send(`***Avisos:***\n${events.join('\n')}`);
     } else {
-      message.channel.send('***Sem Alertas***');
+      message.channel.send('***Sem Avisos***');
     }
   },
 };
