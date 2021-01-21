@@ -178,11 +178,7 @@ const getWarningsZones = async (warningsZone, zone, client) => {
 
     splitStrTwitter[0].media = [fileName];
 
-    uploadThreadTwitter(splitStrTwitter, '', 'main');
-
-    if (zone === 'azores') {
-      uploadThreadTwitter(splitStrTwitter, '', 'azores');
-    }
+    uploadThreadTwitter(splitStrTwitter);
 
     tlgMessages.push({
       chatId: telegramKeys.chat_id,

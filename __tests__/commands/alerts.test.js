@@ -14,7 +14,7 @@ describe('!alerts command', () => {
     await alertsCommand.execute(client.message);
 
     expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-    expect(client.message.channel.send.mock.calls[0][0]).toContain('Sem Avisos');
+    expect(client.message.channel.send.mock.calls[0][0]).toContain('Sem Alertas');
   });
 
   test('it has locals but no alerts to display', async () => {
@@ -27,7 +27,7 @@ describe('!alerts command', () => {
     await alertsCommand.execute(client.message);
 
     expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-    expect(client.message.channel.send.mock.calls[0][0]).toContain('Avisos');
+    expect(client.message.channel.send.mock.calls[0][0]).toContain('Alertas');
   });
 
   test('it has locals and alerts to display', async () => {
