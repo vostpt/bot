@@ -12,6 +12,7 @@ const channels = {
   TWFEED_CHANNEL_ID: process.env.TWFEED_CHANNEL_ID,
   DGSCORONA_CHANNEL_ID: process.env.DGSCORONA_CHANNEL_ID,
   CORONAFAQ_CHANNEL_ID: process.env.CORONAFAQ_CHANNEL_ID,
+  JOURNAL_CHANNEL_ID: process.env.JOURNAL_CHANNEL_ID,
 };
 
 const roles = {
