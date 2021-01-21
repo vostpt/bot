@@ -7,6 +7,7 @@ const {
   Fuel,
   Twitter,
   Corona,
+  Journal,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter, uploadThreadTwitter } = require('../services/Twitter');
@@ -53,6 +54,8 @@ class Jobs {
     this.warnings();
     this.fireRisk();
     this.getTweets();
+    this.checkNewDecrees();
+    Jobs.clearDecreesDb();
   }
 
   /**
@@ -203,6 +206,33 @@ class Jobs {
 
     schedule.scheduleJob(rule, () => {
       Corona.checkOldReports(this.client);
+    });
+  }
+
+  /**
+   * Update new Decrees and send to Discord
+   */
+  checkNewDecrees() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(1, 59, 2);
+    rule.second = 0;
+
+    schedule.scheduleJob(rule, () => {
+      Journal.checkNewDecrees(this.client);
+    });
+  }
+
+  /**
+   * Update new Decrees and send to Discord
+   */
+  static clearDecreesDb() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.dayOfMonth = new schedule.Range(1, 28, 2);
+
+    schedule.scheduleJob(rule, () => {
+      Journal.clearDb();
     });
   }
 
