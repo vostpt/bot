@@ -180,7 +180,7 @@ const getWarningsZones = async (warningsZone, zone, client) => {
 
     uploadThreadTwitter(splitStrTwitter, '', 'main');
 
-    if (zone === 'azores') {
+    if (zone === 'acores') {
       uploadThreadTwitter(splitStrTwitter, '', 'azores');
     }
 
