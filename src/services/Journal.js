@@ -83,8 +83,16 @@ const checkNewDecrees = async (client) => {
         ? twitterAccounts[issuerUpper]
         : issuer;
 
+      const tweetLength = decree.title.length + issuerHandle.length + decreeURL.length + 15;
+
+      const descLength = description.length;
+
+      const strDescription = tweetLength + descLength < 280
+        ? description
+        : `${description.substring(0, 274 - tweetLength)} (...)`;
+
       const tweet = [{
-        status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${decreeURL}`,
+        status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${strDescription}\n\n${decreeURL}`,
       }];
 
       uploadThreadTwitter(tweet, '', 'dre');
