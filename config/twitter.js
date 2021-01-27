@@ -16,6 +16,7 @@ const {
 const twitterKeys = [{
   reference: 'main',
   screenName: 'VOSTPT',
+  fetchTweets: true,
   keys: {
     consumer_key: TWITTER_CONSUMER_KEY,
     consumer_secret: TWITTER_CONSUMER_SECRET,
@@ -26,6 +27,7 @@ const twitterKeys = [{
 {
   reference: 'azores',
   screenName: 'VOSTAZ',
+  fetchTweets: true,
   keys: {
     consumer_key: TWITTER_AZ_CONSUMER_KEY,
     consumer_secret: TWITTER_AZ_CONSUMER_SECRET,
@@ -36,6 +38,7 @@ const twitterKeys = [{
 {
   reference: 'dre',
   screenName: 'Portugal_DRE',
+  fetchTweets: false,
   keys: {
     consumer_key: TWITTER_DRE_CONSUMER_KEY,
     consumer_secret: TWITTER_DRE_CONSUMER_SECRET,
