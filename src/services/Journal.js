@@ -6,7 +6,29 @@ const moment = require('moment');
 const { db, Op } = require('../database/models');
 const { JournalApi } = require('../api');
 const { channels } = require('../../config/bot');
+const { journalURLStruct } = require('../../config/journal');
 const { sendMessageToChannel } = require('./Discord');
+const { uploadThreadTwitter } = require('./Twitter');
+
+const twitterAccounts = {
+  'NEGÓCIOS ESTRANGEIROS': '@nestrangeiro_pt',
+  'FINANÇAS E TRABALHO, SOLIDARIEDADE E SEGURANÇA SOCIAL': '@trabalho_pt',
+  'ECONOMIA E TRANSIÇÃO DIGITAL E PLANEAMENTO': '@economia_pt',
+  'INFRAESTRUTURAS E HABITAÇÃO': '@iestruturas_pt',
+  'PRESIDÊNCIA DO CONSELHO DE MINISTROS': '@mpresidencia_pt',
+  'PRESIDÊNCIA DO CONSELHO DE MINISTROS - SECRETARIA-GERAL': '@mpresidencia_pt',
+  'AMBIENTE E AÇÃO CLIMÁTICA': '@ambiente_pt',
+  CULTURA: '@cultura_pt',
+  AGRICULTURA: '@agricultura_pt',
+  MAR: '@mar_pt',
+  FINANÇAS: '@pt_financas',
+  SAÚDE: '@saude_pt',
+  'DEFESA NACIONAL': '@defesa_pt',
+  'ADMINISTRAÇÃO INTERNA': '@ainterna_pt',
+  JUSTIÇA: '@justica_pt',
+  EDUCAÇÃO: '@Educacao_PT',
+  'MODERNIZAÇÃO DO ESTADO E DA ADMINISTRAÇÃO PÚBLICA': '@modernizacao_pt',
+};
 
 /**
  * Check if the decree link/URL is not in database
@@ -35,9 +57,37 @@ const checkNewDecrees = async (client) => {
     const notInDb = await decreeNotInDb(decree);
 
     if (notInDb) {
-      const strDiscord = `***Novo decreto:***\n${decree.title}\n\`\`\`${decree.contentSnippet}\`\`\`<${decree.link}>`;
+      const decreePdfURL = decree.link;
+
+      const decreeNum = /\d+/.exec(decreePdfURL);
+
+      const decreeURL = decreeNum.length === 1
+        ? `${journalURLStruct.prefix}${decreeNum[0]}${journalURLStruct.suffix}`
+        : 'N/A';
+
+      const splitDescription = decree.contentSnippet.split('\n');
+
+      const issuer = splitDescription.shift();
+
+      const description = splitDescription.join('\n');
+
+      const strIssuer = `Emitido por: ${issuer}`;
+
+      const strDiscord = `***Nova entrada:***\n${decree.title}\n*${strIssuer}*\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
 
       sendMessageToChannel(channel, strDiscord);
+
+      const issuerUpper = issuer.toUpperCase();
+
+      const issuerHandle = twitterAccounts[issuerUpper]
+        ? twitterAccounts[issuerUpper]
+        : issuer;
+
+      const tweet = [{
+        status: `${decree.title}\nEmissor: ${issuerHandle}\n\n${decreeURL}`,
+      }];
+
+      uploadThreadTwitter(tweet, '', 'dre');
 
       db.Decrees.create({
         link: decree.link,

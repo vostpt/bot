@@ -7,6 +7,10 @@ const {
   TWITTER_AZ_CONSUMER_SECRET,
   TWITTER_AZ_ACCESS_TOKEN_KEY,
   TWITTER_AZ_ACCESS_TOKEN_SECRET,
+  TWITTER_DRE_CONSUMER_KEY,
+  TWITTER_DRE_CONSUMER_SECRET,
+  TWITTER_DRE_ACCESS_TOKEN_KEY,
+  TWITTER_DRE_ACCESS_TOKEN_SECRET,
 } = process.env;
 
 const twitterKeys = [{
@@ -27,6 +31,16 @@ const twitterKeys = [{
     consumer_secret: TWITTER_AZ_CONSUMER_SECRET,
     access_token: TWITTER_AZ_ACCESS_TOKEN_KEY,
     access_token_secret: TWITTER_AZ_ACCESS_TOKEN_SECRET,
+  },
+},
+{
+  reference: 'dre',
+  screenName: 'Portugal_DRE',
+  keys: {
+    consumer_key: TWITTER_DRE_CONSUMER_KEY,
+    consumer_secret: TWITTER_DRE_CONSUMER_SECRET,
+    access_token: TWITTER_DRE_ACCESS_TOKEN_KEY,
+    access_token_secret: TWITTER_DRE_ACCESS_TOKEN_SECRET,
   },
 }];
 
