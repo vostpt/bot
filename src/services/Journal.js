@@ -84,7 +84,7 @@ const checkNewDecrees = async (client) => {
         : issuer;
 
       const tweet = [{
-        status: `${decree.title}\nEmissor: ${issuerHandle}\n\n${decreeURL}`,
+        status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${decreeURL}`,
       }];
 
       uploadThreadTwitter(tweet, '', 'dre');
