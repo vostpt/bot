@@ -8,6 +8,7 @@ const { sendMessageToChannel } = require('./Discord');
 const twitterClients = twitterKeys.map(account => ({
   reference: account.reference,
   screenName: account.screenName,
+  fetchTweets: account.fetchTweets,
   client: new Twit(account.keys),
 }));
 
@@ -114,12 +115,14 @@ const sendNewTweets = async (client, data, reference, screenName, lastTweetId) =
 */
 
 const getVostTweets = async (discordClient) => {
-  for (let i = 0; i < twitterClients.length; i += 1) {
+  const enabledClients = twitterClients.filter(client => client.fetchTweets);
+
+  for (let i = 0; i < enabledClients.length; i += 1) {
     const {
       reference,
       screenName,
       client,
-    } = twitterClients[i];
+    } = enabledClients[i];
 
     // eslint-disable-next-line no-await-in-loop
     const result = await db.Tweets.findAll({
