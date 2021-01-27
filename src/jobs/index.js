@@ -215,8 +215,8 @@ class Jobs {
   checkNewDecrees() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(1, 59, 2);
-    rule.second = 0;
+    rule.minute = new schedule.Range(0, 59, 2);
+    rule.second = 40;
 
     schedule.scheduleJob(rule, () => {
       Journal.checkNewDecrees(this.client);
