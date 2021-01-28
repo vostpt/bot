@@ -76,7 +76,7 @@ const checkNewDecrees = async (client) => {
 
       const strIssuer = `Emitido por: ${issuer}`;
 
-      const strDiscord = `***Nova entrada:***\n${decree.title}\n*${strIssuer}*\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
+      const strDiscord = `***Nova entrada:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
 
       const repIssuerHandle = () => {
         if (issuer.length < 80) {
