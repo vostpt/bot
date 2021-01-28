@@ -12,11 +12,10 @@ const { uploadThreadTwitter } = require('./Twitter');
 
 const twitterAccounts = {
   'NEGÓCIOS ESTRANGEIROS': '@nestrangeiro_pt',
-  'FINANÇAS E TRABALHO, SOLIDARIEDADE E SEGURANÇA SOCIAL': '@trabalho_pt',
-  'ECONOMIA E TRANSIÇÃO DIGITAL E PLANEAMENTO': '@economia_pt',
+  'TRABALHO, SOLIDARIEDADE E SEGURANÇA SOCIAL': '@trabalho_pt',
+  'ECONOMIA E TRANSIÇÃO DIGITAL': '@economia_pt',
   'INFRAESTRUTURAS E HABITAÇÃO': '@iestruturas_pt',
   'PRESIDÊNCIA DO CONSELHO DE MINISTROS': '@mpresidencia_pt',
-  'PRESIDÊNCIA DO CONSELHO DE MINISTROS - SECRETARIA-GERAL': '@mpresidencia_pt',
   'AMBIENTE E AÇÃO CLIMÁTICA': '@ambiente_pt',
   CULTURA: '@cultura_pt',
   AGRICULTURA: '@agricultura_pt',
@@ -27,8 +26,12 @@ const twitterAccounts = {
   'ADMINISTRAÇÃO INTERNA': '@ainterna_pt',
   JUSTIÇA: '@justica_pt',
   EDUCAÇÃO: '@Educacao_PT',
+  ECONOMIA: '@economia_pt',
+  PLANEAMENTO: '@planeamento_pt',
   'MODERNIZAÇÃO DO ESTADO E DA ADMINISTRAÇÃO PÚBLICA': '@modernizacao_pt',
 };
+
+const re = new RegExp(Object.keys(twitterAccounts).join('|'), 'gi');
 
 /**
  * Check if the decree link/URL is not in database
@@ -53,7 +56,7 @@ const checkNewDecrees = async (client) => {
 
   const channel = client.channels.get(channels.JOURNAL_CHANNEL_ID);
 
-  decrees.forEach(async (decree) => {
+  const msgDecrees = await Promise.all(decrees.map(async (decree) => {
     const notInDb = await decreeNotInDb(decree);
 
     if (notInDb) {
@@ -75,13 +78,24 @@ const checkNewDecrees = async (client) => {
 
       const strDiscord = `***Nova entrada:***\n${decree.title}\n*${strIssuer}*\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
 
-      sendMessageToChannel(channel, strDiscord);
+      const repIssuerHandle = () => {
+        if (issuer.length < 80) {
+          const hyphenPos = issuer.indexOf('-');
 
-      const issuerUpper = issuer.toUpperCase();
+          if (hyphenPos > -1) {
+            const handles = issuer.substring(0, hyphenPos)
+              .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
 
-      const issuerHandle = twitterAccounts[issuerUpper]
-        ? twitterAccounts[issuerUpper]
-        : issuer;
+            return `${handles}${issuer.substring(hyphenPos)}`;
+          }
+
+          return issuer.replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+        }
+
+        return 'Vários @govpt';
+      };
+
+      const issuerHandle = repIssuerHandle();
 
       const tweetLength = decree.title.length + issuerHandle.length + decreeURL.length + 15;
 
@@ -95,15 +109,38 @@ const checkNewDecrees = async (client) => {
         status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${strDescription}\n\n${decreeURL}`,
       }];
 
-      uploadThreadTwitter(tweet, '', 'dre');
-
       db.Decrees.create({
         link: decree.link,
         title: decree.title,
         description: decree.contentSnippet,
       });
+
+      return {
+        discord: strDiscord,
+        twitter: tweet,
+      };
     }
-  });
+
+    return {};
+  }));
+
+  const filterNew = msgDecrees.filter(decree => decree.discord !== undefined);
+
+  const msgDiscord = filterNew
+    .map(obj => obj.discord)
+    .filter(message => message !== '').join('\n\n');
+
+  sendMessageToChannel(channel, msgDiscord);
+
+  const tweets = filterNew.map(obj => obj.twitter);
+
+  await tweets.reduce(async (previous, tweet) => {
+    await previous;
+
+    await new Promise(r => setTimeout(r, 200));
+
+    return uploadThreadTwitter(tweet, '', 'dre');
+  }, Promise.resolve());
 };
 
 const clearDb = async () => {
