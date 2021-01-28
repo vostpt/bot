@@ -79,20 +79,37 @@ const checkNewDecrees = async (client) => {
       const strDiscord = `***Nova entrada:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
 
       const repIssuerHandle = () => {
-        if (issuer.length < 80) {
-          const hyphenPos = issuer.indexOf('-');
+        const hyphenPos = issuer.indexOf('-');
 
-          if (hyphenPos > -1) {
-            const handles = issuer.substring(0, hyphenPos)
-              .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+        const strLargeHandles = 'Vários @govpt';
 
-            return `${handles}${issuer.substring(hyphenPos)}`;
+        if (hyphenPos > -1) {
+          const handles = issuer.substring(0, hyphenPos)
+            .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+
+          const institutions = issuer.substring(hyphenPos);
+
+          const handlerLen = handles.length;
+
+          if (handlerLen + institutions.length > 90) {
+            if (handlerLen < 90) {
+              return handles;
+            }
+
+            return strLargeHandles;
           }
 
-          return issuer.replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+          return `${handles}${issuer.substring(hyphenPos)}`;
         }
 
-        return 'Vários @govpt';
+        const strOnlyHandles = issuer
+          .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+
+        if (strOnlyHandles.length < 90) {
+          return strOnlyHandles;
+        }
+
+        return strLargeHandles;
       };
 
       const issuerHandle = repIssuerHandle();
@@ -130,17 +147,21 @@ const checkNewDecrees = async (client) => {
     .map(obj => obj.discord)
     .filter(message => message !== '').join('\n\n');
 
-  sendMessageToChannel(channel, msgDiscord);
+  if (msgDiscord.length > 0) {
+    sendMessageToChannel(channel, msgDiscord);
+  }
 
   const tweets = filterNew.map(obj => obj.twitter);
 
-  await tweets.reduce(async (previous, tweet) => {
-    await previous;
+  if (tweets.length > 0) {
+    await tweets.reduce(async (previous, tweet) => {
+      await previous;
 
-    await new Promise(r => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 200));
 
-    return uploadThreadTwitter(tweet, '', 'dre');
-  }, Promise.resolve());
+      return uploadThreadTwitter(tweet, '', 'dre');
+    }, Promise.resolve());
+  }
 };
 
 const clearDb = async () => {
