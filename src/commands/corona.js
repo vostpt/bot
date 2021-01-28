@@ -68,7 +68,7 @@ module.exports = {
 
       const string = typeof result === 'undefined' || result.text === ''
         ? 'não foi encontrado nenhum resumo nesta data'
-        : `aqui está o resumo do relatório:\n**Boletim DGS ${await resSearchDate.format(vostDateFormat).toUpperCase()}**:\n${result.text}\nFonte: DGS/VOSTPT`;
+        : `aqui está o resumo do relatório:\n**Boletim DGS ${await resSearchDate.format(vostDateFormat).toUpperCase()}**:\n${result.text}\nFonte: DGS/@VOSTPT`;
 
       sendMessageAnswer(message, string);
 
@@ -105,7 +105,7 @@ module.exports = {
 
           const updateDate = updSearchDate.format(vostDateFormat).toUpperCase();
 
-          sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n**Boletim DGS ${updateDate}**\n${result.text}\nFonte: DGS/VOSTPT`);
+          sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n**Boletim DGS ${updateDate}**\n${result.text}\nFonte: DGS/@VOSTPT`);
         } catch (e) {
           sendMessageAnswer(message, `não foi possível atualizar os dados. Erro:\n'''${e}'''`);
         }
