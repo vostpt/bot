@@ -158,7 +158,7 @@ const checkNewDecrees = async (client) => {
     await tweets.reduce(async (previous, tweet) => {
       await previous;
 
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 1000));
 
       return uploadThreadTwitter(tweet, '', 'dre');
     }, Promise.resolve());
