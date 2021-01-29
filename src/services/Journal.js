@@ -29,6 +29,7 @@ const twitterAccounts = {
   ECONOMIA: '@economia_pt',
   PLANEAMENTO: '@planeamento_pt',
   'MODERNIZAÇÃO DO ESTADO E DA ADMINISTRAÇÃO PÚBLICA': '@modernizacao_pt',
+  'COESÃO TERRITORIAL': '@coesao_pt',
 };
 
 const re = new RegExp(Object.keys(twitterAccounts).join('|'), 'gi');
