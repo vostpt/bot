@@ -154,11 +154,17 @@ const checkNewDecrees = async (client) => {
 
   const tweets = filterNew.map(obj => obj.twitter);
 
-  if (tweets.length > 0) {
+  const twLength = tweets.length;
+
+  if (twLength > 0) {
+    const interval = twLength > 5
+      ? 10000
+      : 1000;
+
     await tweets.reduce(async (previous, tweet) => {
       await previous;
 
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, interval));
 
       return uploadThreadTwitter(tweet, '', 'dre');
     }, Promise.resolve());
