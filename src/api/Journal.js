@@ -11,7 +11,7 @@ const getJournal = async () => {
 
   const serieIIGovFilt = serieIIGov.filter(decree => decree.title.includes('Despacho'));
 
-  return [...serieI, ...serieIIGovFilt];
+  return [...serieIIGovFilt, ...serieI];
 };
 
 module.exports = {
