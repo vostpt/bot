@@ -7,7 +7,7 @@ const PERSONAL_MESSAGES = {
   5850: 'aqui tens o teu chá verde quentinho :tea:',
   2458: 'já sei que não bebes café. Aceita antes um chá :tea:',
   7744: 'aqui está o teu chá! :tea:',
-  2908: 'duplo curto, como gostas, certo? :coffee:',
+  2908: 'mais trabalho, Jorge?! Toma lá, um duplo curto :coffee:',
   6984: 'Já estás um homenzinho! Toma lá um café!',
   8386: 'aqui tens o teu chá preto, que eu não me esqueço nunca :tea: (buéda terabytes de memória, yo)',
   1905: 'ora aqui está um chá fresquinho bem quentinho. Se quiseres uma farripa de leite é só dizer.',
