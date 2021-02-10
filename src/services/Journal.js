@@ -32,6 +32,11 @@ const twitterAccounts = {
   'COESÃO TERRITORIAL': '@coesao_pt',
 };
 
+const serieNo = {
+  1: 'I',
+  2: 'II',
+};
+
 const re = new RegExp(Object.keys(twitterAccounts).join('|'), 'gi');
 
 /**
@@ -55,12 +60,16 @@ const decreeNotInDb = decree => db.Decrees.findOne({
 const checkNewDecrees = async (client) => {
   const decrees = await JournalApi.getJournal();
 
-  const channel = client.channels.get(channels.JOURNAL_CHANNEL_ID);
-
   const msgDecrees = await Promise.all(decrees.map(async (decree) => {
     const notInDb = await decreeNotInDb(decree);
 
     if (notInDb) {
+      db.Decrees.create({
+        link: decree.link,
+        title: decree.title,
+        description: decree.contentSnippet,
+      });
+
       const decreePdfURL = decree.link;
 
       const decreeNum = /\d+/.exec(decreePdfURL);
@@ -77,65 +86,65 @@ const checkNewDecrees = async (client) => {
 
       const strIssuer = `Emitido por: ${issuer}`;
 
-      const strDiscord = `***Nova entrada:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
+      const strDiscord = `***Nova entrada - Série ${serieNo[decree.serie]}:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
 
-      const repIssuerHandle = () => {
-        const hyphenPos = issuer.indexOf('-');
+      if (decree.serie === 1) {
+        const repIssuerHandle = () => {
+          const hyphenPos = issuer.indexOf('-');
 
-        const strLargeHandles = 'Vários @govpt';
+          const strLargeHandles = 'Vários @govpt';
 
-        if (hyphenPos > -1) {
-          const handles = issuer.substring(0, hyphenPos)
-            .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+          if (hyphenPos > -1) {
+            const handles = issuer.substring(0, hyphenPos)
+              .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
 
-          const institutions = issuer.substring(hyphenPos);
+            const institutions = issuer.substring(hyphenPos);
 
-          const handlerLen = handles.length;
+            const handlerLen = handles.length;
 
-          if (handlerLen + institutions.length > 90) {
-            if (handlerLen < 90) {
-              return handles;
+            if (handlerLen + institutions.length > 90) {
+              if (handlerLen < 90) {
+                return handles;
+              }
+
+              return strLargeHandles;
             }
 
-            return strLargeHandles;
+            return `${handles}${issuer.substring(hyphenPos)}`;
           }
 
-          return `${handles}${issuer.substring(hyphenPos)}`;
-        }
+          const strOnlyHandles = issuer
+            .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
 
-        const strOnlyHandles = issuer
-          .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+          if (strOnlyHandles.length < 90) {
+            return strOnlyHandles;
+          }
 
-        if (strOnlyHandles.length < 90) {
-          return strOnlyHandles;
-        }
+          return strLargeHandles;
+        };
 
-        return strLargeHandles;
-      };
+        const issuerHandle = repIssuerHandle();
 
-      const issuerHandle = repIssuerHandle();
+        const tweetLength = decree.title.length + issuerHandle.length + decreeURL.length + 15;
 
-      const tweetLength = decree.title.length + issuerHandle.length + decreeURL.length + 15;
+        const descLength = description.length;
 
-      const descLength = description.length;
+        const strDescription = tweetLength + descLength < 280
+          ? description
+          : `${description.substring(0, 274 - tweetLength)} (...)`;
 
-      const strDescription = tweetLength + descLength < 280
-        ? description
-        : `${description.substring(0, 274 - tweetLength)} (...)`;
+        const tweet = [{
+          status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${strDescription}\n\n${decreeURL}`,
+        }];
 
-      const tweet = [{
-        status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${strDescription}\n\n${decreeURL}`,
-      }];
-
-      db.Decrees.create({
-        link: decree.link,
-        title: decree.title,
-        description: decree.contentSnippet,
-      });
+        return {
+          discord: strDiscord,
+          twitter: tweet,
+        };
+      }
 
       return {
         discord: strDiscord,
-        twitter: tweet,
       };
     }
 
@@ -149,15 +158,19 @@ const checkNewDecrees = async (client) => {
     .filter(message => message !== '').join('\n\n');
 
   if (msgDiscord.length > 0) {
+    const channel = client.channels.get(channels.JOURNAL_CHANNEL_ID);
+
     sendMessageToChannel(channel, msgDiscord);
   }
 
-  const tweets = filterNew.map(obj => obj.twitter);
+  const tweets = filterNew
+    .filter(decree => decree.twitter !== undefined)
+    .map(obj => obj.twitter);
 
   const twLength = tweets.length;
 
   if (twLength > 0) {
-    const interval = twLength > 5
+    const interval = twLength > 15
       ? 10000
       : 1000;
 
