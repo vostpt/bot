@@ -132,6 +132,18 @@ NODE_ENV=
 # When disabled ('false' or empty), run all but beta commands
 #
 BETA_MODE=
+
+#
+# Telegram
+#
+TELEGRAM_API_KEY=
+TELEGRAM_CHAT_ID=
+
+#
+# Firebase warnings key
+#
+
+WARNINGAPPKEY=
 ```
 
 # Running
