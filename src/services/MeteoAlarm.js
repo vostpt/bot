@@ -24,11 +24,11 @@ const warningTypes = {
   },
   'rain-flood': {
     strTwitter: 'RainFlood',
-    emoji: '🌧',
+    emoji: '🌧🌊',
   },
   flooding: {
     strTwitter: 'Flooding',
-    emoji: '🌧',
+    emoji: '🌊',
   },
   wind: {
     strTwitter: 'Wind',
