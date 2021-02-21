@@ -42,6 +42,7 @@ const twitterKeys = [{
 {
   reference: 'europe',
   screenName: 'VOSTeurope',
+  fetchTweets: false,
   keys: {
     consumer_key: TWITTER_EU_CONSUMER_KEY,
     consumer_secret: TWITTER_EU_CONSUMER_SECRET,

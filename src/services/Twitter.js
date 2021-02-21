@@ -14,6 +14,20 @@ const twitterClients = twitterKeys.map(account => ({
 
 const defaultClientTwitter = twitterClients.find(element => element.reference === 'main');
 
+const vostEuTweets = {
+  1: [{
+    status: `☁️🌂🌀❄️🌊
+⚠ Weather warnings\n⚠ Avisos meteorológicos\n⚠ Alertes météo\n⚠ Wetterwarnungen\n⚠ Allerte meteo
+#SevereWeather\n\n#SMEM #MSGU #RSGE\n\nhttp://meteoalarm.eu`,
+    media: ['/vost_eu/DAILY_TWEETS_METEOALARM.png'],
+  }],
+  2: [{
+    status: `📌 ECHO Daily Flash of the European Emergency Response Coordination Centre 📢 #ERCC 
+@eu_echo\n\n#EUCivPro #RescEU\n#SMEM #MSGU #RSGE\nhttp://erccportal.jrc.ec.europa.eu/ECHO-Flash`,
+    media: ['/vost_eu/DAILY_TWEETS_ECHOFLASH.png'],
+  }],
+};
+
 /**
 * Recursive function
 * Send a thread to Twitter
@@ -151,8 +165,15 @@ const getVostTweets = async (discordClient) => {
   }
 };
 
+const tweetVostEu = async (tweetId) => {
+  const thread = vostEuTweets[tweetId];
+
+  uploadThreadTwitter(thread, null, 'europe');
+};
+
 module.exports = {
   clientTwitter: defaultClientTwitter.client,
   uploadThreadTwitter,
   getVostTweets,
+  tweetVostEu,
 };
