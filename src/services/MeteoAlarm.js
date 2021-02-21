@@ -296,7 +296,12 @@ const tweetNewWarnings = async (country, newWarnings) => {
 
     const tweetString = `ℹ️⚠️${emoji} #${level}Alert due to #${strType} in #${strCountry} (${strRegions}),${strStartTime} ending ${strEndTime} CET\n\n#SevereWeather ${emoji}⚠️ℹ️`;
 
-    return { status: tweetString };
+    const fileName = `/vost_eu/${level}_WARNING_${strType.toUpperCase()}.png`;
+
+    return {
+      status: tweetString,
+      media: [fileName],
+    };
   }));
 
   const vostInfo = vostHandle
