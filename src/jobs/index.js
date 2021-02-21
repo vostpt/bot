@@ -4,13 +4,13 @@ const {
   Fires,
   Earthquakes,
   Warnings,
-  Fuel,
+  MeteoAlarm,
   Twitter,
   Corona,
   Journal,
 } = require('../services');
 const { channels } = require('../../config/bot');
-const { clientTwitter, uploadThreadTwitter } = require('../services/Twitter');
+const { clientTwitter } = require('../services/Twitter');
 
 /**
  * Check if the earthquake level above threshold
@@ -56,6 +56,9 @@ class Jobs {
     this.getTweets();
     this.checkNewDecrees();
     Jobs.clearDecreesDb();
+    Jobs.warningsMeteoAlarm();
+    Jobs.clearMeteoAlarmDb();
+    Jobs.scheduleVostEuTweets();
   }
 
   /**
@@ -89,6 +92,45 @@ class Jobs {
     rule.minute = new schedule.Range(0, 59, 10);
 
     schedule.scheduleJob(rule, () => Warnings.getWarnings(this.client));
+  }
+
+  /**
+   * Check for MeteoAlarm warnings
+   */
+  static warningsMeteoAlarm() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(3, 59, 10);
+
+    schedule.scheduleJob(rule, () => MeteoAlarm.getWarnings());
+  }
+
+  /**
+   * Clean MeteoAlarm DB
+   */
+  static clearMeteoAlarmDb() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.hour = new schedule.Range(0, 23, 4);
+
+    schedule.scheduleJob(rule, () => MeteoAlarm.clearDb());
+  }
+
+  /**
+   * Schedule VOST Europe tweets
+   */
+  static scheduleVostEuTweets() {
+    const ruleWarning = new schedule.RecurrenceRule();
+
+    ruleWarning.hour = 8;
+
+    schedule.scheduleJob(ruleWarning, () => Twitter.tweetVostEu(1));
+
+    const ruleEcho = new schedule.RecurrenceRule();
+
+    ruleEcho.hour = 12;
+
+    schedule.scheduleJob(ruleEcho, () => Twitter.tweetVostEu(2));
   }
 
   /**

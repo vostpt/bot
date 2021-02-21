@@ -1,12 +1,11 @@
+/* eslint-disable import/no-dynamic-require */
 const fs = require('fs');
 const path = require('path');
 const { Sequelize, Op } = require('sequelize');
-const { NODE_ENV } = require('../../../config/database');
-
-const env = NODE_ENV || 'development';
-const config = require('../../../config/database.js')[env];
 
 const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development';
+const config = require('../../../config/database.js')[env];
 
 const db = {};
 
@@ -21,7 +20,8 @@ fs
   .readdirSync(__dirname)
   .filter(file => (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js'))
   .forEach((file) => {
-    const model = sequelize.import(path.join(__dirname, file));
+    // eslint-disable-next-line global-require
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });
 
@@ -32,13 +32,7 @@ Object.keys(db).forEach((modelName) => {
 });
 
 db.sequelize = sequelize;
-
-try {
-  sequelize.authenticate();
-  console.log('Connection has been established successfully.');
-} catch (error) {
-  console.error('Unable to connect to the database:', error);
-}
+db.Sequelize = Sequelize;
 
 module.exports = {
   db,

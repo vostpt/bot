@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('CoronaReports', {
+  up: async (queryInterface, Sequelize) => queryInterface.createTable('CoronaReports', {
     id: {
       primaryKey: true,
       type: Sequelize.UUID,
@@ -21,5 +21,5 @@ module.exports = {
       type: Sequelize.DATE,
     },
   }),
-  down: queryInterface => queryInterface.dropTable('CoronaReports'),
+  down: async queryInterface => queryInterface.dropTable('CoronaReports'),
 };

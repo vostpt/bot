@@ -9,6 +9,7 @@ const Weather = require('./Weather');
 const Discord = require('./Discord');
 const Twitter = require('./Twitter');
 const Corona = require('./Corona');
+const MeteoAlarm = require('./MeteoAlarm');
 const Journal = require('./Journal');
 
 module.exports = {
@@ -23,5 +24,6 @@ module.exports = {
   Discord,
   Twitter,
   Corona,
+  MeteoAlarm,
   Journal,
 };

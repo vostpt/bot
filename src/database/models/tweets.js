@@ -1,5 +1,11 @@
+const {
+  Model,
+} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  const Tweets = sequelize.define('Tweets', {
+  class Tweets extends Model {}
+
+  Tweets.init({
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -10,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
     },
     lastTweetId: DataTypes.INTEGER,
-  }, {});
+  }, {
+    sequelize,
+    modelName: 'Tweets',
+  });
   return Tweets;
 };
