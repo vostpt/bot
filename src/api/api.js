@@ -18,6 +18,15 @@ const api = {
   getFileStream(url) {
     return fetch(url).then(res => res.body);
   },
+  post(url, body, customHeader = {}) {
+    const options = {
+      method: 'post',
+      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json', ...customHeader },
+    };
+
+    return fetch(url, options).then(data => data.json());
+  }
 };
 
 module.exports = api;

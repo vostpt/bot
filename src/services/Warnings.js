@@ -193,6 +193,8 @@ const getWarningsZones = async (warningsZone, zone, client) => {
         caption: strTelegram,
       },
     });
+
+    WarningsApi.postNewWarning(warning);
   });
 
   // Send messages to Discord and Telegram
