@@ -7,10 +7,14 @@
 
 const moment = require('moment');
 const { WarningsApi } = require('../api');
-const { clientTwitter, uploadThreadTwitter } = require('./Twitter');
+const { uploadThreadTwitter } = require('./Twitter');
+const { sendMessageToChannel } = require('./Discord');
 const { channels } = require('../../config/bot');
+const { baseImagesURL } = require('../../config/api');
 const { locale } = require('../../config/locale');
-const { removeAccent } = require('../helpers');
+const { removeAccent, splitMessageString } = require('../helpers');
+const { sendMessagesTelegram } = require('./Telegram');
+const { telegramKeys } = require('../../config/telegram');
 
 const iconsMap = new Map([
   [':dash:', '🌬'],
@@ -51,6 +55,7 @@ const getAll = async () => {
   return warnings;
 };
 
+
 /**
  * Returns array of updated meteo warnings
  *
@@ -58,10 +63,12 @@ const getAll = async () => {
  * @param {String} zone
  * @param {Client} client
  */
-const getWarningsZones = (warningsZone, zone, client) => {
+const getWarningsZones = async (warningsZone, zone, client) => {
   let strDiscord = '';
 
-  warningsZone.forEach((warning) => {
+  const tlgMessages = [];
+
+  await warningsZone.forEach(async (warning) => {
     const {
       icon,
       tipo: type = '',
@@ -70,8 +77,6 @@ const getWarningsZones = (warningsZone, zone, client) => {
       nivel: level,
       locais: places = [],
     } = warning;
-
-    let strWarning = '';
 
     // If warning type is 'Precipitação' (EN: rain), replace by a synonym
     const weatherType = type === 'Precipitação' ? 'Chuva' : type.replace(' ', '');
@@ -87,7 +92,7 @@ const getWarningsZones = (warningsZone, zone, client) => {
     const strBeginDate = beginTime.format('DDMMMYY').toUpperCase();
     const strEndDate = endTime.format('DDMMMYY').toUpperCase();
 
-    const strTime = (() => {
+    const getTime = (() => {
       if (beginTime.isBefore(actualTime)) {
         return `até às ${endTime.calendar(actualTime)} ${strEndDate}`;
       }
@@ -99,66 +104,108 @@ const getWarningsZones = (warningsZone, zone, client) => {
       return `entre as ${beginTime.calendar(actualTime)} ${strBeginDate} e as ${endTime.calendar(actualTime)} ${strEndDate}`;
     });
 
-    strWarning += `#Aviso${level} devido a #${weatherType} ${strTime()} para `;
-
     const numPlaces = places.length;
 
-    if (zone === 'continente') {
-      strWarning += numPlaces === 1
-        ? 'o distrito de '
-        : 'os distritos de ';
-    }
+    const getDistrictList = (() => {
+      let strDistrictList = '';
 
-    if (numPlaces === 1) {
-      const { local } = places[0];
+      if (numPlaces === 1) {
+        const { local } = places[0];
 
-      strWarning += `#${local}`;
-    } else {
-      places.forEach(({ local }, index) => {
-        switch (numPlaces - index) {
-          case 1:
-            strWarning += `e #${local}`;
-            break;
-          case 2:
-            strWarning += `#${local} `;
-            break;
-          default:
-            strWarning += `#${local}, `;
-        }
-      });
-    }
+        strDistrictList += `#${local}`;
+      } else {
+        places.forEach(({ local }, index) => {
+          switch (numPlaces - index) {
+            case 1:
+              strDistrictList += `e #${local}`;
+              break;
+            case 2:
+              strDistrictList += `#${local} `;
+              break;
+            default:
+              strDistrictList += `#${local}, `;
+          }
+        });
+      }
 
-    // Add final emojis
+      return strDistrictList;
+    });
+
+    const getDistrictStr = ((startSentence) => {
+      const startStr = startSentence
+        ? ''
+        : 'para ';
+
+      switch (zone) {
+        case 'continente':
+          if (numPlaces === 1) {
+            if (startSentence) {
+              return `Distrito de ${getDistrictList()}`;
+            }
+
+            return `${startStr} o distrito de ${getDistrictList()}`;
+          } if (startSentence) {
+            return `Distritos de ${getDistrictList()}`;
+          }
+
+          return `${startStr} os distritos de ${getDistrictList()}`;
+        case 'acores':
+          return `${startStr}${getDistrictList()} do arquipélago dos #Açores`;
+        case 'madeira':
+          return `${startStr}${getDistrictList()} do arquipélago da #Madeira`;
+        default:
+          return `${startStr}${getDistrictList()}`;
+      }
+    });
+
+    const strType = `devido a #${weatherType}`;
+
+    const strHeader = `#Aviso${level} ${strType}`;
+
+    const strTwitter = `ℹ️⚠️${iconsMap.get(icon)} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${iconsMap.get(icon)}⚠️ℹ️`;
+
+    const strTelegram = `ℹ️⚠️${iconsMap.get(icon)} ${getDistrictStr(true)} ${iconsMap.get(icon)}⚠️ℹ️\n 🕰️ ${getTime()}\n${strHeader}`;
+
+    strDiscord += `:information_source: :warning: ${icon} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${icon} :warning: :information_source:\n\n`;
+
+    const fileName = `Twitter_Post_Aviso${level}_${removeAccent(weatherType)}.png`;
+
+    const photoURL = `${baseImagesURL}/warnings/${fileName}`;
+
+    const splitStrTwitter = splitMessageString(strTwitter, 280).map(string => ({
+      status: string,
+    }));
+
+    splitStrTwitter[0].media = [fileName];
+
     if (zone === 'acores') {
-      strWarning += ' do arquipélago dos #Açores';
-    } else if (zone === 'madeira') {
-      strWarning += ' do arquipélago da #Madeira';
+      const azTweet = Object.assign([], splitStrTwitter);
+
+      uploadThreadTwitter(azTweet, '', 'azores');
     }
 
-    // Send message to Twitter
-    if (clientTwitter && strWarning !== '') {
-      const fileName = `Twitter_Post_Aviso${level}_${removeAccent(weatherType)}.png`;
+    uploadThreadTwitter(splitStrTwitter, '', 'main');
 
-      const strTwitter = `ℹ️⚠️${iconsMap.get(icon)} ${strWarning} ${iconsMap.get(icon)}⚠️ℹ️`;
-
-      uploadThreadTwitter([{
-        status: strTwitter,
-        media: [fileName],
-      }]);
-    }
-
-    strDiscord += `:information_source: :warning: ${icon} ${strWarning} ${icon} :warning: :information_source:\n\n`;
+    tlgMessages.push({
+      chatId: telegramKeys.chat_id,
+      photoURL,
+      options: {
+        caption: strTelegram,
+      },
+    });
   });
 
-  // Send message to Discord
-  if (strDiscord !== '') {
+  // Send messages to Discord and Telegram
+  if (warningsZone.length > 0) {
     if (zone === 'continente') {
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas do Continente:***\n${strDiscord}`);
+      sendMessageToChannel(client.channels.get(channels.WARNINGS_CHANNEL_ID), `***Novos Avisos do Continente:***\n${strDiscord}`);
     } else if (zone === 'acores') {
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas dos Açores:***\n${strDiscord}`);
+      sendMessageToChannel(client.channels.get(channels.WARNINGS_AZ_CHANNEL_ID), `***Novos Avisos dos Açores:***\n${strDiscord}`);
     } else if (zone === 'madeira') {
-      client.channels.get(channels.WARNINGS_CHANNEL_ID).send(`***Novos Alertas da Madeira:***\n${strDiscord}`);
+      sendMessageToChannel(client.channels.get(channels.WARNINGS_MD_CHANNEL_ID), `***Novos Avisos da Madeira:***\n${strDiscord}`);
     }
+
+    await sendMessagesTelegram(tlgMessages);
   }
 };
 
@@ -170,9 +217,9 @@ const getWarningsZones = (warningsZone, zone, client) => {
 const getWarnings = async (client) => {
   const warnings = await getAll();
 
-  getWarningsZones(warnings.acores, 'acores', client);
-  getWarningsZones(warnings.madeira, 'madeira', client);
-  getWarningsZones(warnings.continente, 'continente', client);
+  await getWarningsZones(warnings.continente, 'continente', client);
+  await getWarningsZones(warnings.acores, 'acores', client);
+  await getWarningsZones(warnings.madeira, 'madeira', client);
 };
 
 module.exports = {

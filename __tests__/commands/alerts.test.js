@@ -3,6 +3,8 @@ const WarningsService = require('../../src/services/Warnings');
 const alertsCommand = require('../../src/commands/alerts');
 
 jest.mock('../../src/services/Warnings');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
+
 
 const client = new Discord.Client();
 
@@ -12,7 +14,7 @@ describe('!alerts command', () => {
     await alertsCommand.execute(client.message);
 
     expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-    expect(client.message.channel.send.mock.calls[0][0]).toContain('Sem Alertas');
+    expect(client.message.channel.send.mock.calls[0][0]).toContain('Sem Avisos');
   });
 
   test('it has locals but no alerts to display', async () => {
@@ -25,7 +27,7 @@ describe('!alerts command', () => {
     await alertsCommand.execute(client.message);
 
     expect(client.message.channel.send).toHaveBeenCalledTimes(1);
-    expect(client.message.channel.send.mock.calls[0][0]).toContain('Alertas');
+    expect(client.message.channel.send.mock.calls[0][0]).toContain('Avisos');
   });
 
   test('it has locals and alerts to display', async () => {

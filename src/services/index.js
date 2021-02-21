@@ -6,11 +6,11 @@ const Prociv = require('./ProCiv');
 const Sns = require('./Sns');
 const Winds = require('./Winds');
 const Weather = require('./Weather');
-const Fuel = require('./Fuel');
 const Discord = require('./Discord');
 const Twitter = require('./Twitter');
 const Corona = require('./Corona');
 const MeteoAlarm = require('./MeteoAlarm');
+const Journal = require('./Journal');
 
 module.exports = {
   Acronyms,
@@ -21,9 +21,9 @@ module.exports = {
   Sns,
   Winds,
   Weather,
-  Fuel,
   Discord,
   Twitter,
   Corona,
   MeteoAlarm,
+  Journal,
 };

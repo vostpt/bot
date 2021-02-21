@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const rcmCommand = require('../../src/commands/rcm');
 
 jest.mock('../../src/api/Acronyms');
+jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
+
 
 const client = new Discord.Client();
 

@@ -8,6 +8,7 @@ const {
   Fuel,
   Twitter,
   Corona,
+  Journal,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter, uploadThreadTwitter } = require('../services/Twitter');
@@ -54,6 +55,8 @@ class Jobs {
     this.warnings();
     this.fireRisk();
     this.getTweets();
+    this.checkNewDecrees();
+    Jobs.clearDecreesDb();
     Jobs.warningsMeteoAlarm();
     Jobs.clearMeteoAlarmDb();
   }
@@ -135,62 +138,6 @@ class Jobs {
   }
 
   /**
-   * Get stats from 'Já Não Dá Para Abastecer' website
-   */
-  static fuelStats() {
-    const rule = new schedule.RecurrenceRule();
-
-    rule.hour = new schedule.Range(0, 23, 1);
-    rule.minute = 0;
-    rule.second = 0;
-
-    schedule.scheduleJob(rule, async () => {
-      const {
-        stations_all: stationsAll,
-        stations_none: stationsNone,
-        stations_no_diesel: stationsNoDiesel,
-        stations_no_gasoline: stationsNoGasoline,
-        stations_no_lpg: stationsNoLpg,
-        stations_partial: stationsPartial,
-        stations_total: stationsTotal,
-      } = await Fuel.getFuelStats();
-
-      const actualTime = moment().format('H:mm');
-
-      const messages = [
-        `Estado às ${actualTime}`,
-        `Total postos na plataforma: ${stationsTotal}\n`,
-        'Visão geral',
-        ` ⛔ Sem combustível: ${stationsNone}`,
-        ` ⚠ Com 1 tipo de combustível: ${stationsPartial}`,
-        ` ✅ Sem restrições: ${stationsAll}`,
-        'Faltas p/ tipo de combustível',
-        ` - Gasolina: ${stationsNoGasoline}`,
-        ` - Gasóleo: ${stationsNoDiesel}`,
-        ` - GPL: ${stationsNoLpg}`,
-      ];
-
-      const messageStats = `ℹ️⛽#JáNãoDáParaAbastecer\n${messages.join('\n')}\n⛽ℹ️`;
-
-      const messageDisclaimer = 'ℹ️⛽#JáNãoDáParaAbastecer Dados recolhidos via input dos utilizadores da plataforma, exceto os dados da rede #PRIO, #OZEnergia, #Ecobrent, #Bxpress, e #Tfuel, que são fornecidos pela marcas automaticamente.⛽ℹ️';
-
-      const graphBufferArray = await Fuel.getFuelStatsGraphs();
-
-      const twitterThreadData = [
-        {
-          status: messageStats,
-          media: graphBufferArray,
-        },
-        {
-          status: messageDisclaimer,
-        },
-      ];
-
-      uploadThreadTwitter(twitterThreadData);
-    });
-  }
-
-  /**
    * Update new tweets made by VOST accounts
    */
   getTweets() {
@@ -228,6 +175,33 @@ class Jobs {
 
     schedule.scheduleJob(rule, () => {
       Corona.checkOldReports(this.client);
+    });
+  }
+
+  /**
+   * Update new Decrees and send to Discord
+   */
+  checkNewDecrees() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(0, 59, 2);
+    rule.second = 40;
+
+    schedule.scheduleJob(rule, () => {
+      Journal.checkNewDecrees(this.client);
+    });
+  }
+
+  /**
+   * Update new Decrees and send to Discord
+   */
+  static clearDecreesDb() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.dayOfMonth = new schedule.Range(1, 28, 2);
+
+    schedule.scheduleJob(rule, () => {
+      Journal.clearDb();
     });
   }
 

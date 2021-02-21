@@ -18,3 +18,5 @@ data/
 
 !.vscode/launch.json
 .vscode/*
+
+!/data/auth
