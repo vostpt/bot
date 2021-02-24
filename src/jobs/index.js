@@ -123,12 +123,16 @@ class Jobs {
     const ruleWarning = new schedule.RecurrenceRule();
 
     ruleWarning.hour = 8;
+    ruleWarning.minute = 0;
+    ruleWarning.second = 0;
 
     schedule.scheduleJob(ruleWarning, () => Twitter.tweetVostEu(1));
 
     const ruleEcho = new schedule.RecurrenceRule();
 
     ruleEcho.hour = 12;
+    ruleEcho.minute = 0;
+    ruleEcho.second = 0;
 
     schedule.scheduleJob(ruleEcho, () => Twitter.tweetVostEu(2));
   }
