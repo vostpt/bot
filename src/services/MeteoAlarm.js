@@ -280,9 +280,7 @@ const tweetNewWarnings = async (country, newWarnings) => {
 
     const level = warningSeverities[warning.severity.toLowerCase()];
 
-    const strRegions = warning.regions.length > 10
-      ? 'several regions'
-      : warning.regions.join(', ');
+    const strRegions = warning.regions.join(', ');
 
     const startTime = moment(warning.start);
 
@@ -294,7 +292,16 @@ const tweetNewWarnings = async (country, newWarnings) => {
 
     const strEndTime = moment(warning.end).calendar(null, momentCalendar);
 
-    const tweetString = `ℹ️⚠️${emoji} #${level}Alert due to #${strType} in #${strCountry} (${strRegions}),${strStartTime} ending ${strEndTime} CET\n\n#SevereWeather ${emoji}⚠️ℹ️`;
+    const tweetStrs = {
+      beforeReg: `ℹ️⚠️${emoji} #${level}Alert due to #${strType} in #${strCountry}`,
+      afterReg: `,${strStartTime} ending ${strEndTime} CET\n\n#SevereWeather ${emoji}⚠️ℹ️`,
+    };
+
+    const tweetLength = tweetStrs.beforeReg.length + tweetStrs.afterReg.length + strRegions.length;
+
+    const tweetString = tweetLength < 277
+      ? `${tweetStrs.beforeReg} (${strRegions}) ${tweetStrs.afterReg}`
+      : `${tweetStrs.beforeReg} (several regions) ${tweetStrs.afterReg}`;
 
     const fileName = `/vost_eu/${level}_WARNING_${strType.toUpperCase()}.png`;
 
