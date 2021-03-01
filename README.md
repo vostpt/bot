@@ -17,7 +17,7 @@ npm install
 # Configuration
 After installing the dependencies, it's time for a quick configuration.
 
-Create a `.env` file in the project root, and modify the `NODE_ENV=` value to one of `test, development, production`
+Create a `.env` file in the project root.
 
 ```sh
 cp .env.example .env
@@ -27,10 +27,10 @@ Create the database directory and execute Sequelize migrations:
 
 ```bash
 mkdir ./data
-npx sequelize-cli db:migrate
+#ENVIRONMENT: development | test | production
+npx sequelize-cli db:migrate --env ENVIRONMENT
 ```
 
-ENVIRONMENT: development | test | production
 
 Add and replace values where needed:
 
@@ -77,34 +77,34 @@ CORONAUPDATEUSERS=
 #
 # Twitter configurations (Main account)
 #
-TWITTER_CONSUMER_KEY=
-TWITTER_CONSUMER_SECRET=
-TWITTER_ACCESS_TOKEN_KEY=
-TWITTER_ACCESS_TOKEN_SECRET=
+TWITTER_CONSUMER_KEY=dummy
+TWITTER_CONSUMER_SECRET=dummy
+TWITTER_ACCESS_TOKEN_KEY=dummy
+TWITTER_ACCESS_TOKEN_SECRET=dummy
 
 #
 # Twitter configurations (Azores account)
 #
-TWITTER_AZ_CONSUMER_KEY=
-TWITTER_AZ_CONSUMER_SECRET=
-TWITTER_AZ_ACCESS_TOKEN_KEY=
-TWITTER_AZ_ACCESS_TOKEN_SECRET=
+TWITTER_AZ_CONSUMER_KEY=dummy
+TWITTER_AZ_CONSUMER_SECRET=dummy
+TWITTER_AZ_ACCESS_TOKEN_KEY=dummy
+TWITTER_AZ_ACCESS_TOKEN_SECRET=dummy
 
 #
 # Twitter configurations (Europe account)
 #
-TWITTER_EU_CONSUMER_KEY=
-TWITTER_EU_CONSUMER_SECRET=
-TWITTER_EU_ACCESS_TOKEN_KEY=
-TWITTER_EU_ACCESS_TOKEN_SECRET=
+TWITTER_EU_CONSUMER_KEY=dummy
+TWITTER_EU_CONSUMER_SECRET=dummy
+TWITTER_EU_ACCESS_TOKEN_KEY=dummy
+TWITTER_EU_ACCESS_TOKEN_SECRET=dummy
 
 #
 # Twitter configurations (Journal account)
 #
-TWITTER_DRE_CONSUMER_KEY=
-TWITTER_DRE_CONSUMER_SECRET=
-TWITTER_DRE_ACCESS_TOKEN_KEY=
-TWITTER_DRE_ACCESS_TOKEN_SECRET=
+TWITTER_DRE_CONSUMER_KEY=dummy
+TWITTER_DRE_CONSUMER_SECRET=dummy
+TWITTER_DRE_ACCESS_TOKEN_KEY=dummy
+TWITTER_DRE_ACCESS_TOKEN_SECRET=dummy
 
 #
 # FTP configuration
