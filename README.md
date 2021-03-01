@@ -17,7 +17,7 @@ npm install
 # Configuration
 After installing the dependencies, it's time for a quick configuration.
 
-Create a `.env` file in the project root.
+Create a `.env` file in the project root, and modify the `NODE_ENV=` value to one of `test, development, production`
 
 ```sh
 cp .env.example .env
@@ -27,7 +27,7 @@ Create the database directory and execute Sequelize migrations:
 
 ```bash
 mkdir ./data
-npx sequelize-cli db:migrate --env ENVIRONMENT
+npx sequelize-cli db:migrate
 ```
 
 ENVIRONMENT: development | test | production
