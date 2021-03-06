@@ -12,6 +12,8 @@ moment.prototype.lastsLongerThan = function lastsLongerThan(amount, unit) {
 
 const OCCURENCE_DATE_FORMAT = 'DD/MM HH:mm';
 
+const imageFolderPath = `${path.resolve('./src/images')}${path.sep}`;
+
 /**
  * Return if an occurrence meets a certain criteria to be considered severe.
  *
@@ -104,8 +106,15 @@ const getFileContent = (filedata) => {
     return filedata;
   }
 
-  return fs.readFileSync(`${path.resolve('./src/images')}${path.sep}${filedata}`, { encoding: 'base64' });
+  return fs.readFileSync(`${imageFolderPath}${filedata}`, { encoding: 'base64' });
 };
+
+/**
+ * Get images folder path
+ *
+ * @returns {String}
+ */
+const getImagesPath = () => imageFolderPath;
 
 /**
 * Split message to avoid passing API character limits (Discord and Twitter)
@@ -171,6 +180,7 @@ module.exports = {
   removeAccent,
   isBase64,
   getFileContent,
+  getImagesPath,
   splitMessageString,
   parseVostDate,
 };

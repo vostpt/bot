@@ -50,7 +50,18 @@ const sendMessagesTelegram = async (messages) => {
   await sendMessageTelegram(lastMessage);
 };
 
+const sendDocumentTelegram = async (message) => {
+  if (typeof message.document !== 'undefined') {
+    await tClient.sendDocument(message.chatId, message.document, { ...message.options });
+
+    return;
+  }
+
+  await tClient.sendDocument(message.chatId, message.text, { ...message.options });
+};
+
 module.exports = {
   sendMessageTelegram,
   sendMessagesTelegram,
+  sendDocumentTelegram,
 };

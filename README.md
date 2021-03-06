@@ -153,6 +153,12 @@ TELEGRAM_CHAT_ID=
 #
 
 WARNINGAPPKEY=
+
+#
+# Mastodon/Pleroma keys
+#
+
+MASTODON_ACCESS_TOKEN=
 ```
 
 # Running
