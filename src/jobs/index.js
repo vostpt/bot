@@ -48,7 +48,7 @@ class Jobs {
    * Start all production (non-beta) jobs
    */
   startProd() {
-    this.forestFires();
+  /*     this.forestFires();
     this.checkNewCoronaReports();
     this.checkUpdatesCoronaReports();
     this.warnings();
@@ -58,7 +58,7 @@ class Jobs {
     Jobs.clearDecreesDb();
     Jobs.warningsMeteoAlarm();
     Jobs.clearMeteoAlarmDb();
-    Jobs.scheduleVostEuTweets();
+    Jobs.scheduleVostEuTweets(); */
   }
 
   /**

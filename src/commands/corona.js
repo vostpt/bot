@@ -75,9 +75,9 @@ module.exports = {
       return;
     }
 
-    if (requestedParam === 'update') {
-      const userId = message.author.id;
+    const userId = message.author.id;
 
+    if (requestedParam === 'update') {
       if (message.member.roles.has(roles.core) || userLists.coronaUpdate.includes(userId)) {
         if (args.length < 7) {
           sendMessageAnswer(message, `falta introduzir valores.\n${this.usage}`);
@@ -115,6 +115,55 @@ module.exports = {
 
       return;
     }
+
+    if (requestedParam === 'notificacao') {
+      if (message.member.roles.has(roles.core) || userLists.coronaUpdate.includes(userId)) {
+        const searchDate = moment().format(searchDateFormat);
+
+        const attachmentURLs = message.attachments.map(attachment => attachment.url);
+
+        const numAttachments = attachmentURLs.length;
+
+        if (numAttachments !== 1) {
+          sendMessageAnswer(message, `foram enviados ${numAttachments} anexos, quando deveria ter sido enviado 1 -> Tenta outra vez`);
+
+          return;
+        }
+
+        const reportURL = args[1];
+
+        if (!reportURL) {
+          sendMessageAnswer(message, 'falta introduzir o URL do relatório');
+
+          return;
+        }
+
+        // const result = await Corona.getResume(searchDate);
+
+        const result = 'Casos Confirmados: 809.412 (+1007 / +0.12%)\nNúmero de Internados: 1.416 (-167 / -10.55%)\nNúmero de Internados em UCI: 363 (-20 / -5.22%)\nÓbitos: 16.512 (+26 / +0.16%)\nRecuperados: 730.601 (+1942 / +0.27%)';
+
+        if (typeof result !== 'undefined' && result.text !== '') {
+          const notifyResult = await Corona.sendNotification(result, attachmentURLs[0], reportURL);
+
+          if (notifyResult > -1) {
+            sendMessageAnswer(message, 'notificação enviada');
+
+            return;
+          }
+
+          sendMessageAnswer(message, 'ocorreu um erro, notificação não enviada');
+
+          return;
+        }
+        sendMessageAnswer(message, 'não existem dados de hoje, notificação não enviada');
+
+        return;
+      }
+      sendMessageAnswer(message, 'não tens permissão para usar o comando');
+
+      return;
+    }
+
 
     sendMessageAnswer(message, `desconheço essa opção.\n${this.usage}`);
   },
