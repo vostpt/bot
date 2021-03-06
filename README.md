@@ -1,9 +1,9 @@
-<p style="text-align: center;"><img src="./VOSTPTia_Logo.png" alt="Logo VOSTPTia" height="200" /></p>
+<p align="center"><img src="./VOSTPTia_Logo.png" alt="Logo VOSTPTia" height="200" /></p>
 
-<h1><p style="text-align: center;">VOSTPTia</p></h1>
-<h2><p style="text-align: center;">VOSTPT bot</p></h2>
+<h1><p align="center">VOSTPTia</p></h1>
+<h2><p align="center">VOSTPT bot</p></h2>
 
-<p style="text-align: center;">
+<p align="center">
     <a href="https://travis-ci.com/vostpt/bot">
         <img src="https://travis-ci.com/vostpt/bot.svg?branch=master" alt="Build status" />
     </a>
