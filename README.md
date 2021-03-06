@@ -1,4 +1,4 @@
-<p align="center"><img src="./VOSTPTia_Logo.png" alt="Logo VOSTPTia" height="200" /></p>
+<p align="center"><a href="https://twitter.com/VOSTPTia"><img src="./VOSTPTia_Logo.png" alt="Logo VOSTPTia" height="200" /></a></p>
 
 <h1><p align="center">VOSTPTia</p></h1>
 <h2><p align="center">VOSTPT bot</p></h2>
