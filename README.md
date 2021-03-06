@@ -1,7 +1,16 @@
-# VOSTPT Discord bot
+<p align="center"><a href="https://twitter.com/VOSTPTia"><img src="./VOSTPTia_Logo.png" alt="Logo VOSTPTia" height="200" /></a></p>
 
-[![Build Status](https://travis-ci.com/vostpt/bot.svg?branch=master)](https://travis-ci.com/vostpt/bot)
-[![Coverage Status](https://coveralls.io/repos/github/vostpt/bot/badge.svg?branch=master)](https://coveralls.io/github/vostpt/bot?branch=master)
+<h1><p align="center">VOSTPTia</p></h1>
+<h2><p align="center">VOSTPT bot</p></h2>
+
+<p align="center">
+    <a href="https://travis-ci.com/vostpt/bot">
+        <img src="https://travis-ci.com/vostpt/bot.svg?branch=master" alt="Build status" />
+    </a>
+    <a href="https://coveralls.io/github/vostpt/bot?branch=master">
+        <img src="https://coveralls.io/repos/github/vostpt/bot/badge.svg?branch=master" alt="Coverage Status" />
+    </a>
+</p>
 
 # Installation
 Before anything else, install the dependencies:
