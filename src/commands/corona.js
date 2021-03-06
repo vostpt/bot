@@ -116,7 +116,7 @@ module.exports = {
       return;
     }
 
-    if (requestedParam === 'notificacao') {
+    if (requestedParam === 'notify') {
       if (message.member.roles.has(roles.core) || userLists.coronaUpdate.includes(userId)) {
         const searchDate = moment().format(searchDateFormat);
 
@@ -138,9 +138,7 @@ module.exports = {
           return;
         }
 
-        // const result = await Corona.getResume(searchDate);
-
-        const result = 'Casos Confirmados: 809.412 (+1007 / +0.12%)\nNúmero de Internados: 1.416 (-167 / -10.55%)\nNúmero de Internados em UCI: 363 (-20 / -5.22%)\nÓbitos: 16.512 (+26 / +0.16%)\nRecuperados: 730.601 (+1942 / +0.27%)';
+        const result = await Corona.getResume(searchDate);
 
         if (typeof result !== 'undefined' && result.text !== '') {
           const notifyResult = await Corona.sendNotification(result, attachmentURLs[0], reportURL);
