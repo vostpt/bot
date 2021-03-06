@@ -210,7 +210,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
       media: [fileName],
     }];
 
-    //uploadThreadTwitter(tweet, '', 'main');
+    uploadThreadTwitter(tweet, '', 'main');
 
     const strTelegram = `Boletim DGS ${notifyDate}\n${report}\nFonte: DGS/@VOSTPT`;
 
@@ -222,7 +222,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
       },
     };
 
-    //sendDocumentTelegram(tlgMessage);
+    sendDocumentTelegram(tlgMessage);
 
     const post = {
       status: strTwitPlr,
@@ -233,7 +233,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
       },
     };
 
-    //sendPostMastodon(post);
+    sendPostMastodon(post);
 
     return 0;
   } catch (e) {
