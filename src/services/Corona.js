@@ -229,6 +229,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
       media: fileName,
       options: {
         spoiler_text: 'Covid-19',
+        sensitive: false,
         language: 'pt',
       },
     };

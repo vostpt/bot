@@ -203,6 +203,7 @@ const getWarningsZones = async (warningsZone, zone, client) => {
         media: fileName,
         options: {
           spoiler_text: 'Meteorologia',
+          sensitive: false,
           language: 'pt',
         },
       };
