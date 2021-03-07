@@ -201,7 +201,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
   try {
     const notifyDate = moment().format('DDMMMYYYY').toUpperCase();
 
-    const strTwitPlr = `ℹ️🦠 Relatório @DGSaude ${notifyDate}\n${report}\n${reportURL}🦠ℹ️`;
+    const strTwitPlr = `ℹ️🦠 Relatório @DGSaude ${notifyDate}\n${report}\n${reportURL} 🦠ℹ️`;
 
     const fileName = 'VOSTPT_DGS_Covid19_Report.png';
 
