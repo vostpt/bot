@@ -141,7 +141,7 @@ module.exports = {
         const result = await Corona.getResume(searchDate);
 
         if (typeof result !== 'undefined' && result.text !== '') {
-          const notifyResult = await Corona.sendNotification(result, attachmentURLs[0], reportURL);
+          const notifyResult = await Corona.sendNotification(result.text, attachmentURLs[0], reportURL);
 
           if (notifyResult > -1) {
             sendMessageAnswer(message, 'notificação enviada');
