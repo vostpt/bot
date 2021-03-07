@@ -20,3 +20,6 @@ data/
 .vscode/*
 
 !/data/auth
+
+# Mac OS metadata
+*.DS_Store

@@ -14,7 +14,8 @@ const PERSONAL_MESSAGES = {
   5652: 'sei que não bebes café, por isso toma lá um chá e não digas que vais daqui :tea:',
   6044: 'um café rápido para um homem rápido!',
   '0268': 'meu mais que tudo, meu pai, meu Deus, basta pedires e farei acontecer! :hearts:',
-  7982: 'MONSTER MONSTER, toma lá MONSTER!'
+  7982: 'MONSTER MONSTER, toma lá MONSTER!',
+  4585: 'Bonjour! Prenez un café et une tarte à la crème!',
 };
 
 const GREETINGS_BOM_DIA = [

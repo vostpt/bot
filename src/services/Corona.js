@@ -11,6 +11,10 @@ const { CoronaApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { dgsResumes } = require('../../config/api');
 const { sendMessageToChannel } = require('./Discord');
+const { uploadThreadTwitter } = require('./Twitter');
+const { sendDocumentTelegram } = require('./Telegram');
+const { telegramKeys } = require('../../config/telegram');
+const { sendPostMastodon } = require('./Mastodon');
 
 /**
  * Get all reports
@@ -193,10 +197,56 @@ const updateSpreadsheet = async (reportValues) => {
   }
 };
 
+const sendNotification = async (report, attachmentURL, reportURL) => {
+  try {
+    const notifyDate = moment().format('DDMMMYYYY').toUpperCase();
+
+    const strTwitPlr = `ℹ️🦠 Relatório @DGSaude ${notifyDate}\n${report}\n${reportURL} 🦠ℹ️`;
+
+    const fileName = 'VOSTPT_DGS_Covid19_Report.png';
+
+    const tweet = [{
+      status: strTwitPlr,
+      media: [fileName],
+    }];
+
+    uploadThreadTwitter(tweet, '', 'main');
+
+    const strTelegram = `Boletim DGS ${notifyDate}\n${report}\nFonte: DGS/@VOSTPT`;
+
+    const tlgMessage = {
+      chatId: telegramKeys.chat_id,
+      document: attachmentURL,
+      options: {
+        caption: strTelegram,
+      },
+    };
+
+    sendDocumentTelegram(tlgMessage);
+
+    const post = {
+      status: strTwitPlr,
+      media: fileName,
+      options: {
+        spoiler_text: 'Covid-19',
+        sensitive: false,
+        language: 'pt',
+      },
+    };
+
+    sendPostMastodon(post);
+
+    return 0;
+  } catch (e) {
+    return -1;
+  }
+};
+
 module.exports = {
   getAll,
   checkNewReports,
   checkOldReports,
   getResume,
   updateSpreadsheet,
+  sendNotification,
 };

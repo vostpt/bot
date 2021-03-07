@@ -11,6 +11,7 @@ const Twitter = require('./Twitter');
 const Corona = require('./Corona');
 const MeteoAlarm = require('./MeteoAlarm');
 const Journal = require('./Journal');
+const Mastodon = require('./Mastodon');
 
 module.exports = {
   Acronyms,
@@ -26,4 +27,5 @@ module.exports = {
   Corona,
   MeteoAlarm,
   Journal,
+  Mastodon,
 };

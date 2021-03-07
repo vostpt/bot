@@ -15,6 +15,7 @@ const { locale } = require('../../config/locale');
 const { removeAccent, splitMessageString } = require('../helpers');
 const { sendMessagesTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
+const { sendPostMastodon } = require('./Mastodon');
 
 const iconsMap = new Map([
   [':dash:', '🌬'],
@@ -195,6 +196,20 @@ const getWarningsZones = async (warningsZone, zone, client) => {
     });
 
     WarningsApi.postNewWarning(warning);
+
+    if (level === 'Laranja' || level === 'Vermelho') {
+      const post = {
+        status: strTwitter,
+        media: fileName,
+        options: {
+          spoiler_text: 'Meteorologia',
+          sensitive: false,
+          language: 'pt',
+        },
+      };
+
+      sendPostMastodon(post);
+    }
   });
 
   // Send messages to Discord and Telegram
