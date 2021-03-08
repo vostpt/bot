@@ -72,15 +72,10 @@ DGSCORONA_CHANNEL_ID=
 JOURNAL_CHANNEL_ID=
 
 #
-# Discord roles
+# Discord commands user permission list
 #
 
-COREROLE=
-
-#
-# Discord user permission list
-#
-
+CORONAUPDATEROLES=
 CORONAUPDATEUSERS=
 
 #
