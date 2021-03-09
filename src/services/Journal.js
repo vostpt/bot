@@ -30,6 +30,7 @@ const twitterAccounts = {
   PLANEAMENTO: '@planeamento_pt',
   'MODERNIZAÇÃO DO ESTADO E DA ADMINISTRAÇÃO PÚBLICA': '@modernizacao_pt',
   'COESÃO TERRITORIAL': '@coesao_pt',
+  'PRESIDÊNCIA DA REPÚBLICA': '@presidencia',
 };
 
 const serieNo = {
