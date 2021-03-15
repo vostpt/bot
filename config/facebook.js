@@ -6,14 +6,14 @@ const {
 const facebookKeys = [{
     reference: 'main',
     pageName: 'VOSTPT',
-    fetchPosts: false,
+    fetchPosts: true,
     keys: {
         access_token: FACEBOOK_TOKEN_VOSTPT,
     },
 }, {
     reference: 'main-test',
     pageName: 'VOSTPTia',
-    fetchPosts: true,
+    fetchPosts: false,
     keys: {
         access_token: FACEBOOK_TOKEN_VOSTPTia,
     },
@@ -21,5 +21,5 @@ const facebookKeys = [{
 
 module.exports = {
     facebookKeys,
-    defaultReference: 'main-test'
+    defaultReference: 'main'
 };

@@ -67,9 +67,9 @@ class Jobs {
    * Start all beta jobs
    */
   startBeta() {
-    Facebook.postMessageFacebook('[teste] estamos a testar novas funcionalidades :)');
+    // Facebook.postMessageFacebook('[teste] estamos a testar novas funcionalidades :)');
     this.getFacebookPosts();
-    
+
     this.earthquakes();
     this.noticeableEarthquakes({ threshold: 2.5 });
 
