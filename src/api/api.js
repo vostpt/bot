@@ -10,13 +10,13 @@ const api = {
   get(url, customOptions = {}) {
     const options = { ...defaultOptions, ...customOptions };
 
-    return fetch(url, options).then(data => data.json()).then(data => ({ data }));
+    return fetch(url, options).then((data) => data.json()).then((data) => ({ data }));
   },
   getHtml(url) {
-    return fetch(url).then(res => res.text());
+    return fetch(url).then((res) => res.text());
   },
   getFileStream(url) {
-    return fetch(url).then(res => res.body);
+    return fetch(url).then((res) => res.body);
   },
   post(url, body, customHeader = {}) {
     const options = {
@@ -25,8 +25,8 @@ const api = {
       headers: { 'Content-Type': 'application/json', ...customHeader },
     };
 
-    return fetch(url, options).then(data => data.json());
-  }
+    return fetch(url, options).then((data) => data.json());
+  },
 };
 
 module.exports = api;

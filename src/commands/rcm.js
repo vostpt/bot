@@ -1,7 +1,6 @@
 const Fires = require('../services/Fires');
 const { cooldown } = require('../../config/bot');
 
-
 module.exports = {
   active: true,
   allowedArgs: [

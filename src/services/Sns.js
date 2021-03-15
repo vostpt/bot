@@ -10,7 +10,7 @@ const url = 'https://www.sns24.gov.pt/alertas/';
  */
 const getAlerts = async () => {
   const data = await fetch(url)
-    .then(res => res.text())
+    .then((res) => res.text())
     .then((body) => {
       const $ = cheerio.load(body);
       const $alerts = $('article.alerta');
@@ -26,7 +26,6 @@ const getAlerts = async () => {
     });
   return data;
 };
-
 
 module.exports = {
   getAlerts,

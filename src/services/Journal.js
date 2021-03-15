@@ -45,12 +45,12 @@ const re = new RegExp(Object.keys(twitterAccounts).join('|'), 'gi');
  *
  * @param {Object} decree
  */
-const decreeNotInDb = decree => db.Decrees.findOne({
+const decreeNotInDb = (decree) => db.Decrees.findOne({
   where: {
     link: decree.link,
   },
 })
-  .then(result => result === null);
+  .then((result) => result === null);
 
 /**
  * Check new decrees. If exists, send to Discord
@@ -97,7 +97,7 @@ const checkNewDecrees = async (client) => {
 
           if (hyphenPos > -1) {
             const handles = issuer.substring(0, hyphenPos)
-              .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+              .replace(re, (matched) => twitterAccounts[matched.toUpperCase()]);
 
             const institutions = issuer.substring(hyphenPos);
 
@@ -115,7 +115,7 @@ const checkNewDecrees = async (client) => {
           }
 
           const strOnlyHandles = issuer
-            .replace(re, matched => twitterAccounts[matched.toUpperCase()]);
+            .replace(re, (matched) => twitterAccounts[matched.toUpperCase()]);
 
           if (strOnlyHandles.length < 90) {
             return strOnlyHandles;
@@ -152,11 +152,11 @@ const checkNewDecrees = async (client) => {
     return {};
   }));
 
-  const filterNew = msgDecrees.filter(decree => decree.discord !== undefined);
+  const filterNew = msgDecrees.filter((decree) => decree.discord !== undefined);
 
   const msgDiscord = filterNew
-    .map(obj => obj.discord)
-    .filter(message => message !== '').join('\n\n');
+    .map((obj) => obj.discord)
+    .filter((message) => message !== '').join('\n\n');
 
   if (msgDiscord.length > 0) {
     const channel = client.channels.get(channels.JOURNAL_CHANNEL_ID);
@@ -165,8 +165,8 @@ const checkNewDecrees = async (client) => {
   }
 
   const tweets = filterNew
-    .filter(decree => decree.twitter !== undefined)
-    .map(obj => obj.twitter);
+    .filter((decree) => decree.twitter !== undefined)
+    .map((obj) => obj.twitter);
 
   const twLength = tweets.length;
 
@@ -178,7 +178,7 @@ const checkNewDecrees = async (client) => {
     await tweets.reduce(async (previous, tweet) => {
       await previous;
 
-      await new Promise(r => setTimeout(r, interval));
+      await new Promise((r) => setTimeout(r, interval));
 
       return uploadThreadTwitter(tweet, '', 'dre');
     }, Promise.resolve());

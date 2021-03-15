@@ -71,7 +71,7 @@ module.exports = {
     const messageContent = removeAccent(message.content.toLowerCase().replace(/\s+/g, ''));
     const hour = parseInt(moment(message.createdTimestamp).format('H'), 10);
 
-    if (GREETINGS_BOM_DIA.some(greeting => messageContent.includes(greeting))) {
+    if (GREETINGS_BOM_DIA.some((greeting) => messageContent.includes(greeting))) {
       try {
         if (hour >= 13 && hour < 20) {
           message.reply('para mim já é boa tarde! (*mas isso sou eu que só tenho o cérebro do tamanho do universo*) ');
@@ -97,7 +97,7 @@ module.exports = {
 
     // Good Afternoon routine
 
-    if (GREETINGS_BOA_TARDE.some(greeting => messageContent.includes(greeting))) {
+    if (GREETINGS_BOA_TARDE.some((greeting) => messageContent.includes(greeting))) {
       try {
         if (hour < 12) {
           message.reply('Ainda não é boa tarde, digo eu que só tenho o cérebro do tamanho do universo.');
@@ -116,7 +116,7 @@ module.exports = {
     }
 
     // Good Night routine
-    if (GREETINGS_BOA_NOITE.some(greeting => messageContent.includes(greeting))) {
+    if (GREETINGS_BOA_NOITE.some((greeting) => messageContent.includes(greeting))) {
       try {
         if (hour >= 7 && hour <= 19) {
           message.reply('Boa noite? Estás em que fuso horário?');

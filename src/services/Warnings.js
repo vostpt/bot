@@ -56,7 +56,6 @@ const getAll = async () => {
   return warnings;
 };
 
-
 /**
  * Returns array of updated meteo warnings
  *
@@ -173,7 +172,7 @@ const getWarningsZones = async (warningsZone, zone, client) => {
 
     const photoURL = `${baseImagesURL}/warnings/${fileName}`;
 
-    const splitStrTwitter = splitMessageString(strTwitter, 280).map(string => ({
+    const splitStrTwitter = splitMessageString(strTwitter, 280).map((string) => ({
       status: string,
     }));
 

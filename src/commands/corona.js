@@ -48,7 +48,7 @@ module.exports = {
 
       const string = 'aqui estão os relatórios de situação:\n';
 
-      const msgReportArray = reports.map(report => `\`${report.md5sum.slice(0, 8)}\` | ${report.title}: ${report.link}`).join('\n');
+      const msgReportArray = reports.map((report) => `\`${report.md5sum.slice(0, 8)}\` | ${report.title}: ${report.link}`).join('\n');
       sendMessageAnswer(message, string.concat(msgReportArray));
 
       return;
@@ -87,7 +87,7 @@ module.exports = {
         return true;
       }
 
-      const authRole = roleLists.coronaUpdate.some(role => message.member.roles.has(role));
+      const authRole = roleLists.coronaUpdate.some((role) => message.member.roles.has(role));
 
       return authRole;
     };
@@ -135,7 +135,7 @@ module.exports = {
     if (requestedParam === 'notify') {
       const searchDate = moment().format(searchDateFormat);
 
-      const attachmentURLs = message.attachments.map(attachment => attachment.url);
+      const attachmentURLs = message.attachments.map((attachment) => attachment.url);
 
       const numAttachments = attachmentURLs.length;
 

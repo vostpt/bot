@@ -19,9 +19,9 @@ module.exports = {
   * @param {Message} message
   */
   async execute(message) {
-    const processString = Object.entries(process.versions).map(procVersion => `\t${procVersion}`);
+    const processString = Object.entries(process.versions).map((procVersion) => `\t${procVersion}`);
 
-    const pubIpAddr = await fetch('https://api.ipify.org?format=json').then(data => data.json());
+    const pubIpAddr = await fetch('https://api.ipify.org?format=json').then((data) => data.json());
 
     const ipString = `IP interface: ${ip.address()}\nIP(s) público(s): ${pubIpAddr.ip}`;
 

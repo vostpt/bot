@@ -23,7 +23,7 @@ const md5FromUrl = async (url) => {
   return new Promise((resolve, reject) => {
     const hash = crypto.createHash('md5');
 
-    fileStream.on('data', data => hash.update(data));
+    fileStream.on('data', (data) => hash.update(data));
     fileStream.on('end', () => resolve(hash.digest('hex')));
 
     hash.on('error', (err) => {
@@ -51,7 +51,7 @@ const getReports = async () => {
   const $ = cheerio.load(pageHtml);
   const elements = $('.single_content ul li').get();
 
-  return Promise.all(elements.map(elem => getReport($(elem))));
+  return Promise.all(elements.map((elem) => getReport($(elem))));
 };
 
 const uploadToFtp = async (report) => {
@@ -73,7 +73,7 @@ const uploadToFtp = async (report) => {
   await client.uploadFrom(fileStream, fileName);
 };
 
-const getDgsResumes = async () => (await api.get(dgsResumesURL)).data.feed.entry.map(resume => ({
+const getDgsResumes = async () => (await api.get(dgsResumesURL)).data.feed.entry.map((resume) => ({
   date: resume.gsx$data.$t,
   text: resume.gsx$resumo.$t,
 }));
