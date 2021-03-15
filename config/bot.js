@@ -15,15 +15,19 @@ const channels = {
   JOURNAL_CHANNEL_ID: process.env.JOURNAL_CHANNEL_ID,
 };
 
-const roles = {
-  core: process.env.COREROLE,
-};
-
 const coronaUpdateUsers = process.env.CORONAUPDATEUSERS;
 
 const userLists = {
   coronaUpdate: typeof coronaUpdateUsers !== 'undefined'
     ? coronaUpdateUsers.split(',')
+    : [],
+};
+
+const coronaUpdateRoles = process.env.CORONAUPDATEROLES;
+
+const roleLists = {
+  coronaUpdate: typeof coronaUpdateRoles !== 'undefined'
+    ? coronaUpdateRoles.split(',')
     : [],
 };
 
@@ -36,8 +40,8 @@ const betaMode = (/true/i).test(process.env.BETA_MODE);
 module.exports = {
   prefix,
   channels,
-  roles,
   userLists,
+  roleLists,
   cooldown,
   betaMode,
 };
