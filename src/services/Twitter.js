@@ -39,7 +39,6 @@ const vostEuTweets = {
 * @param {String} reference
 */
 const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
-  return;
   if (tweetSeq.length === 0) {
     return;
   }
@@ -93,7 +92,6 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
 */
 
 const sendNewTweets = async (client, data, reference, screenName, lastTweetId) => {
-  return;
   const filteredData = lastTweetId
     ? data.filter((tweet) => tweet.id !== lastTweetId).reverse()
     : data.reverse();

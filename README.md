@@ -113,6 +113,7 @@ TWITTER_DRE_ACCESS_TOKEN_SECRET=
 
 #
 # Facebook configurations
+# instructions to get keys: https://gist.github.com/msramalho/4fc4bbc2f7ca58e0f6dc4d6de6215dc0
 #
 
 # Main account
