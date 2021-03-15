@@ -34,7 +34,7 @@ const postMessageFacebook = (message, reference) => {
 }
 
 /**
- * Calls FB api for each of the clients and posts new messages into Discord
+ * Calls FB API for each of the clients and posts new messages into Discord
  * @param {Object} discordClient 
  */
 const getVostPostsAndSendToDiscord = async (discordClient) => {
