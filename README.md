@@ -68,6 +68,7 @@ TRIGGERS_CHANNEL_ID=
 MGMT_CHANNEL_ID=
 VOLUNTEERS_CHANNEL_ID=
 TWFEED_CHANNEL_ID=
+FBFEED_CHANNEL_ID=
 DGSCORONA_CHANNEL_ID=
 JOURNAL_CHANNEL_ID=
 
@@ -109,6 +110,14 @@ TWITTER_DRE_CONSUMER_KEY=
 TWITTER_DRE_CONSUMER_SECRET=
 TWITTER_DRE_ACCESS_TOKEN_KEY=
 TWITTER_DRE_ACCESS_TOKEN_SECRET=
+
+#
+# Facebook configurations
+#
+
+# Main account
+FACEBOOK_TOKEN_VOSTPT=
+FACEBOOK_TOKEN_VOSTPTia=
 
 #
 # FTP configuration
@@ -156,12 +165,17 @@ WARNINGAPPKEY=
 MASTODON_ACCESS_TOKEN=
 ```
 
+You will also need a `data/auth/vostpt-bot.json` config (can be test version).
+
 # Running
 If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
 
 ```sh
 npm start
 ```
+
+Tip: use the `BETA_MODE` env variable to toggle which function in [src/jobs/index.json](src/jobs/index.js) is executed  `startProd` (`BETA_MODE=false`) for production and `startBeta`  (`BETA_MODE=true`). 
+
 
 You should see an output similar to this:
 ```sh
