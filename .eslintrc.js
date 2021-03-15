@@ -6,8 +6,7 @@ module.exports = {
         'jest/globals': true
     },
     extends: [
-        "airbnb-base",
-        "plugin:jest/recommended",
+        "eslint:recommended"
     ],
     globals: {
         Atomics: "readonly",

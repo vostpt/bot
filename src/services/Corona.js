@@ -4,7 +4,6 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const moment = require('moment');
 
-// eslint-disable-next-line import/no-unresolved
 const authFile = require('../../data/auth/vostpt-bot');
 const { db } = require('../database/models');
 const { CoronaApi } = require('../api');
