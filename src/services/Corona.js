@@ -201,7 +201,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
   try {
     const notifyDate = moment().format('DDMMMYYYY').toUpperCase();
 
-    const strTwitPlr = `ℹ️🦠 Relatório @DGSaude ${notifyDate}\n${report}\n${reportURL} 🦠ℹ️`;
+    const strTwitPlr = `ℹ️🦠 #COVID19PT Relatório @DGSaude ${notifyDate}\n${report}\n${reportURL} 🦠ℹ️`;
 
     const fileName = 'VOSTPT_DGS_Covid19_Report.png';
 
@@ -212,7 +212,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
 
     uploadThreadTwitter(tweet, '', 'main');
 
-    const strTelegram = `Boletim DGS ${notifyDate}\n${report}\nFonte: DGS/@VOSTPT`;
+    const strTelegram = `#COVID19PT Boletim DGS ${notifyDate}\n${report}\nFonte: DGS/@VOSTPT by @VOSTPT`;
 
     const tlgMessage = {
       chatId: telegramKeys.chat_id,
