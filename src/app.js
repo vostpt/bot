@@ -14,7 +14,6 @@ const cooldowns = new Discord.Collection();
 fs.readdirSync('./src/commands')
   .filter(file => file.endsWith('.js'))
   .forEach((file) => {
-    // eslint-disable-next-line import/no-dynamic-require
     const command = require(`./commands/${file}`);
     commands.set(command.name, command);
     cooldowns.set(command.name, new Discord.Collection());
@@ -24,7 +23,6 @@ fs.readdirSync('./src/commands')
 fs.readdirSync('./src/triggers')
   .filter(file => file.endsWith('.js'))
   .forEach((file) => {
-    // eslint-disable-next-line import/no-dynamic-require
     const trigger = require(`./triggers/${file}`);
     triggers.set(trigger.name, trigger);
   });

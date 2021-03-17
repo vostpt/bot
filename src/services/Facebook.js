@@ -84,7 +84,7 @@ const sendPostsToDiscord = (discordClient, newPosts, client) => {
 
     sendMessageToChannel(discordClient.channels.get(channels.FBFEED_CHANNEL_ID), introStr);
     newPosts.reverse().forEach(post => {
-        const message = `>>> ${post.message ?? ''} ${post?.story ?? ''}\n<https://www.facebook.com/VOSTPTia/posts/${getPostId(post)}>`
+        const message = `>>> ${post.message ?? ''} ${post?.story ?? ''}\n<https://www.facebook.com/${client.pageName}/posts/${getPostId(post)}>`
         sendMessageToChannel(discordClient.channels.get(channels.FBFEED_CHANNEL_ID), message);
     })
 }

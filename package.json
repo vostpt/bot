@@ -23,7 +23,7 @@
     "npx": "^10.2.2",
     "rss-parser": "^3.10.0",
     "sequelize": "^6.3.5",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.0.2",
     "twit": "^2.2.11"
   },
   "devDependencies": {
@@ -38,8 +38,8 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint ./src/**/*.js",
-    "lint-fix": "eslint --fix ./src/**/*.js",
+    "lint": "eslint",
+    "lint-fix": "eslint --fix src/",
     "start": "node src/app",
     "build:docs": "vuepress build docs",
     "dev:docs": "vuepress dev docs"

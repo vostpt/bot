@@ -14,9 +14,10 @@ module.exports = {
     },
     plugins: ["jest"],
     rules: {
-        "linebreak-style": "off",
         "no-unsafe-optional-chaining": "off",
         "no-console": ["error", { allow: ["warn", "error"] }],
         "max-len": ["warn", { "code": 300 }],
+        "eol-last": ["error", "always"],
+        "linebreak-style": "off"
     },
 };
