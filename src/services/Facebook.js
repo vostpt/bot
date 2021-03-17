@@ -6,6 +6,7 @@ const {
 const { channels } = require('../../config/bot');
 const { db } = require('../database/models');
 const { sendMessageToChannel } = require('./Discord');
+const { getImagesPath } = require('../helpers');
 
 const serviceName = 'FacebookService';
 
@@ -14,20 +15,22 @@ const getPostId = (post) => post.id.split("_")[1];
 /**
  * Loads an API client from the ACCESS_TOKEN of the {@paramref reference} 
  * and posts the {@paramref message} to FB
- * @param {String} message message to post to Facebook
+ * @param {String} post {message: to post to Facebook, media: image to display}
  * @param {String} reference which Facebook client to use (defaults to `main`)
  */
-const postMessageFacebook = (message, reference) => {
+const postMessageFacebook = (post, reference) => {
+    const filePath = `${getImagesPath()}${post.media}`;
     const clientToUse = loadAccountFromReference(reference);
     const fb = FB.withAccessToken(clientToUse.keys.access_token);
     fb.api(
         `/${clientToUse.pageName}/feed`,
         'POST', {
-        "message": message
+        "message": post.message,
+        'link': filePath
     },
         (res) => {
             if (res.error) {
-                console.error(`[${serviceName}] error when sending the following message:\n\n '${message}', reason:\n\n`, res.error);
+                console.error(`[${serviceName}] error when sending the following message:\n\n '${post.message}', reason:\n\n`, res.error);
             }
         }
     );

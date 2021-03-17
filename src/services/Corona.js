@@ -14,6 +14,7 @@ const { uploadThreadTwitter } = require('./Twitter');
 const { sendDocumentTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
+const { postMessageFacebook } = require('./Facebook');
 
 /**
  * Get all reports
@@ -225,6 +226,13 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
     };
 
     sendPostMastodon(post);
+
+    
+    const fbpost = {
+      message: strTwitPlr,
+      media: fileName,
+    }
+    postMessageFacebook(fbpost);
 
     return 0;
   } catch (e) {

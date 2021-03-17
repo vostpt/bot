@@ -16,6 +16,7 @@ const { removeAccent, splitMessageString } = require('../helpers');
 const { sendMessagesTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
+const { postMessageFacebook } = require('./Facebook');
 
 const iconsMap = new Map([
   [':dash:', '🌬'],
@@ -208,6 +209,12 @@ const getWarningsZones = async (warningsZone, zone, client) => {
       };
 
       sendPostMastodon(post);
+      
+      const fbpost = {
+        message: strTwitter,
+        media: fileName,
+      }
+      postMessageFacebook(fbpost);
     }
   });
 
