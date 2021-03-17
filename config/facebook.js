@@ -4,7 +4,7 @@ const {
 
 const facebookKeys = [{
     reference: 'main',
-    pageName: 'VOSTPTia',
+    pageName: 'VOSTPT',
     fetchPosts: true,
     keys: {
         access_token: FACEBOOK_TOKEN_VOSTPT,
