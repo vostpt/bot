@@ -169,7 +169,7 @@ const checkNewDecrees = async (client) => {
   }
 
   const publicPosts = filterNew
-    .filter(decree => decree.public !== undefined);
+    .filter(decree => decree.twitter !== undefined);
 
   const mastoPosts = publicPosts.map(obj => obj.mastodon);
 
