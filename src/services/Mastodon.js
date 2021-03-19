@@ -12,7 +12,7 @@ const { getImagesPath } = require('../helpers');
 * @param {Object} message
 */
 
-const sendPostMastodon = async (post, reference = 'dre') => {
+const sendPostMastodon = async (post, reference = 'main') => {
   if (post.media !== undefined) {
     const filePath = `${getImagesPath()}${post.media}`;
 
