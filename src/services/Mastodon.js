@@ -1,17 +1,9 @@
-const Mastodon = require('mastodon-api');
-const fs = require('fs');
-
 const {
-  accessToken,
-  mastodonURL,
-} = require('../../config/mastodon');
+  uploadMedia,
+  postStatus,
+} = require('../api/Mastodon');
 
 const { getImagesPath } = require('../helpers');
-
-const client = new Mastodon({
-  access_token: accessToken,
-  api_url: mastodonURL,
-});
 
 /**
 * Send a message to Mastodon/Pleroma
@@ -20,14 +12,29 @@ const client = new Mastodon({
 * @param {Object} message
 */
 
-const sendPostMastodon = async (post) => {
-  const filePath = `${getImagesPath()}${post.media}`;
+const sendPostMastodon = async (post, reference = 'dre') => {
+  if (post.media !== undefined) {
+    const filePath = `${getImagesPath()}${post.media}`;
 
-  client.post('media', { file: fs.createReadStream(filePath) }).then((resp) => {
-    const { id } = resp.data;
+    const fileObject = {
+      name: post.media,
+      path: filePath,
+    };
 
-    client.post('statuses', { status: post.status, media_ids: [id], ...post.options });
-  });
+    const result = await uploadMedia(fileObject, reference);
+
+    const mediaId = result.id;
+
+    postStatus({
+      status: post.status,
+      media_ids: [mediaId],
+      ...post.options,
+    }, reference);
+
+    return;
+  }
+
+  postStatus(post, reference);
 };
 
 module.exports = {
