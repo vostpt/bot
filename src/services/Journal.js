@@ -90,6 +90,8 @@ const checkNewDecrees = async (client) => {
 
       const strDiscord = `***Nova entrada - Série ${serieNo[decree.serie]}:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
 
+      const strMastodon = `${decree.title}\n\nEmissor: ${issuer}\n\n${description}\n\n${decreeURL}`;
+
       if (decree.serie === 1) {
         const repIssuerHandle = () => {
           const hyphenPos = issuer.indexOf('-');
@@ -138,8 +140,6 @@ const checkNewDecrees = async (client) => {
         const tweet = [{
           status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${strDescription}\n\n${decreeURL}`,
         }];
-
-        const strMastodon = `${decree.title}\n\nEmissor: ${strIssuer}\n\n${strDescription}\n\n${decreeURL}`;
 
         return {
           discord: strDiscord,
