@@ -1,6 +1,6 @@
 ---
 name: Bug report - VOSTPTia
-about: Choose this option if you spotted a bug in a VOST PT or VOST Europe (or related)
+about: Choose this option if you spotted a bug in a VOST PT, VOST Europe, or related
   social media accounts, and you think it was originated by VOSTPTia bot
 title: "[BUG] New bug in VOSTPTia"
 labels: bug
