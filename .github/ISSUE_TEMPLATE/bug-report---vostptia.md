@@ -11,7 +11,7 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
-**Where you saw the bug**
+**Where did you see the bug**
 The account or page where you spotted the bug. If possible, put the link to the affected post (e.g. "VOST PT Twitter account - https://twitter.com/VOSTPT/status/1377970487188410368").
 
 **Expected behavior**
