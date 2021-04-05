@@ -163,6 +163,7 @@ WARNINGAPPKEY=
 #
 
 MASTODON_ACCESS_TOKEN=
+PTDRE_PLEROMA_ACCESS_TOKEN=
 ```
 
 You will also need a `data/auth/vostpt-bot.json` config (can be test version).

@@ -9,6 +9,7 @@ const { channels } = require('../../config/bot');
 const { journalURLStruct } = require('../../config/journal');
 const { sendMessageToChannel } = require('./Discord');
 const { uploadThreadTwitter } = require('./Twitter');
+const { sendPostMastodon } = require('./Mastodon');
 
 const twitterAccounts = {
   'NEGÓCIOS ESTRANGEIROS': '@nestrangeiro_pt',
@@ -89,6 +90,8 @@ const checkNewDecrees = async (client) => {
 
       const strDiscord = `***Nova entrada - Série ${serieNo[decree.serie]}:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
 
+      const strMastodon = `${decree.title}\n\nEmissor: ${issuer}\n\n${description}\n\n${decreeURL}`;
+
       if (decree.serie === 1) {
         const repIssuerHandle = () => {
           const hyphenPos = issuer.indexOf('-');
@@ -141,6 +144,7 @@ const checkNewDecrees = async (client) => {
         return {
           discord: strDiscord,
           twitter: tweet,
+          mastodon: strMastodon,
         };
       }
 
@@ -164,9 +168,26 @@ const checkNewDecrees = async (client) => {
     sendMessageToChannel(channel, msgDiscord);
   }
 
+  const publicPosts = filterNew
+    .filter(decree => decree.twitter !== undefined);
   const tweets = filterNew
     .filter((decree) => decree.twitter !== undefined)
     .map((obj) => obj.twitter);
+
+  const mastoPosts = publicPosts.map(obj => obj.mastodon);
+
+  mastoPosts.forEach((post) => {
+    sendPostMastodon({
+      status: post,
+      options: {
+        spoiler_text: 'Novo decreto',
+        sensitive: false,
+        language: 'pt',
+      },
+    }, 'dre');
+  });
+
+  const tweets = publicPosts.map(obj => obj.twitter);
 
   const twLength = tweets.length;
 

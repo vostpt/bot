@@ -208,7 +208,7 @@ const getWarningsZones = async (warningsZone, zone, client) => {
         },
       };
 
-      sendPostMastodon(post);
+      sendPostMastodon(post, 'main');
       
       const fbpost = {
         message: strTwitter,

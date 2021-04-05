@@ -1,33 +1,39 @@
-const Mastodon = require('mastodon-api');
-const fs = require('fs');
-
 const {
-  accessToken,
-  mastodonURL,
-} = require('../../config/mastodon');
+  uploadMedia,
+  postStatus,
+} = require('../api/Mastodon');
 
 const { getImagesPath } = require('../helpers');
 
-const client = new Mastodon({
-  access_token: accessToken,
-  api_url: mastodonURL,
-});
-
 /**
 * Send a message to Mastodon/Pleroma
+* For now the max number of photos to include in a post is 1
 *
 * @async
 * @param {Object} message
 */
 
-const sendPostMastodon = async (post) => {
-  const filePath = `${getImagesPath()}${post.media}`;
+const sendPostMastodon = async (post, reference = 'main') => {
+  const mediaIds = [];
 
-  client.post('media', { file: fs.createReadStream(filePath) }).then((resp) => {
-    const { id } = resp.data;
+  if (post.media !== undefined) {
+    const filePath = `${getImagesPath()}${post.media}`;
 
-    client.post('statuses', { status: post.status, media_ids: [id], ...post.options });
-  });
+    const fileObject = {
+      name: post.media,
+      path: filePath,
+    };
+
+    const result = await uploadMedia(fileObject, reference);
+
+    mediaIds.push(result.id);
+  }
+
+  postStatus({
+    status: post.status,
+    media_ids: mediaIds,
+    ...post.options,
+  }, reference);
 };
 
 module.exports = {
