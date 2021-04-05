@@ -8,6 +8,7 @@ const {
   Twitter,
   Corona,
   Journal,
+  Facebook,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter } = require('../services/Twitter');
@@ -37,7 +38,7 @@ const sentEarthquakesNotifications = new Set();
  *
  * @param {String} event
  */
-const checkNotSentYet = event => !sentEarthquakesNotifications.has(event);
+const checkNotSentYet = (event) => !sentEarthquakesNotifications.has(event);
 
 class Jobs {
   constructor(client) {
@@ -54,6 +55,7 @@ class Jobs {
     this.warnings();
     this.fireRisk();
     this.getTweets();
+    this.getFacebookPosts();
     this.checkNewDecrees();
     Jobs.clearDecreesDb();
     Jobs.warningsMeteoAlarm();
@@ -167,7 +169,22 @@ class Jobs {
     rule.minute = new schedule.Range(1, 59, 1);
 
     schedule.scheduleJob(rule, () => {
-      Twitter.getVostTweets(this.client);
+      Twitter.getVostTweetsAndSendToDiscord(this.client);
+    });
+  }
+
+  /**
+   * Update new facebook posts made by VOST accounts
+   */
+  getFacebookPosts() {
+    Facebook.getVostPostsAndSendToDiscord(this.client);
+
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(1, 59, 2);
+
+    schedule.scheduleJob(rule, () => {
+      Facebook.getVostPostsAndSendToDiscord(this.client);
     });
   }
 
@@ -177,7 +194,7 @@ class Jobs {
   checkNewCoronaReports() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(1, 59, 2);
+    rule.minute = new schedule.Range(1, 59, 3);
     rule.second = 30;
 
     schedule.scheduleJob(rule, () => {
@@ -271,16 +288,16 @@ class Jobs {
 
         const noticeableEvents = events
           .filter(checkNotSentYet)
-          .filter(event => eventAboveThreshold(event, threshold));
+          .filter((event) => eventAboveThreshold(event, threshold));
 
         const noticeableSensedEvents = eventsSensed
           .filter(checkNotSentYet)
-          .filter(event => eventAboveThreshold(event, threshold));
+          .filter((event) => eventAboveThreshold(event, threshold));
 
         if (noticeableSensedEvents.length > 0) {
           const message = `***Sismo(s) sentido(s) dia ${today}:***\n${noticeableSensedEvents.join('\n')}`;
           this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableSensedEvents.forEach(event => sentEarthquakesNotifications.add(event));
+          noticeableSensedEvents.forEach((event) => sentEarthquakesNotifications.add(event));
 
           clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n(${noticeableSensedEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
         }
@@ -288,7 +305,7 @@ class Jobs {
         if (noticeableEvents.length > 0) {
           const message = `***Sismo(s) de ${today}:***\n${noticeableEvents.join('\n')}`;
           this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableEvents.forEach(event => sentEarthquakesNotifications.add(event));
+          noticeableEvents.forEach((event) => sentEarthquakesNotifications.add(event));
 
           clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
         }

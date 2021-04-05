@@ -36,10 +36,10 @@ Create the database directory and execute Sequelize migrations:
 
 ```bash
 mkdir ./data
+#ENVIRONMENT: development | test | production
 npx sequelize-cli db:migrate --env ENVIRONMENT
 ```
 
-ENVIRONMENT: development | test | production
 
 Add and replace values where needed:
 
@@ -68,6 +68,7 @@ TRIGGERS_CHANNEL_ID=
 MGMT_CHANNEL_ID=
 VOLUNTEERS_CHANNEL_ID=
 TWFEED_CHANNEL_ID=
+FBFEED_CHANNEL_ID=
 DGSCORONA_CHANNEL_ID=
 JOURNAL_CHANNEL_ID=
 
@@ -109,6 +110,14 @@ TWITTER_DRE_CONSUMER_KEY=
 TWITTER_DRE_CONSUMER_SECRET=
 TWITTER_DRE_ACCESS_TOKEN_KEY=
 TWITTER_DRE_ACCESS_TOKEN_SECRET=
+
+#
+# Facebook configurations
+# instructions to get keys: https://gist.github.com/msramalho/4fc4bbc2f7ca58e0f6dc4d6de6215dc0
+#
+
+# Main account
+FACEBOOK_TOKEN_VOSTPT=
 
 #
 # FTP configuration
@@ -157,12 +166,17 @@ MASTODON_ACCESS_TOKEN=
 PTDRE_PLEROMA_ACCESS_TOKEN=
 ```
 
+You will also need a `data/auth/vostpt-bot.json` config (can be test version).
+
 # Running
 If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
 
 ```sh
 npm start
 ```
+
+Tip: use the `BETA_MODE` env variable to toggle which function in [src/jobs/index.json](src/jobs/index.js) is executed  `startProd` (`BETA_MODE=false`) for production and `startBeta`  (`BETA_MODE=true`). 
+
 
 You should see an output similar to this:
 ```sh

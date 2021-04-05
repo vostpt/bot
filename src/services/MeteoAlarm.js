@@ -245,7 +245,7 @@ const tweetNewWarnings = async (country, newWarnings) => {
   const joinNewWarn = [];
 
   await newWarnings.forEach((newWarn) => {
-    const resIndex = joinNewWarn.findIndex(warn => (
+    const resIndex = joinNewWarn.findIndex((warn) => (
       warn.type === newWarn.type
         && warn.status === newWarn.status
         && warn.start === newWarn.start
@@ -253,7 +253,7 @@ const tweetNewWarnings = async (country, newWarnings) => {
         && warn.severity === newWarn.severity));
 
     if (resIndex > -1) {
-      const resDupReg = joinNewWarn[resIndex].regions.find(region => region === newWarn.region);
+      const resDupReg = joinNewWarn[resIndex].regions.find((region) => region === newWarn.region);
 
       if (!resDupReg) {
         joinNewWarn[resIndex].regions.push(newWarn.region);
@@ -325,7 +325,6 @@ const tweetNewWarnings = async (country, newWarnings) => {
   uploadThreadTwitter(thread, null, 'europe');
 };
 
-
 /**
  * Fetch severe and extreme warnings from MeteoAlarm
  * Return and update DB with new warnings
@@ -338,8 +337,8 @@ const getWarnings = async () => {
   const { countries } = MeteoAlarmApi;
 
   countries.map(async (country) => {
-    const countryNewWarn = await Promise.all(warns[country].map(warn => filterWarn(country, warn)))
-      .then(newSrchRes => warns[country].filter(((_warning, i) => newSrchRes[i])));
+    const countryNewWarn = await Promise.all(warns[country].map((warn) => filterWarn(country, warn)))
+      .then((newSrchRes) => warns[country].filter(((_warning, i) => newSrchRes[i])));
 
     countryNewWarn.forEach(async (warning) => {
       await db.MeteoAlarmWarnings.create({

@@ -4,7 +4,6 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const moment = require('moment');
 
-// eslint-disable-next-line import/no-unresolved
 const authFile = require('../../data/auth/vostpt-bot');
 const { db } = require('../database/models');
 const { CoronaApi } = require('../api');
@@ -15,6 +14,7 @@ const { uploadThreadTwitter } = require('./Twitter');
 const { sendDocumentTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
+const { postMessageFacebook } = require('./Facebook');
 
 /**
  * Get all reports
@@ -23,13 +23,8 @@ const { sendPostMastodon } = require('./Mastodon');
  * @async
  */
 const getAll = async () => {
-  try {
-    const result = await db.CoronaReports.findAll();
-
-    return result.map(report => report.dataValues);
-  } catch (e) {
-    throw e;
-  }
+  const result = await db.CoronaReports.findAll();
+  return result.map((report) => report.dataValues);
 };
 
 /**
@@ -37,12 +32,12 @@ const getAll = async () => {
  *
  * @param {Object} report
  */
-const reportLinkNotInDb = report => db.CoronaReports.findOne({
+const reportLinkNotInDb = (report) => db.CoronaReports.findOne({
   where: {
     link: report.link,
   },
 })
-  .then(result => result === null);
+  .then((result) => result === null);
 
 /**
  * Send reports to Discord,
@@ -82,7 +77,7 @@ const sendDiscord = async (client, startMessage, reports) => {
 const checkNewReports = async (client) => {
   const reports = await CoronaApi.getReports();
 
-  const newSearchResults = await Promise.all(reports.map(report => reportLinkNotInDb(report)));
+  const newSearchResults = await Promise.all(reports.map((report) => reportLinkNotInDb(report)));
 
   const newReports = await Promise.all(reports.filter((_report, i) => newSearchResults[i]));
 
@@ -125,7 +120,7 @@ const checkOldReports = async (client) => {
     };
   }));
 
-  const updatedReports = await Promise.all(getReportMd5.filter(rep => rep.oldMd5 !== rep.md5sum));
+  const updatedReports = await Promise.all(getReportMd5.filter((rep) => rep.oldMd5 !== rep.md5sum));
 
   updatedReports.forEach((report) => {
     db.CoronaReports.update({
@@ -151,7 +146,7 @@ const checkOldReports = async (client) => {
 const getResume = async (date) => {
   const resumes = await CoronaApi.getDgsResumes();
 
-  return resumes.find(resume => resume.date === date);
+  return resumes.find((resume) => resume.date === date);
 };
 
 /**
@@ -162,39 +157,35 @@ const getResume = async (date) => {
  */
 
 const updateSpreadsheet = async (reportValues) => {
-  try {
-    const doc = new GoogleSpreadsheet(dgsResumes.id);
+  const doc = new GoogleSpreadsheet(dgsResumes.id);
 
-    await doc.useServiceAccountAuth(authFile);
+  await doc.useServiceAccountAuth(authFile);
 
-    await doc.loadInfo();
+  await doc.loadInfo();
 
-    const sheet = await doc.sheetsByIndex[dgsResumes.dataGid - 1];
+  const sheet = await doc.sheetsByIndex[dgsResumes.dataGid - 1];
 
-    await sheet.loadCells(['A1:1', 'A5:5', 'A6:6', 'A8:8', 'A9:9', 'A10:10']);
+  await sheet.loadCells(['A1:1', 'A5:5', 'A6:6', 'A8:8', 'A9:9', 'A10:10']);
 
-    const googleEpoch = moment('30/12/1899', 'DD/MM/YYYY');
+  const googleEpoch = moment('30/12/1899', 'DD/MM/YYYY');
 
-    const updateDate = (reportValues.date).diff(googleEpoch, 'days');
+  const updateDate = (reportValues.date).diff(googleEpoch, 'days');
 
-    const { columnCount } = sheet;
+  const { columnCount } = sheet;
 
-    for (let i = 0; i < columnCount; i += 1) {
-      const cell = sheet.getCell(0, i);
+  for (let i = 0; i < columnCount; i += 1) {
+    const cell = sheet.getCell(0, i);
 
-      if (cell.value === updateDate) {
-        (sheet.getCell(4, i)).value = Number(reportValues.deaths);
-        (sheet.getCell(5, i)).value = Number(reportValues.recovered);
-        (sheet.getCell(7, i)).value = Number(reportValues.confirmed);
-        (sheet.getCell(8, i)).value = Number(reportValues.atHospital);
-        (sheet.getCell(9, i)).value = Number(reportValues.atICU);
-      }
+    if (cell.value === updateDate) {
+      (sheet.getCell(4, i)).value = Number(reportValues.deaths);
+      (sheet.getCell(5, i)).value = Number(reportValues.recovered);
+      (sheet.getCell(7, i)).value = Number(reportValues.confirmed);
+      (sheet.getCell(8, i)).value = Number(reportValues.atHospital);
+      (sheet.getCell(9, i)).value = Number(reportValues.atICU);
     }
-
-    await sheet.saveUpdatedCells();
-  } catch (e) {
-    throw new Error(e);
   }
+
+  await sheet.saveUpdatedCells();
 };
 
 const sendNotification = async (report, attachmentURL, reportURL) => {
@@ -235,6 +226,13 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
     };
 
     sendPostMastodon(post);
+
+    
+    const fbpost = {
+      message: strTwitPlr,
+      media: fileName,
+    }
+    postMessageFacebook(fbpost);
 
     return 0;
   } catch (e) {

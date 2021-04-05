@@ -31,7 +31,7 @@ module.exports = {
           return;
         }
 
-        const events = data.map(item => (
+        const events = data.map((item) => (
           `**${item.title}**\n${item.description}\n${item.link}\n${moment(item.dateTime, moment.ISO_8601)}`
         ));
 

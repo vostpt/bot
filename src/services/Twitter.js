@@ -5,14 +5,14 @@ const { channels } = require('../../config/bot');
 const { db } = require('../database/models');
 const { sendMessageToChannel } = require('./Discord');
 
-const twitterClients = twitterKeys.map(account => ({
+const twitterClients = twitterKeys.map((account) => ({
   reference: account.reference,
   screenName: account.screenName,
   fetchTweets: account.fetchTweets,
   client: new Twit(account.keys),
 }));
 
-const defaultClientTwitter = twitterClients.find(element => element.reference === 'main');
+const defaultClientTwitter = twitterClients.find((element) => element.reference === 'main');
 
 const vostEuTweets = {
   1: [{
@@ -43,7 +43,7 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
     return;
   }
 
-  const accountPos = twitterClients.findIndex(element => element.reference === reference);
+  const accountPos = twitterClients.findIndex((element) => element.reference === reference);
 
   const clientTwitter = accountPos < 0
     ? defaultClientTwitter.client
@@ -93,15 +93,15 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
 
 const sendNewTweets = async (client, data, reference, screenName, lastTweetId) => {
   const filteredData = lastTweetId
-    ? data.filter(tweet => tweet.id !== lastTweetId).reverse()
+    ? data.filter((tweet) => tweet.id !== lastTweetId).reverse()
     : data.reverse();
 
   const filteredDataLength = filteredData.length;
 
   if (filteredDataLength > 0) {
-    const tweetIds = filteredData.map(tweet => tweet.id);
+    const tweetIds = filteredData.map((tweet) => tweet.id);
 
-    const strArray = filteredData.map(tweet => tweet.text);
+    const strArray = filteredData.map((tweet) => tweet.text);
 
     const introStr = `***Novo(s) tweets da conta @${screenName}:***\n`;
 
@@ -127,9 +127,8 @@ const sendNewTweets = async (client, data, reference, screenName, lastTweetId) =
 * @async
 * @param {Object} discordClient
 */
-
-const getVostTweets = async (discordClient) => {
-  const enabledClients = twitterClients.filter(client => client.fetchTweets);
+const getVostTweetsAndSendToDiscord = async (discordClient) => {
+  const enabledClients = twitterClients.filter((client) => client.fetchTweets);
 
   for (let i = 0; i < enabledClients.length; i += 1) {
     const {
@@ -174,6 +173,6 @@ const tweetVostEu = async (tweetId) => {
 module.exports = {
   clientTwitter: defaultClientTwitter.client,
   uploadThreadTwitter,
-  getVostTweets,
+  getVostTweetsAndSendToDiscord,
   tweetVostEu,
 };

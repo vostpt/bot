@@ -12,7 +12,7 @@ const postNewWarnHeader = {
   'X-VOSTWARNINGS': warnAppKey,
 };
 
-const postNewWarning = body => api.post(warnAppURL, body, postNewWarnHeader);
+const postNewWarning = (body) => api.post(warnAppURL, body, postNewWarnHeader);
 
 module.exports = {
   getAll,

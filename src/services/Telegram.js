@@ -34,7 +34,7 @@ const sendMessagesTelegram = async (messages) => {
   await messages.reduce(async (previous, message) => {
     await previous;
 
-    await new Promise(r => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 1000));
 
     const sequenceMsg = {
       ...message,

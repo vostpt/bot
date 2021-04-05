@@ -69,7 +69,7 @@ const printAliases = (aliases = []) => {
     return '';
   }
 
-  return `Aliases: ${aliases.map(alias => `${prefix}${alias}`).join(', ')}`;
+  return `Aliases: ${aliases.map((alias) => `${prefix}${alias}`).join(', ')}`;
 };
 
 const react = async (msg, reactions = []) => {
@@ -78,7 +78,7 @@ const react = async (msg, reactions = []) => {
   }
 
   try {
-    await Promise.all(reactions.map(reaction => msg.react(reaction)));
+    await Promise.all(reactions.map((reaction) => msg.react(reaction)));
   } catch (e) {
     msg.reply('os comandos foram enviados por DM');
   }
@@ -171,7 +171,7 @@ const splitMessageString = (msgString, charLimit = 1950, returnFirst = false) =>
 * @returns {Object}
 */
 
-const parseVostDate = async strDate => moment(strDate, 'DDMMMYYYY', true);
+const parseVostDate = async (strDate) => moment(strDate, 'DDMMMYYYY', true);
 
 module.exports = {
   isSevere,

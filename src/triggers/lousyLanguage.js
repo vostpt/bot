@@ -26,7 +26,7 @@ module.exports = {
   async execute(message) {
     const messageContent = removeAccent(message.content.toLowerCase().replace(/\s+/g, ''));
 
-    if (LOUSY_WORDS.some(greeting => messageContent.includes(greeting))) {
+    if (LOUSY_WORDS.some((greeting) => messageContent.includes(greeting))) {
       message.reply('Hey https://media1.tenor.com/images/ff97f5136e14b88c76ea8e8488e23855/tenor.gif?itemid=13286953');
     }
   },

@@ -16,6 +16,7 @@ const { removeAccent, splitMessageString } = require('../helpers');
 const { sendMessagesTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
+const { postMessageFacebook } = require('./Facebook');
 
 const iconsMap = new Map([
   [':dash:', '🌬'],
@@ -55,7 +56,6 @@ const getAll = async () => {
 
   return warnings;
 };
-
 
 /**
  * Returns array of updated meteo warnings
@@ -173,7 +173,7 @@ const getWarningsZones = async (warningsZone, zone, client) => {
 
     const photoURL = `${baseImagesURL}/warnings/${fileName}`;
 
-    const splitStrTwitter = splitMessageString(strTwitter, 280).map(string => ({
+    const splitStrTwitter = splitMessageString(strTwitter, 280).map((string) => ({
       status: string,
     }));
 
@@ -209,6 +209,12 @@ const getWarningsZones = async (warningsZone, zone, client) => {
       };
 
       sendPostMastodon(post, 'main');
+      
+      const fbpost = {
+        message: strTwitter,
+        media: fileName,
+      }
+      postMessageFacebook(fbpost);
     }
   });
 

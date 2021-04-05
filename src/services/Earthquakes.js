@@ -23,13 +23,8 @@ const getAll = async () => {
  * @returns {Array} earthquakes
  */
 const getByDate = async (date) => {
-  try {
-    const earthquakes = await getAll();
-
-    return earthquakes.filter(({ time }) => moment(time).format('L') === date);
-  } catch (e) {
-    throw e;
-  }
+  const earthquakes = await getAll();
+  return earthquakes.filter(({ time }) => moment(time).format('L') === date);
 };
 
 /**
