@@ -19,12 +19,12 @@ const vostEuTweets = {
     status: `☁️🌂🌀❄️🌊
 ⚠ Weather warnings\n⚠ Avisos meteorológicos\n⚠ Alertes météo\n⚠ Wetterwarnungen\n⚠ Allerte meteo
 #SevereWeather\n\n#SMEM #MSGU #RSGE\n\nhttp://meteoalarm.eu`,
-    media: ['/vost_eu/DAILY_TWEETS_METEOALARM.png'],
+    media: ['vost_eu/daily_tweets/DAILY_TWEETS_METEOALARM.png'],
   }],
   2: [{
     status: `📌 ECHO Daily Flash of the European Emergency Response Coordination Centre 📢 #ERCC 
 @eu_echo\n\n#EUCivPro #RescEU\n#SMEM #MSGU #RSGE\nhttp://erccportal.jrc.ec.europa.eu/ECHO-Flash`,
-    media: ['/vost_eu/DAILY_TWEETS_ECHOFLASH.png'],
+    media: ['vost_eu/daily_tweets/DAILY_TWEETS_ECHOFLASH.png'],
   }],
 };
 

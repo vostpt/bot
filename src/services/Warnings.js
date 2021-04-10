@@ -169,9 +169,9 @@ const getWarningsZones = async (warningsZone, zone, client) => {
 
     strDiscord += `:information_source: :warning: ${icon} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${icon} :warning: :information_source:\n\n`;
 
-    const fileName = `Twitter_Post_Aviso${level}_${removeAccent(weatherType)}.png`;
+    const fileName = `warnings/Twitter_Post_Aviso${level}_${removeAccent(weatherType)}.png`;
 
-    const photoURL = `${baseImagesURL}/warnings/${fileName}`;
+    const photoURL = `${baseImagesURL}/${fileName}`;
 
     const splitStrTwitter = splitMessageString(strTwitter, 280).map((string) => ({
       status: string,

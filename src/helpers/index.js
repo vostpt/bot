@@ -106,7 +106,7 @@ const getFileContent = (filedata) => {
     return filedata;
   }
 
-  return fs.readFileSync(`${imageFolderPath}${filedata}`, { encoding: 'base64' });
+  return fs.readFileSync(`${imageFolderPath}${path.sep}${filedata}`, { encoding: 'base64' });
 };
 
 /**

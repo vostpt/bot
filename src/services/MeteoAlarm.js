@@ -303,7 +303,7 @@ const tweetNewWarnings = async (country, newWarnings) => {
       ? `${tweetStrs.beforeReg} (${strRegions}) ${tweetStrs.afterReg}`
       : `${tweetStrs.beforeReg} (several regions) ${tweetStrs.afterReg}`;
 
-    const fileName = `/vost_eu/${level}_WARNING_${strType.toUpperCase()}.png`;
+    const fileName = `vost_eu/warnings/${level}_WARNING_${strType.toUpperCase()}.png`;
 
     return {
       status: tweetString,

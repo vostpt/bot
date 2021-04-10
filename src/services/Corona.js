@@ -194,7 +194,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
 
     const strTwitPlr = `ℹ️🦠 #COVID19PT Relatório @DGSaude ${notifyDate}\n${report}\n${reportURL} 🦠ℹ️`;
 
-    const fileName = 'VOSTPT_DGS_Covid19_Report.png';
+    const fileName = 'corona/VOSTPT_DGS_Covid19_Report.png';
 
     const tweet = [{
       status: strTwitPlr,
