@@ -1,8 +1,13 @@
 const { TelegramClient } = require('messaging-api-telegram');
-const { telegramKeys } = require('../../config/telegram');
+const { telegramKeys, telegramKeysRally } = require('../../config/telegram');
 
 const tClient = new TelegramClient({
   accessToken: telegramKeys.key,
+});
+
+// Confirm this
+const tClientRally = new TelegramClient({
+  accessToken: telegramKeysRally.key,
 });
 
 /**
@@ -60,8 +65,19 @@ const sendDocumentTelegram = async (message) => {
   await tClient.sendDocument(message.chatId, message.text, { ...message.options });
 };
 
+const sendMessageRally = async (message) => {
+  if (typeof message.photoURL !== 'undefined') {
+    await tClientRally.sendPhoto(message.chatId, message.photoURL, { ...message.options });
+
+    return;
+  }
+
+  await tClientRally.sendMessage(message.chatId, message.text, { ...message.options });
+};
+
 module.exports = {
   sendMessageTelegram,
   sendMessagesTelegram,
   sendDocumentTelegram,
+  sendMessageRally,
 };
