@@ -13,8 +13,9 @@ module.exports = {
   cooldown,
   name: 'rally',
   usage: `
-    **!rally [ADICIONAR INTRO]** - Retorna todos os relatórios de situação acerca do COVID-19 emitidos pela DGS.
-  `,
+    **!rally upload *[comando restrito | obrigatório anexar 1 ficheiro]*** - Faz o upload de um ficheiro csv para o site do Rally de Portugal. Usando este comando, não serão enviadas publicações para as redes sociais.
+    **!rally update <ID da ZE> <Lotação> *[comando restrito]*** - Atualiza a lotação de uma determinada ZE. Ao atualizar por este comando, caso a ZE passe para laranja ou vermelho, serão enviados posts para as redes sociais do Rally.
+    `,
 
   /**
   * Send to Discord all coronavirus reports made by DGS
