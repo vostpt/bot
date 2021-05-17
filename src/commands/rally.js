@@ -99,7 +99,7 @@ module.exports = {
       }
 
       if (requestedParam === 'info') {
-        if (args.length < 3) {
+        if (args.length < 2) {
           sendMessageAnswer(message, `falta introduzir o texto.\n${this.usage}`);
 
           return;
