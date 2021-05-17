@@ -14,7 +14,7 @@ const facebookKeys = [{
 {
     reference: 'rally',
     pageName: 'VOSTPTia',
-    fetchPosts: true,
+    fetchPosts: false,
     keys: {
         access_token: FACEBOOK_TOKEN_RALLY,
     },
