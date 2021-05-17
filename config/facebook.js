@@ -13,7 +13,7 @@ const facebookKeys = [{
 },
 {
     reference: 'rally',
-    pageName: 'VOSTPTia',
+    pageName: 'rallydeportugal',
     fetchPosts: false,
     keys: {
         access_token: FACEBOOK_TOKEN_RALLY,
