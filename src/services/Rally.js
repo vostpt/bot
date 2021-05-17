@@ -12,7 +12,6 @@ const { postMessageFacebook } = require('./Facebook');
 const { sendMessageRally } = require('./Telegram');
 const { telegramKeysRally } = require('../../config/telegram');
 const { splitMessageString } = require('../helpers');
-const { baseImagesURL } = require('../../config/api');
 
 
 const capacityLevel = (capacity) => {
