@@ -19,9 +19,12 @@ const getPostId = (post) => post.id.split("_")[1];
  * @param {String} reference which Facebook client to use (defaults to `main`)
  */
 const postMessageFacebook = (post, reference) => {
-    const filePath = `${baseImagesURL}/${post.media}`;
+    const filePath = post.media !== undefined
+        ? `${baseImagesURL}/${post.media}`
+        : '';
     const clientToUse = loadAccountFromReference(reference);
     const fb = FB.withAccessToken(clientToUse.keys.access_token);
+
     fb.api(
         `/${clientToUse.pageName}/feed`,
         'POST', {

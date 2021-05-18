@@ -13,6 +13,7 @@ const MeteoAlarm = require('./MeteoAlarm');
 const Journal = require('./Journal');
 const Mastodon = require('./Mastodon');
 const Facebook = require('./Facebook');
+const Rally = require('./Rally');
 
 module.exports = {
   Acronyms,
@@ -30,4 +31,5 @@ module.exports = {
   Journal,
   Mastodon,
   Facebook,
+  Rally,
 };

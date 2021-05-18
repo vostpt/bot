@@ -79,6 +79,9 @@ JOURNAL_CHANNEL_ID=
 CORONAUPDATEROLES=
 CORONAUPDATEUSERS=
 
+RALLYUPDATEROLES=
+RALLYUPDATEUSERS=
+
 #
 # Twitter configurations (Main account)
 #
@@ -112,6 +115,14 @@ TWITTER_DRE_ACCESS_TOKEN_KEY=
 TWITTER_DRE_ACCESS_TOKEN_SECRET=
 
 #
+# Twitter configurations (Rally account)
+#
+TWITTER_RALLY_CONSUMER_KEY=
+TWITTER_RALLY_CONSUMER_SECRET=
+TWITTER_RALLY_ACCESS_TOKEN_KEY=
+TWITTER_RALLY_ACCESS_TOKEN_SECRET=
+
+#
 # Facebook configurations
 # instructions to get keys: https://gist.github.com/msramalho/4fc4bbc2f7ca58e0f6dc4d6de6215dc0
 #
@@ -134,7 +145,6 @@ FTPPASSWORD=
 DGSRESUMESID=
 DGSRESUMESGID=
 
-#
 # Node environment (for Sequelize)
 # test/development/production
 
@@ -146,11 +156,15 @@ NODE_ENV=
 #
 BETA_MODE=
 
+
 #
 # Telegram
 #
 TELEGRAM_API_KEY=
 TELEGRAM_CHAT_ID=
+
+TELEGRAM_RALLY_API_KEY=
+TELEGRAM_RALLY_CHAT_ID=
 
 #
 # Firebase warnings key
@@ -164,6 +178,11 @@ WARNINGAPPKEY=
 
 MASTODON_ACCESS_TOKEN=
 PTDRE_PLEROMA_ACCESS_TOKEN=
+
+#
+# PT Rally csv file location
+#
+RALLYFILEPATH=
 ```
 
 You will also need a `data/auth/vostpt-bot.json` config (can be test version).

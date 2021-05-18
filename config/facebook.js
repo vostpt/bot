@@ -1,5 +1,6 @@
 const {
     FACEBOOK_TOKEN_VOSTPT,
+    FACEBOOK_TOKEN_RALLY,
 } = process.env;
 
 const facebookKeys = [{
@@ -8,6 +9,14 @@ const facebookKeys = [{
     fetchPosts: true,
     keys: {
         access_token: FACEBOOK_TOKEN_VOSTPT,
+    },
+},
+{
+    reference: 'rally',
+    pageName: 'rallydeportugal',
+    fetchPosts: false,
+    keys: {
+        access_token: FACEBOOK_TOKEN_RALLY,
     },
 }];
 

@@ -17,18 +17,26 @@ const channels = {
 };
 
 const coronaUpdateUsers = process.env.CORONAUPDATEUSERS;
+const rallyUpdateUsers = process.env.RALLYUPDATEUSERS;
 
 const userLists = {
   coronaUpdate: typeof coronaUpdateUsers !== 'undefined'
     ? coronaUpdateUsers.split(',')
     : [],
+  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
+    ? rallyUpdateUsers.split(',')
+    : [],
 };
 
 const coronaUpdateRoles = process.env.CORONAUPDATEROLES;
+const rallyUpdateRoles = process.env.RALLYUPDATEROLES;
 
 const roleLists = {
   coronaUpdate: typeof coronaUpdateRoles !== 'undefined'
     ? coronaUpdateRoles.split(',')
+    : [],
+  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
+    ? rallyUpdateRoles.split(',')
     : [],
 };
 
