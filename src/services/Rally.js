@@ -206,7 +206,7 @@ const uploadCsv = async (csvUrl) => {
 const sendInfo = async (info) => {
   const twFileName = 'rally_pt/info_VRP21_tw.png';
 
-  const splitStrTwitter = splitMessageString(info, 280).map((string) => ({
+  const splitStrTwitter = splitMessageString(info, 225).map((string) => ({
     status: `ℹ️ ${string} ℹ️\n\nhttps://rally.vost.pt\n#RallyPortugal2021`,
   }));
 
