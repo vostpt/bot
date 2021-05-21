@@ -52,7 +52,7 @@
     "url": "git+ssh://git@github.com/vostpt/bot.git"
   },
   "author": "VOSTPT",
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "https://github.com/vostpt/bot/",
   "bugs": {
     "url": "https://github.com/vostpt/bot/issues"
