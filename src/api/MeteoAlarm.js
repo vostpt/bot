@@ -4,42 +4,43 @@ const cheerio = require('cheerio');
 class MeteoAlarm {
   constructor() {
     this.countries = [
-      'AT',
-      'BA',
-      'BE',
-      'BG',
-      'CH',
-      'CZ',
-      'DK',
-      'EE',
-      'ES',
-      'FI',
-      'FR',
-      'GR',
-      'HR',
-      'HU',
-      'IE',
-      'IS',
-      'IT',
-      'LT',
-      'LU',
-      'LV',
-      'MD',
-      'ME',
-      'MK',
-      'MT',
-      'NL',
-      'NO',
-      'PL',
-      'PT',
-      'RO',
-      'RS',
-      'SE',
-      'SI',
-      'UK',
-      'SK',
-      // 'CY',
-      // 'DE',
+      'austria',
+      'belgium',
+      'bosnia-herzegovina',
+      'bulgaria',
+      'croatia',
+      'cyprus',
+      'czechia',
+      'denmark',
+      'estonia',
+      'finland',
+      'france',
+      'germany',
+      'greece',
+      'hungary',
+      'iceland',
+      'ireland',
+      'israel',
+      'italy',
+      'latvia',
+      'lithuania',
+      'luxembourg',
+      'malta',
+      'moldova',
+      'montenegro',
+      'netherlands',
+      'republic-of-north-macedonia',
+      'norway',
+      'poland',
+      'portugal',
+      'romania',
+      'serbia',
+      'slovakia',
+      'slovenia',
+      'spain',
+      'sweden',
+      'switzerland',
+      'united-kingdom',
     ];
   }
 
@@ -59,7 +60,7 @@ class MeteoAlarm {
     const warnings = [];
     try {
       // eslint-disable-next-line no-await-in-loop
-      const response = await axios.get(`https://www.meteoalarm.eu/ATOM/${countryShortcode}.xml`);
+      const response = await axios.get(`https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-${countryShortcode}`);
       const $ = cheerio.load(response.data, {
         xmlMode: true,
       });
@@ -67,14 +68,16 @@ class MeteoAlarm {
       // eslint-disable-next-line no-restricted-syntax
       for (const entry of entries) {
         const cheerioElement = $(entry);
-        const type = cheerioElement.find('cap\\:event').text();
-        const status = cheerioElement.find('cap\\:msgType').text();
+        const title = cheerioElement.find('title').text().split(' ');
+        const status = cheerioElement.find('cap\\:message_type').text();
         const start = cheerioElement.find('cap\\:effective').text();
         const end = cheerioElement.find('cap\\:expires').text();
-        const severity = cheerioElement.find('cap\\:severity').text();
         const region = cheerioElement.find('cap\\:areaDesc').text();
+        
+        const severity = title[0].toLowerCase();
+        const type = title[1].toLowerCase();
 
-        if (severity === 'Severe' || severity === 'Extreme') {
+        if (severity === 'orange' || severity === 'red') {
           warnings.push({
             type,
             status,

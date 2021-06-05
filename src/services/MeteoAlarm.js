@@ -4,7 +4,7 @@
  * Note that will be sent to Twitter one thread per country with new warnings
  */
 
-const moment = require('moment');
+const { DateTime } = require('luxon');
 const { MeteoAlarmApi } = require('../api');
 const { uploadThreadTwitter } = require('./Twitter');
 const { db, Op } = require('../database/models');
@@ -54,144 +54,156 @@ const warningTypes = {
     strTwitter: 'HighTemperature',
     emoji: '☀🌡',
   },
+  'high': {
+    strTwitter: 'HighTemperature',
+    emoji: '☀🌡',
+  },
   'low-temperature': {
+    strTwitter: 'LowTemperature',
+    emoji: '❄🌡',
+  },
+  'low': {
     strTwitter: 'LowTemperature',
     emoji: '❄🌡',
   },
 };
 
 const countriesData = {
-  AT: {
+  austria: {
     strTwitter: 'Austria',
   },
-  BA: {
-    strTwitter: 'BosniaAndHerzegovina',
-  },
-  BE: {
+  belguim: {
     strTwitter: 'Belgium',
   },
-  BG: {
+  'bosnia-herzegovina': {
+    strTwitter: 'BosniaAndHerzegovina',
+  },
+  bulgaria: {
     strTwitter: 'Bulgaria',
   },
-  CH: {
-    strTwitter: 'Switzerland',
+  croatia: {
+    strTwitter: 'Croatia',
   },
-  CY: {
+  cyprus: {
     strTwitter: 'Cyprus',
   },
-  CZ: {
+  czechia: {
     strTwitter: 'CzechRepublic',
   },
-  DE: {
-    strTwitter: 'Germany',
-    vostHandle: 'VOST_de',
-  },
-  DK: {
+  denmark: {
     strTwitter: 'Denmark',
   },
-  EE: {
+  estonia: {
     strTwitter: 'Estonia',
   },
-  ES: {
-    strTwitter: 'Spain',
-    vostHandle: 'vostSPAIN',
-  },
-  FI: {
+  finland: {
     strTwitter: 'Finland',
   },
-  FR: {
+  france: {
     strTwitter: 'France',
     vostHandle: 'VISOV1',
   },
-  GR: {
+  germany: {
+    strTwitter: 'Germany',
+    vostHandle: 'VOST_de',
+  },
+  greece: {
     strTwitter: 'Greece',
   },
-  HR: {
-    strTwitter: 'Croatia',
-  },
-  HU: {
+  hungary: {
     strTwitter: 'Hungary',
   },
-  IE: {
-    strTwitter: 'Ireland',
-  },
-  IL: {
-    strTwitter: 'Israel',
-  },
-  IS: {
+  iceland: {
     strTwitter: 'Iceland',
   },
-  IT: {
+  ireland: {
+    strTwitter: 'Ireland',
+  },
+  israel: {
+    strTwitter: 'Israel',
+  },
+  italy: {
     strTwitter: 'Italy',
   },
-  LT: {
-    strTwitter: 'Lithuania',
-  },
-  LU: {
-    strTwitter: 'Luxembourg',
-  },
-  LV: {
+  latvia: {
     strTwitter: 'Latvia',
   },
-  MD: {
-    strTwitter: 'Moldova',
+  lithuania: {
+    strTwitter: 'Lithuania',
   },
-  ME: {
-    strTwitter: 'Montenegro',
+  luxembourg: {
+    strTwitter: 'Luxembourg',
   },
-  MK: {
-    strTwitter: 'NorthMacedonia',
-  },
-  MT: {
+  malta: {
     strTwitter: 'Malta',
   },
-  NL: {
+  moldova: {
+    strTwitter: 'Moldova',
+  },
+  montenegro: {
+    strTwitter: 'Montenegro',
+  },
+  netherlands: {
     strTwitter: 'Netherlands',
   },
-  NO: {
+  'republic-of-north-macedonia': {
+    strTwitter: 'NorthMacedonia',
+  },
+  norway: {
     strTwitter: 'Norway',
   },
-  PL: {
+  poland: {
     strTwitter: 'Poland',
   },
-  PT: {
+  portugal: {
     strTwitter: 'Portugal',
     vostHandle: 'VOSTPT',
   },
-  RO: {
+  romania: {
     strTwitter: 'Romania',
   },
-  RS: {
+  serbia: {
     strTwitter: 'Serbia',
   },
-  SE: {
-    strTwitter: 'Sweden',
-  },
-  SI: {
-    strTwitter: 'Slovenia',
-  },
-  SK: {
+  slovakia: {
     strTwitter: 'Slovakia',
     vostHandle: 'VostSlovakia',
   },
-  UK: {
+  slovenia: {
+    strTwitter: 'Slovenia',
+  },
+  spain: {
+    strTwitter: 'Spain',
+    vostHandle: 'vostSPAIN',
+  },
+  sweden: {
+    strTwitter: 'Sweden',
+  },
+  switzerland: {
+    strTwitter: 'Switzerland',
+  },
+  'united-kingdom': {
     strTwitter: 'UnitedKingdom',
   },
 };
 
 const warningSeverities = {
-  severe: 'Orange',
-  extreme: 'Red',
+  orange: 'Orange',
+  red: 'Red',
 };
 
-const momentCalendar = {
-  lastDay: '[yesterday at] HH:mm',
-  sameDay: '[today at] HH:mm',
-  nextDay: '[tomorrow at] HH:mm',
-  lastWeek: 'DD/MM/YYYY HH:mm',
-  nextWeek: 'DD/MM/YYYY HH:mm',
-  sameElse: 'DD/MM/YYYY HH:mm',
+const formatDateTime = (datetime) => {
+  const now = DateTime.now({ zone: 'Europe/Paris' });
 
+  if (now.hasSame(datetime, 'day')) {
+    return `today at ${datetime.toLocaleString(DateTime.TIME_24_SIMPLE)} CET`;
+  }
+
+  if (now.plus({ days: 1 }).hasSame(datetime, 'day')) {
+    return `tomorrow at ${datetime.toLocaleString(DateTime.TIME_24_SIMPLE)} CET`;
+  }
+
+  return `${datetime.toFormat('dd/LL/yyyy HH:mm')} CET`;
 };
 
 /**
@@ -201,7 +213,10 @@ const momentCalendar = {
  * @param {Object} warning
  */
 const filterWarn = async (country, warning) => {
-  if (moment(warning.end).isBefore(moment())) {
+  const now = DateTime.now();
+  const end = DateTime.fromISO(warning.end);
+
+  if (end < now) {
     return false;
   }
 
@@ -210,7 +225,6 @@ const filterWarn = async (country, warning) => {
       'country',
       'region',
       'type',
-      'status',
       'start',
       'end',
       'severity',
@@ -219,9 +233,8 @@ const filterWarn = async (country, warning) => {
       country,
       region: warning.region,
       type: warning.type,
-      status: warning.status,
       start: {
-        [Op.lte]: moment(warning.start).toDate(),
+        [Op.lte]: DateTime.fromISO(warning.start).toJSDate(),
       },
       end: warning.end,
       severity: warning.severity,
@@ -271,37 +284,37 @@ const tweetNewWarnings = async (country, newWarnings) => {
   });
 
   const warnTweets = joinNewWarn.map(((warning) => {
-    const typeKey = (warning.type).split(' ')[1].toLowerCase();
-
     const {
       strTwitter: strType,
       emoji,
-    } = warningTypes[typeKey];
+    } = warningTypes[warning.type];
 
     const level = warningSeverities[warning.severity.toLowerCase()];
 
     const strRegions = warning.regions.join(', ');
 
-    const startTime = moment(warning.start);
+    const startTime = DateTime.fromISO(warning.start, { zone: 'Europe/Paris' });
 
-    const formattedStartTime = moment(warning.start).calendar(null, momentCalendar);
+    const formattedStartTime = formatDateTime(startTime);
 
-    const strStartTime = moment().isAfter(startTime)
+    const strStartTime = DateTime.now({ zone: 'Europe/Paris' }) < startTime
       ? ''
-      : ` starting ${formattedStartTime} CET, and`;
+      : ` starting ${formattedStartTime}, and`;
 
-    const strEndTime = moment(warning.end).calendar(null, momentCalendar);
+    const endTime = DateTime.fromISO(warning.end, { zone: 'Europe/Paris' });
+
+    const strEndTime = formatDateTime(endTime);
 
     const tweetStrs = {
       beforeReg: `ℹ️⚠️${emoji} #${level}Alert due to #${strType} in #${strCountry}`,
-      afterReg: `,${strStartTime} ending ${strEndTime} CET\n\n#SevereWeather ${emoji}⚠️ℹ️`,
+      afterReg: `,${strStartTime} ending ${strEndTime}\n\n#SevereWeather ${emoji}⚠️ℹ️`,
     };
 
     const tweetLength = tweetStrs.beforeReg.length + tweetStrs.afterReg.length + strRegions.length;
 
     const tweetString = tweetLength < 277
-      ? `${tweetStrs.beforeReg} (${strRegions}) ${tweetStrs.afterReg}`
-      : `${tweetStrs.beforeReg} (several regions) ${tweetStrs.afterReg}`;
+      ? `${tweetStrs.beforeReg} (${strRegions})${tweetStrs.afterReg}`
+      : `${tweetStrs.beforeReg} (several regions)${tweetStrs.afterReg}`;
 
     const fileName = `vost_eu/warnings/${level}_WARNING_${strType.toUpperCase()}.png`;
 
@@ -361,7 +374,7 @@ const clearDb = async () => {
   db.MeteoAlarmWarnings.destroy({
     where: {
       end: {
-        [Op.lt]: moment().toDate(),
+        [Op.lt]: DateTime.now({ zone: 'utc' }).toJSDate(),
       },
     },
   });
