@@ -71,119 +71,156 @@ const warningTypes = {
 const countriesData = {
   austria: {
     strTwitter: 'Austria',
+    nms: '@ZAMG_AT',
   },
   belguim: {
     strTwitter: 'Belgium',
+    nms: '@meteobenl',
   },
   'bosnia-herzegovina': {
     strTwitter: 'BosniaAndHerzegovina',
+    nms: '@FHMZBIH',
   },
   bulgaria: {
     strTwitter: 'Bulgaria',
+    nms: 'meteo.bg',
   },
   croatia: {
     strTwitter: 'Croatia',
+    nms: '@DHMZ_HR',
   },
   cyprus: {
     strTwitter: 'Cyprus',
+    nms: 'Republic of Cyprus - Department of Meteorology',
   },
   czechia: {
     strTwitter: 'CzechRepublic',
+    nms: 'chmi.cz',
   },
   denmark: {
     strTwitter: 'Denmark',
+    nms: 'dmi.dk',
   },
   estonia: {
     strTwitter: 'Estonia',
+    nms: 'ilmateenistus.ee',
   },
   finland: {
     strTwitter: 'Finland',
+    nms: '@meteorologit',
   },
   france: {
     strTwitter: 'France',
     vostHandle: 'VISOV1',
+    nms: '@meteofrance',
   },
   germany: {
     strTwitter: 'Germany',
     vostHandle: 'VOST_de',
+    nms: '@DWD_presse',
   },
   greece: {
     strTwitter: 'Greece',
+    nms: '@EMY_HNMS',
   },
   hungary: {
     strTwitter: 'Hungary',
+    nms: '@meteorologiahu',
   },
   iceland: {
     strTwitter: 'Iceland',
+    nms: '@Vedurstofan',
   },
   ireland: {
     strTwitter: 'Ireland',
+    nms: '@MetEireann',
   },
   israel: {
     strTwitter: 'Israel',
+    nms: 'ims.gov.il',
   },
   italy: {
     strTwitter: 'Italy',
+    nms: '@ItalianAirForce',
   },
   latvia: {
     strTwitter: 'Latvia',
+    nms: '@LVGMC_Meteo',
   },
   lithuania: {
     strTwitter: 'Lithuania',
+    nms: 'meteo.lt',
   },
   luxembourg: {
     strTwitter: 'Luxembourg',
+    nms: 'meteolux.lu',
   },
   malta: {
     strTwitter: 'Malta',
+    nms: '@Maltairport',
   },
   moldova: {
     strTwitter: 'Moldova',
+    nms: 'meteo.md',
   },
   montenegro: {
     strTwitter: 'Montenegro',
+    nms: 'meteo.co.me',
   },
   netherlands: {
     strTwitter: 'Netherlands',
+    nms: 'knmi.nl',
   },
   'republic-of-north-macedonia': {
     strTwitter: 'NorthMacedonia',
+    nms: 'The HMS of the Republic of North Macedonia',
   },
   norway: {
     strTwitter: 'Norway',
+    nms: '@Meteorologene',
   },
   poland: {
     strTwitter: 'Poland',
+    nms: '@IMGWmeteo',
   },
   portugal: {
     strTwitter: 'Portugal',
     vostHandle: 'VOSTPT',
+    nms: '@ipma_pt',
   },
   romania: {
     strTwitter: 'Romania',
+    nms: 'meteoromania.ro',
   },
   serbia: {
     strTwitter: 'Serbia',
+    nms: 'hidmet.gov.rs',
   },
   slovakia: {
     strTwitter: 'Slovakia',
     vostHandle: 'VostSlovakia',
+    nms: 'shmu.sk',
   },
   slovenia: {
     strTwitter: 'Slovenia',
+    nms: '@meteoSI',
   },
   spain: {
     strTwitter: 'Spain',
     vostHandle: 'vostSPAIN',
+    nms: '@AEMET_Esp',
   },
   sweden: {
     strTwitter: 'Sweden',
+    nms: 'smhi.se',
   },
   switzerland: {
     strTwitter: 'Switzerland',
+    nms: '@meteoschweiz',
   },
   'united-kingdom': {
     strTwitter: 'UnitedKingdom',
+    nms: '@metoffice',
   },
 };
 
@@ -253,6 +290,7 @@ const tweetNewWarnings = async (country, newWarnings) => {
   const {
     strTwitter: strCountry,
     vostHandle,
+    nms,
   } = countriesData[country];
 
   const joinNewWarn = [];
@@ -298,8 +336,8 @@ const tweetNewWarnings = async (country, newWarnings) => {
     const formattedStartTime = formatDateTime(startTime);
 
     const strStartTime = DateTime.now({ zone: 'Europe/Paris' }) < startTime
-      ? ''
-      : ` starting ${formattedStartTime}, and`;
+      ? ` starting ${formattedStartTime}, and`
+      : '';
 
     const endTime = DateTime.fromISO(warning.end, { zone: 'Europe/Paris' });
 
@@ -328,12 +366,17 @@ const tweetNewWarnings = async (country, newWarnings) => {
     ? `\nFollow @${vostHandle} for more updates`
     : '';
 
-  const firstTweetStr = `ℹ️⚠️ New weather warnings in #${strCountry}${vostInfo}\n\n#SevereWeather ⚠️ℹ️`;
+  const firstTweetStr = `ℹ️⚠️ New weather warnings in #${strCountry}${vostInfo}\n\nSource: meteoalarm.org | ${nms}\n\n#SevereWeather ⚠️ℹ️`;
+
+  const lastTweetStr = 'Time delays between this warning and the www.meteoalarm.org website are possible, for the most up to date information about alert levels as published by the participating National Meteorological Services please use www.meteoalarm.org.';
 
   const thread = [{
     status: firstTweetStr,
   },
-  ...warnTweets];
+  ...warnTweets,
+  {
+    status: lastTweetStr,
+  }];
 
   uploadThreadTwitter(thread, null, 'europe');
 };
