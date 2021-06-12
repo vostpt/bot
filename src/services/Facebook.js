@@ -66,11 +66,16 @@ const getVostPostsAndSendToDiscord = async (discordClient) => {
 
                     sendPostsToDiscord(discordClient, newPosts, client);
 
-                    const lastPostId = getPostId(res.data[0]);
-                    db.FbPosts.upsert({
-                        reference: client.reference,
-                        lastPostId
-                    });
+                    if (newPosts.length > 0) {
+                        const postIds = newPosts.map(post => getPostId(post));
+
+                        const lastPostId = Math.max(postIds);
+                        
+                        db.FbPosts.upsert({
+                            reference: client.reference,
+                            lastPostId
+                        });
+                    }                    
                 }
             }
         );
