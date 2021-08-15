@@ -5,9 +5,13 @@ const { cooldown, userLists, roleLists } = require('../../config/bot');
 const { sendMessageAnswer } = require('../services/Discord');
 const { parseVostDate } = require('../helpers');
 
-const searchDateFormat = 'DD/MM/YYYY';
-
 const vostDateFormat = 'DDMMMYYYY';
+
+const getSearchDate = async (date) => {
+  return date === 'hoje'
+    ? moment()
+    : (await parseVostDate(date)).add(12, 'hours');
+};
 
 module.exports = {
   active: true,
@@ -61,15 +65,13 @@ module.exports = {
         return;
       }
 
-      const resSearchDate = args[1] === 'hoje'
-        ? moment()
-        : await parseVostDate(args[1]);
+      const resSearchDate = await getSearchDate(args[1]);
 
-      const result = await Corona.getResume(await resSearchDate.format(searchDateFormat));
+      const result = await Corona.getResume(resSearchDate);
 
-      const string = typeof result === 'undefined' || result.text === ''
+      const string = result === null || typeof result === 'undefined' || result === ''
         ? 'não foi encontrado nenhum resumo nesta data'
-        : `aqui está o resumo do relatório:\n**Boletim DGS ${await resSearchDate.format(vostDateFormat).toUpperCase()}**:\n${result.text}\nFonte: DGS/@VOSTPT`;
+        : `aqui está o resumo do relatório:\n**Boletim DGS ${await resSearchDate.format(vostDateFormat).toUpperCase()}**:\n${result}\nFonte: DGS/@VOSTPT`;
 
       sendMessageAnswer(message, string);
 
@@ -106,9 +108,7 @@ module.exports = {
       }
 
       try {
-        const updSearchDate = args[1] === 'hoje'
-          ? moment()
-          : (await parseVostDate(args[1])).add(12, 'hours');
+        const updSearchDate = await getSearchDate(args[1]);
 
         const reportValues = {
           date: updSearchDate,
@@ -121,11 +121,11 @@ module.exports = {
 
         await Corona.updateSpreadsheet(reportValues);
 
-        const result = await Corona.getResume(updSearchDate.format(searchDateFormat));
+        const result = await Corona.getResume(updSearchDate);
 
         const updateDate = updSearchDate.format(vostDateFormat).toUpperCase();
 
-        sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n**Boletim DGS ${updateDate}**\n${result.text}\nFonte: DGS/@VOSTPT`);
+        sendMessageAnswer(message, `os dados foram atualizados, aqui está o resumo:\n**Boletim DGS ${updateDate}**\n${result}\nFonte: DGS/@VOSTPT`);
       } catch (e) {
         sendMessageAnswer(message, `não foi possível atualizar os dados. Erro:\n'''${e}'''`);
       }
@@ -133,7 +133,7 @@ module.exports = {
     }
 
     if (requestedParam === 'notify') {
-      const searchDate = moment().format(searchDateFormat);
+      const searchDate = moment();
 
       const attachmentURLs = message.attachments.map((attachment) => attachment.url);
 
@@ -155,9 +155,9 @@ module.exports = {
 
       const result = await Corona.getResume(searchDate);
 
-      if (typeof result !== 'undefined' && result.text !== '') {
+      if (result !== null || typeof result !== 'undefined' && result !== '') {
         const notifyResult = await Corona.sendNotification(
-          result.text,
+          result,
           attachmentURLs[0],
           reportURL,
         );

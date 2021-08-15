@@ -144,9 +144,31 @@ const checkOldReports = async (client) => {
  */
 
 const getResume = async (date) => {
-  const resumes = await CoronaApi.getDgsResumes();
+  const doc = new GoogleSpreadsheet(dgsResumes.id);
 
-  return resumes.find((resume) => resume.date === date);
+  await doc.useServiceAccountAuth(authFile);
+
+  await doc.loadInfo();
+
+  const sheet = await doc.sheetsByIndex[dgsResumes.resumeGid - 1];
+
+  await sheet.loadCells(['A2:A', 'Q2:Q']);
+
+  const googleEpoch = moment('30/12/1899', 'DD/MM/YYYY');
+
+  const updateDate = (date).diff(googleEpoch, 'days');
+
+  const { rowCount } = sheet;
+
+  for (let i = 1; i < rowCount; i += 1) {
+    const cell = sheet.getCell(i, 0);
+
+    if (cell.value === updateDate) {
+      return (sheet.getCell(i, 16)).value;
+    }
+  }
+
+  return '';
 };
 
 /**
