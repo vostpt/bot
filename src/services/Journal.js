@@ -6,7 +6,6 @@ const moment = require('moment');
 const { db, Op } = require('../database/models');
 const { JournalApi } = require('../api');
 const { channels } = require('../../config/bot');
-const { journalURLStruct } = require('../../config/journal');
 const { sendMessageToChannel } = require('./Discord');
 const { uploadThreadTwitter } = require('./Twitter');
 const { sendPostMastodon } = require('./Mastodon');
@@ -72,14 +71,6 @@ const checkNewDecrees = async (client) => {
         description: decree.contentSnippet,
       });
 
-      const decreePdfURL = decree.link;
-
-      const decreeNum = /\d+/.exec(decreePdfURL);
-
-      const decreeURL = decreeNum.length === 1
-        ? `${journalURLStruct.prefix}${decreeNum[0]}${journalURLStruct.suffix}`
-        : 'N/A';
-
       const splitDescription = decree.contentSnippet.split('\n');
 
       const issuer = splitDescription.shift();
@@ -88,9 +79,9 @@ const checkNewDecrees = async (client) => {
 
       const strIssuer = `Emitido por: ${issuer}`;
 
-      const strDiscord = `***Nova entrada - Série ${serieNo[decree.serie]}:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decreeURL}>\n:file_folder: <${decree.link}>`;
+      const strDiscord = `***Nova entrada - Série ${serieNo[decree.serie]}:***\n${decree.title}\n*${strIssuer}*\n\`\`\`${description}\`\`\`\n:link: <${decree.link}>\n`;
 
-      const strMastodon = `${decree.title}\n\nEmissor: ${issuer}\n\n${description}\n\n${decreeURL}`;
+      const strMastodon = `${decree.title}\n\nEmissor: ${issuer}\n\n${description}\n\n${decree.link}`;
 
       if (decree.serie === 1) {
         const repIssuerHandle = () => {
@@ -129,7 +120,7 @@ const checkNewDecrees = async (client) => {
 
         const issuerHandle = repIssuerHandle();
 
-        const tweetLength = decree.title.length + issuerHandle.length + decreeURL.length + 15;
+        const tweetLength = decree.title.length + issuerHandle.length + decree.link.length + 15;
 
         const descLength = description.length;
 
@@ -138,7 +129,7 @@ const checkNewDecrees = async (client) => {
           : `${description.substring(0, 274 - tweetLength)} (...)`;
 
         const tweet = [{
-          status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${strDescription}\n\n${decreeURL}`,
+          status: `${decree.title}\n\nEmissor: ${issuerHandle}\n\n${strDescription}\n\n${decree.link}`,
         }];
 
         return {
@@ -204,7 +195,7 @@ const checkNewDecrees = async (client) => {
 };
 
 const clearDb = async () => {
-  const dateLimit = moment().subtract('2', 'days').format('YYYY-MM-DD');
+  const dateLimit = moment().subtract('7', 'days').format('YYYY-MM-DD');
 
   db.Decrees.destroy({
     where: {
