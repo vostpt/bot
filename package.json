@@ -4,7 +4,7 @@
   "description": "VOST PT bot",
   "main": "./app.js",
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "basic-ftp": "^4.5.3",
     "cheerio": "^1.0.0-rc.3",
     "csv": "^5.5.0",
