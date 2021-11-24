@@ -15,6 +15,7 @@ const { sendDocumentTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
 const { postMessageFacebook } = require('./Facebook');
+const { splitMessageString } = require('../helpers');
 
 /**
  * Get all reports
@@ -218,12 +219,13 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
 
     const fileName = 'corona/VOSTPT_DGS_Covid19_Report.png';
 
-    const tweet = [{
-      status: strTwitPlr,
-      media: [fileName],
-    }];
+    const splitStrTwitter = splitMessageString(strTwitPlr, 280).map((string) => ({
+      status: string,
+    }));
 
-    uploadThreadTwitter(tweet, '', 'main');
+    splitStrTwitter[0].media = [fileName];
+
+    uploadThreadTwitter(splitStrTwitter, '', 'main');
 
     const strTelegram = `#COVID19PT Boletim DGS ${notifyDate}\n${report}\nFonte: DGS/@VOSTPT by @VOSTPT`;
 
