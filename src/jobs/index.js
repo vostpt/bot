@@ -208,7 +208,8 @@ class Jobs {
   checkUpdatesCoronaReports() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(1, 31, 30);
+    rule.hour = 9;
+    rule.minute = 0;
     rule.second = 0;
 
     schedule.scheduleJob(rule, () => {
