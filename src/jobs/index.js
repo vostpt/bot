@@ -3,12 +3,12 @@ const moment = require('moment');
 const {
   Fires,
   Earthquakes,
-  Warnings,
   MeteoAlarm,
   Twitter,
   Corona,
   Journal,
   Facebook,
+  Ipma,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter } = require('../services/Twitter');
@@ -91,9 +91,9 @@ class Jobs {
   warnings() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = new schedule.Range(0, 59, 10);
+    rule.minute = new schedule.Range(0, 59, 5);
 
-    schedule.scheduleJob(rule, () => Warnings.getWarnings(this.client));
+    schedule.scheduleJob(rule, () => Ipma.getWarnings(this.client));
   }
 
   /**
