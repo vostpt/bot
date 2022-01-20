@@ -332,9 +332,9 @@ const { postMessageFacebook } = require('./Facebook');
        let strDistrictList = '';
 
        if (numRegions === 1) {
-         const { region } = regions[0];
+         const [ region ] = regions;
 
-         strDistrictList += `#${region}`;
+         strDistrictList += `#${regionsData[region].strTwitter}`;
        } else {
          regions.forEach((region, index) => {
            switch (numRegions - index) {
