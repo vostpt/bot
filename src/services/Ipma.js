@@ -400,7 +400,7 @@ const { postMessageFacebook } = require('./Facebook');
 
      splitStrTwitter[0].media = [fileName];
 
-     if (zone === 'acores') {
+     if (zone === 'azores') {
        const azTweet = Object.assign([], splitStrTwitter);
 
        uploadThreadTwitter(azTweet, '', 'azores');
