@@ -22,42 +22,42 @@ const { postMessageFacebook } = require('./Facebook');
  
  const warningTypes = {
    'Tempo Frio': {
-     strTwitter: 'TempoFrio',
+     strType: 'TempoFrio',
      emoji: '❄🌡',
      emojiDiscord: ':snowflake:️:thermometer:',
    },
    'Tempo Quente': {
-     strTwitter: 'TempoQuente',
+     strType: 'TempoQuente',
      emoji: '☀🌡',
      emojiDiscord: ':sunny:️:thermometer:',
    },
    'Precipitação': {
-     strTwitter: 'Chuva',
+     strType: 'Chuva',
      emoji: '🌧',
      emojiDiscord: ':cloud_rain:',
    },
    'Nevoeiro': {
-     strTwitter: 'Nevoeiro',
+     strType: 'Nevoeiro',
      emoji: '🌫',
      emojiDiscord: ':fog:',
    },
    'Neve': {
-     strTwitter: 'Neve',
+     strType: 'Neve',
      emoji: '❄',
      emojiDiscord: ':snowflake:',
    },
    'Agitação Marítima': {
-     strTwitter: 'AgitaçãoMarítima',
+     strType: 'AgitaçãoMarítima',
      emoji: '🌊',
      emojiDiscord: ':ocean:',
    },
    'Trovoada': {
-     strTwitter: 'Trovoada',
+     strType: 'Trovoada',
      emoji: '⛈',
      emojiDiscord: ':thunder_cloud_rain:',
    },
    'Vento': {
-      strTwitter: 'Vento',
+      strType: 'Vento',
       emoji: '🌬️',
       emojiDiscord: ':dash:',
     },
@@ -65,128 +65,103 @@ const { postMessageFacebook } = require('./Facebook');
  
  const regionsData = {
    ACE: {
-     strTwitter: 'GrupoCentral',
-     strDiscord: 'Grupo Central',
+     strRegion: 'GrupoCentral',
      zone: 'azores',
    },
    AOC: {
-    strTwitter: 'GrupoOcidental',
-    strDiscord: 'Grupo Ocidental',
+    strRegion: 'GrupoOcidental',
     zone: 'azores',
    },
    AOR: {
-    strTwitter: 'GrupoOriental',
-    strDiscord: 'Grupo Oriental',
+    strRegion: 'GrupoOriental',
     zone: 'azores',
    },
    AVR: {
-    strTwitter: 'Aveiro',
-    strDiscord: 'Aveiro',
+    strRegion: 'Aveiro',
     zone: 'mainland',
    },
    BJA: {
-    strTwitter: 'Beja',
-    strDiscord: 'Beja',
+    strRegion: 'Beja',
     zone: 'mainland',
    },
    BRG: {
-    strTwitter: 'Braga',
-    strDiscord: 'Braga',
+    strRegion: 'Braga',
     zone: 'mainland',
    },
    BGC: {
-    strTwitter: 'Bragança',
-    strDiscord: 'Bragança',
+    strRegion: 'Bragança',
     zone: 'mainland',
    },
    CBO: {
-    strTwitter: 'CasteloBranco',
-    strDiscord: 'Castelo Branco',
+    strRegion: 'CasteloBranco',
     zone: 'mainland',
    },
    CBR: {
-    strTwitter: 'Coimbra',
-    strDiscord: 'Coimbra',
+    strRegion: 'Coimbra',
     zone: 'mainland',
    },
    EVR: {
-    strTwitter: 'Évora',
-    strDiscord: 'Évora',
+    strRegion: 'Évora',
     zone: 'mainland',
    },
    FAR: {
-    strTwitter: 'Faro',
-    strDiscord: 'Faro',
+    strRegion: 'Faro',
     zone: 'mainland',
    },
    GDA: {
-    strTwitter: 'Guarda',
-    strDiscord: 'Guarda',
+    strRegion: 'Guarda',
     zone: 'mainland',
    },
    LRA: {
-    strTwitter: 'Leiria',
-    strDiscord: 'Leiria',
+    strRegion: 'Leiria',
     zone: 'mainland',
    },
    LSB: {
-    strTwitter: 'Lisboa',
-    strDiscord: 'Lisboa',
+    strRegion: 'Lisboa',
     zone: 'mainland',
    },
    MCN: {
-    strTwitter: 'CostaNorte',
-    strDiscord: 'Costa Norte',
+    strRegion: 'CostaNorte',
     zone: 'madeira',
    },
    MCS: {
-    strTwitter: 'CostaSul',
-    strDiscord: 'Costa Sul',
+    strRegion: 'CostaSul',
     zone: 'madeira',
    },
    MPS: {
-    strTwitter: 'PortoSanto',
-    strDiscord: 'Porto Santo',
+    strRegion: 'PortoSanto',
     zone: 'madeira',
    },
    MRM: {
-    strTwitter: 'RegiõesMontanhosas',
-    strDiscord: 'Regiões Montanhosas',
+    strRegion: 'RegiõesMontanhosas',
     zone: 'madeira',
    },
    PTG: {
-    strTwitter: 'Portalegre',
-    strDiscord: 'Portalegre',
+    strRegion: 'Portalegre',
     zone: 'mainland',
    },
    PTO: {
-    strTwitter: 'Porto',
-    strDiscord: 'Porto',
+    strRegion: 'Porto',
     zone: 'mainland',
    },
    STM: {
-    strTwitter: 'Santarém',
-    strDiscord: 'Santarém',
+    strRegion: 'Santarém',
     zone: 'mainland',
    },
    STB: {
-    strTwitter: 'Setúbal',
-    strDiscord: 'Setúbal',
+    strRegion: 'Setúbal',
     zone: 'mainland',
    },
    VCT: {
-    strTwitter: 'VianaDoCastelo',
-    strDiscord: 'Viana do Castelo',
+    strRegion: 'VianaDoCastelo',
     zone: 'mainland',
    },
    VRL: {
-    strTwitter: 'VilaReal',
-    strDiscord: 'Vila Real',
+    strRegion: 'VilaReal',
     zone: 'mainland',
    },
    VIS: {
-    strTwitter: 'Viseu',
-    strDiscord: 'Viseu',
+    strRegion: 'Viseu',
     zone: 'mainland',
    },
  };
@@ -296,7 +271,7 @@ const { postMessageFacebook } = require('./Facebook');
      } = warning;
     
      const {
-       strTwitter: strTypeTwitter,
+       strType,
        emoji,
        emojiDiscord,
      } = warningTypes[awarenessTypeName];
@@ -334,18 +309,18 @@ const { postMessageFacebook } = require('./Facebook');
        if (numRegions === 1) {
          const [ region ] = regions;
 
-         strDistrictList += `#${regionsData[region].strTwitter}`;
+         strDistrictList += `#${regionsData[region].strRegion}`;
        } else {
          regions.forEach((region, index) => {
            switch (numRegions - index) {
              case 1:
-               strDistrictList += `e #${regionsData[region].strTwitter}`;
+               strDistrictList += `e #${regionsData[region].strRegion}`;
                break;
              case 2:
-               strDistrictList += `#${regionsData[region].strTwitter} `;
+               strDistrictList += `#${regionsData[region].strRegion} `;
                break;
              default:
-               strDistrictList += `#${regionsData[region].strTwitter}, `;
+               strDistrictList += `#${regionsData[region].strRegion}, `;
            }
          });
        }
@@ -365,12 +340,12 @@ const { postMessageFacebook } = require('./Facebook');
                return `Distrito de ${getDistrictList()}`;
              }
  
-             return `${startStr} o distrito de ${getDistrictList()}`;
+             return `${startStr}o distrito de ${getDistrictList()}`;
            } if (startSentence) {
              return `Distritos de ${getDistrictList()}`;
            }
  
-           return `${startStr} os distritos de ${getDistrictList()}`;
+           return `${startStr}os distritos de ${getDistrictList()}`;
          case 'azores':
            return `${startStr}${getDistrictList()} do arquipélago dos #Açores`;
          case 'madeira':
@@ -380,9 +355,9 @@ const { postMessageFacebook } = require('./Facebook');
        }
      });
 
-     const strType = `devido a #${strTypeTwitter}`;
+     const strDueType = `devido a #${strType}`;
 
-     const strHeader = `#Aviso${level} ${strType}`;
+     const strHeader = `#Aviso${level} ${strDueType}`;
 
      const strTwitter = `ℹ️⚠️${emoji} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${emoji}⚠️ℹ️`;
 
@@ -390,7 +365,7 @@ const { postMessageFacebook } = require('./Facebook');
 
      strDiscord += `:information_source: :warning: ${emojiDiscord} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${emojiDiscord} :warning: :information_source:\n\n`;
 
-     const fileName = `warnings/Twitter_Post_Aviso${level}_${removeAccent(strTypeTwitter)}.png`;
+     const fileName = `warnings/Twitter_Post_Aviso${level}_${removeAccent(strType)}.png`;
 
      const photoURL = `${baseImagesURL}/${fileName}`;
 
