@@ -359,7 +359,7 @@ const { postMessageFacebook } = require('./Facebook');
          : 'para ';
 
        switch (zone) {
-         case 'continente':
+         case 'mainland':
            if (numRegions === 1) {
              if (startSentence) {
                return `Distrito de ${getDistrictList()}`;
@@ -371,7 +371,7 @@ const { postMessageFacebook } = require('./Facebook');
            }
  
            return `${startStr} os distritos de ${getDistrictList()}`;
-         case 'acores':
+         case 'azores':
            return `${startStr}${getDistrictList()} do arquipélago dos #Açores`;
          case 'madeira':
            return `${startStr}${getDistrictList()} do arquipélago da #Madeira`;
