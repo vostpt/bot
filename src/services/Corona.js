@@ -153,7 +153,7 @@ const getResume = async (date) => {
 
   const sheet = await doc.sheetsByIndex[dgsResumes.resumeGid - 1];
 
-  await sheet.loadCells(['A2:A', 'Q2:Q']);
+  await sheet.loadCells(['A2:A', 'V2:V', 'W2:W']);
 
   const googleEpoch = moment('30/12/1899', 'DD/MM/YYYY');
 
@@ -165,7 +165,13 @@ const getResume = async (date) => {
     const cell = sheet.getCell(i, 0);
 
     if (cell.value === updateDate) {
-      return (sheet.getCell(i, 16)).value;
+      const resume = (sheet.getCell(i, 21)).value;
+      const weekVar = (sheet.getCell(i, 22)).value;
+
+      return {
+        resume,
+        weekVar 
+      };
     }
   }
 
@@ -215,19 +221,32 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
   try {
     const notifyDate = moment().format('DDMMMYYYY').toUpperCase();
 
-    const strTwitPlr = `ℹ️🦠 #COVID19PT Relatório @DGSaude ${notifyDate}\n${report}\n${reportURL} 🦠ℹ️`;
+    const strTwitter = {
+      first: `ℹ️🦠 #COVID19PT Relatório @DGSaude ${notifyDate}\n${report.resume}\n${reportURL} 🦠ℹ️`,
+      second: `ℹ️🦠 #COVID19PT Variação semanal\n${report.weekVar} 🦠ℹ️`
+    };
+
+    const strFbPlr = `ℹ️🦠 #COVID19PT Relatório @DGSaude ${notifyDate}\n${report.resume}\n\nVariação semanal:\n${report.weekVar}\n${reportURL} 🦠ℹ️`;
 
     const fileName = 'corona/VOSTPT_DGS_Covid19_Report.png';
 
-    const splitStrTwitter = splitMessageString(strTwitPlr, 280).map((string) => ({
+    const splitFirstStrTwitter = splitMessageString(strTwitter.first, 280).map((string) => ({
       status: string,
     }));
 
-    splitStrTwitter[0].media = [fileName];
+    splitFirstStrTwitter[0].media = [fileName];
 
-    uploadThreadTwitter(splitStrTwitter, '', 'main');
+    const thrTwitter = [
+      ...splitFirstStrTwitter,
+      {
+        status: strTwitter.second,
+        media: [fileName],
+      }
+    ];
 
-    const strTelegram = `#COVID19PT Boletim DGS ${notifyDate}\n${report}\nFonte: DGS/@VOSTPT by @VOSTPT`;
+    uploadThreadTwitter(thrTwitter, '', 'main');
+
+    const strTelegram = `#COVID19PT Boletim DGS ${notifyDate}\n${report.resume}\n\nVariação semanal:\n${report.weekVar}\nFonte: DGS/@VOSTPT by @VOSTPT`;
 
     const tlgMessage = {
       chatId: telegramKeys.chat_id,
@@ -240,7 +259,7 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
     sendDocumentTelegram(tlgMessage);
 
     const post = {
-      status: strTwitPlr,
+      status: strFbPlr,
       media: fileName,
       options: {
         spoiler_text: 'Covid-19',
@@ -253,9 +272,10 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
 
     
     const fbpost = {
-      message: strTwitPlr,
+      message: strFbPlr,
       media: fileName,
     }
+
     postMessageFacebook(fbpost);
 
     return 0;
