@@ -69,7 +69,7 @@ module.exports = {
 
       const result = await Corona.getResume(resSearchDate);
 
-      const string = result === null || typeof result === 'undefined' || result === ''
+      const string = result.resume === null || typeof result === 'undefined' || result === ''
         ? 'não foi encontrado nenhum resumo nesta data'
         : `aqui está o resumo do relatório:\n**Boletim DGS ${await resSearchDate.format(vostDateFormat).toUpperCase()}**:\n${result.resume}\n\nVariação semanal:\n${result.weekVar}\nFonte: DGS/@VOSTPT`;
 
@@ -155,7 +155,7 @@ module.exports = {
 
       const result = await Corona.getResume(searchDate);
 
-      if (result !== null || typeof result !== 'undefined' && result !== '') {
+      if (result.resume !== null || typeof result !== 'undefined' && result !== '') {
         const notifyResult = await Corona.sendNotification(
           result,
           attachmentURLs[0],
