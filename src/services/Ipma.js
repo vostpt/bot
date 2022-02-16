@@ -295,7 +295,7 @@ const { postMessageFacebook } = require('./Facebook');
        }
 
        if (beginTimeObj.isSame(endTimeObj, 'day')) {
-         return `entre as ${strBeginHour}h e as ${endTime.calendar(actualTime)} ${strEndDate}`;
+         return `entre as ${strBeginHour}h e as ${endTimeObj.calendar(actualTime)} ${strEndDate}`;
        }
 
        return `entre as ${beginTimeObj.calendar(actualTime)} ${strBeginDate} e as ${endTimeObj.calendar(actualTime)} ${strEndDate}`;
@@ -378,10 +378,10 @@ const { postMessageFacebook } = require('./Facebook');
      if (zone === 'azores') {
        const azTweet = Object.assign([], splitStrTwitter);
 
-       uploadThreadTwitter(azTweet, '', 'azores');
+       //uploadThreadTwitter(azTweet, '', 'azores');
      }
 
-     uploadThreadTwitter(splitStrTwitter, '', 'main');
+     //uploadThreadTwitter(splitStrTwitter, '', 'main');
 
      tlgMessages.push({
        chatId: telegramKeys.chat_id,
@@ -391,7 +391,7 @@ const { postMessageFacebook } = require('./Facebook');
        },
      });
 
-     WarningsApi.postNewWarning(warning);
+     //WarningsApi.postNewWarning(warning);
 
      if (level === 'Laranja' || level === 'Vermelho') {
        const post = {
@@ -404,13 +404,13 @@ const { postMessageFacebook } = require('./Facebook');
          },
        };
 
-       sendPostMastodon(post, 'main');
+       //sendPostMastodon(post, 'main');
       
        const fbpost = {
          message: strTwitter,
          media: fileName,
        }
-       postMessageFacebook(fbpost);
+       //postMessageFacebook(fbpost);
      }
    });
 
