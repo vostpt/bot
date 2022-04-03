@@ -9,6 +9,7 @@ const {
   Journal,
   Facebook,
   Ipma,
+  Weather,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter } = require('../services/Twitter');
@@ -56,6 +57,7 @@ class Jobs {
     this.fireRisk();
     this.getTweets();
     this.getFacebookPosts();
+    this.sendWeatherReport();
     this.checkNewDecrees();
     Jobs.clearDecreesDb();
     Jobs.warningsMeteoAlarm();
@@ -185,6 +187,21 @@ class Jobs {
 
     schedule.scheduleJob(rule, () => {
       Facebook.getVostPostsAndSendToDiscord(this.client);
+    });
+  }
+
+  /**
+   * Send the daily extreme weather reports to Discord and social networks
+   */
+   sendWeatherReport() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.hour = 10;
+    rule.minute = 15;
+    rule.second = 0;
+
+    schedule.scheduleJob(rule, () => {
+      Weather.getDailyReport(this.client);
     });
   }
 
