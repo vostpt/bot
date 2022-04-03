@@ -1,5 +1,6 @@
 const { Weather } = require('../services');
 const { cooldown } = require('../../config/bot');
+const { sendMessageAnswer } = require('../services/Discord');
 
 const rowsPerMessage = 15;
 
@@ -11,6 +12,7 @@ module.exports = {
   usage: `
     **!weather** - *Mostra a meteorologia do dia atual.*
     **!weather tomorrow** - *Mostra a meteorologia do dia seguinte.*
+    **!weather extremes** - *Mostra os valores do último relatório disponível dos extremos diários reportados pelo IPMA*
   `,
 
   /**
@@ -24,10 +26,16 @@ module.exports = {
     let day = 0;
 
     if (this.args && args.length > 0) {
-      const requestedDay = args[0].toLowerCase();
+      const requestedArg = args[0].toLowerCase();
 
-      if (requestedDay === 'tomorrow') {
+      if (requestedArg === 'tomorrow') {
         day = 1;
+      } else if (requestedArg === 'extremes') {
+        const links = Weather.sendReportDiscord();
+
+        sendMessageAnswer(message, 'aqui está o último relatório disponível dos extremos diários reportados pelo IPMA:\n', [(await links).pt, (await links).mad, (await links).az]);
+
+        return;
       } else {
         message.reply(`desconheço essa opção.\n${this.usage}`);
 
