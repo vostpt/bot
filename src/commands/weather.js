@@ -23,13 +23,61 @@ module.exports = {
   * @param {Array} args
   */
   async execute(message, args) {
-    let day = 0;
+    const weatherCommand = async (day) => {
+      const data = await Weather.getByDay(day);
 
+      if (data.length === 0) {
+        message.channel.send('***Sem Dados***');
+
+        return;
+      }
+
+      let chunk = 1;
+      let count = 0;
+      let events = [
+        '***Meteorologia***',
+        `[${chunk}/${Math.ceil(data.length / rowsPerMessage)}]`,
+      ];
+
+      data.forEach((element) => {
+        const {
+          local,
+          tMin: minTemperature,
+          tMax: maxTemperature,
+          descIdWeatherTypePT,
+          precipitaProb: rainOdds,
+          vento: wind,
+          predWindDir: windDirectionPrediction,
+        } = element;
+
+        const msg = `**${local}** :thermometer:${minTemperature} -${maxTemperature}ºC / ${descIdWeatherTypePT} / :umbrella: ${rainOdds}% / :dash: ${wind} ${windDirectionPrediction}`;
+
+        events.push(msg);
+
+        if (count >= rowsPerMessage) {
+          try {
+            message.channel.send(events.join('\n'));
+          } finally {
+            count = 0;
+            chunk += 1;
+
+            events = [`[${chunk}/${Math.ceil(data.length / rowsPerMessage)}]`];
+          }
+        }
+
+        count += 1;
+      });
+
+      message.channel.send(events.join('\n'));
+    };    
+    
     if (this.args && args.length > 0) {
       const requestedArg = args[0].toLowerCase();
 
       if (requestedArg === 'tomorrow') {
-        day = 1;
+        weatherCommand(1);
+
+        return;
       } else if (requestedArg === 'extremes') {
         const links = Weather.sendReportDiscord();
 
@@ -42,51 +90,7 @@ module.exports = {
         return;
       }
     }
-
-    const data = await Weather.getByDay(day);
-
-    if (data.length === 0) {
-      message.channel.send('***Sem Dados***');
-
-      return;
-    }
-
-    let chunk = 1;
-    let count = 0;
-    let events = [
-      '***Meteorologia***',
-      `[${chunk}/${Math.ceil(data.length / rowsPerMessage)}]`,
-    ];
-
-    data.forEach((element) => {
-      const {
-        local,
-        tMin: minTemperature,
-        tMax: maxTemperature,
-        descIdWeatherTypePT,
-        precipitaProb: rainOdds,
-        vento: wind,
-        predWindDir: windDirectionPrediction,
-      } = element;
-
-      const msg = `**${local}** :thermometer:${minTemperature} -${maxTemperature}ºC / ${descIdWeatherTypePT} / :umbrella: ${rainOdds}% / :dash: ${wind} ${windDirectionPrediction}`;
-
-      events.push(msg);
-
-      if (count >= rowsPerMessage) {
-        try {
-          message.channel.send(events.join('\n'));
-        } finally {
-          count = 0;
-          chunk += 1;
-
-          events = [`[${chunk}/${Math.ceil(data.length / rowsPerMessage)}]`];
-        }
-      }
-
-      count += 1;
-    });
-
-    message.channel.send(events.join('\n'));
+    weatherCommand(0);
+ 
   },
 };
