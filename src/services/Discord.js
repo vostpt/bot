@@ -4,6 +4,7 @@ const discordApiLimit = 1950;
 
 /**
 * Send message to Discord channel
+* Returns the API response of the last message sent
 *
 * @param {Object} channel
 * @param {String} message
@@ -12,11 +13,17 @@ const discordApiLimit = 1950;
 const sendMessageToChannel = async (channel, message, fileUrl) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
-  messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
+  const lastMessage = messageArray.pop();
+
+  const fileArray = [];
 
   if (fileUrl) {
-    channel.send({ files: [fileUrl] });
+    fileArray.push(fileUrl);    
   }
+
+  messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
+
+  return await channel.send(lastMessage, { files: fileArray });
 };
 
 /**
@@ -25,14 +32,25 @@ const sendMessageToChannel = async (channel, message, fileUrl) => {
 * @param {Object} msgInstance
 * @param {String} message
 */
-const sendMessageAnswer = async (msgInstance, message) => {
+const sendMessageAnswer = async (msgInstance, message, fileUrl) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
   const firstMessage = messageArray.shift();
 
-  msgInstance.reply(firstMessage);
+  if (fileUrl) {
+    const fileArray = Array.isArray(fileUrl)
+      ? { files: fileUrl }
+      : { files: [fileUrl] };
+
+    const answer = msgInstance.reply(firstMessage, fileArray);
+
+    return answer;
+  } else {
+    msgInstance.reply(firstMessage);
+  }  
 
   messageArray.forEach((msgSubSet) => { msgInstance.channel.send(msgSubSet); });
+
 };
 
 /**

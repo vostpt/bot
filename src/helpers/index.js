@@ -96,6 +96,22 @@ const isBase64 = (str) => {
 };
 
 /**
+ * Convert byte stream to base64
+ *
+ */
+ const convertBase64 = async (stream) => {
+  let buffers = [];
+
+  for await (const chunk of stream) {
+    buffers.push(chunk);
+  }
+
+  let buffer = Buffer.concat(buffers);
+  
+  return buffer.toString('base64');
+};
+
+/**
  * Get file content in base64 string
  *
  * @param {String} str
@@ -179,6 +195,7 @@ module.exports = {
   react,
   removeAccent,
   isBase64,
+  convertBase64,
   getFileContent,
   getImagesPath,
   splitMessageString,
