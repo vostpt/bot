@@ -3,6 +3,7 @@ const {
   Fires,
 } = require('../services');
 const { isSevere, react } = require('../helpers');
+const { sendMessageToAuthor } = require('../services/Discord');
 const { cooldown } = require('../../config/bot');
 
 module.exports = {
@@ -37,15 +38,15 @@ module.exports = {
 
     function sendMessages() {
       if (relevantEvents.length > 0) {
-        message.author.send(`:fire::fire: ***Ocorrências Relevantes:***\n${relevantEvents.join('\n')}`);
+        sendMessageToAuthor(message, `:fire::fire: ***Ocorrências Relevantes:***\n${relevantEvents.join('\n')}`);
       }
 
       if (events.length > 0) {
-        message.author.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
+        sendMessageToAuthor(message, `:fire: ***Ocorrências:***\n${events.join('\n')}`);
       }
 
       if (relevantEvents.length === 0 && events.length === 0) {
-        message.author.send(':fire: ***Sem Ocorrências***');
+        sendMessageToAuthor(message, ':fire: ***Sem Ocorrências***');
       }
 
       react(message, ['📧', '📥']);
