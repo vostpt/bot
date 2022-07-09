@@ -4,6 +4,7 @@ const {
   Prociv,
 } = require('../services');
 const { isSevere, removeAccent } = require('../helpers');
+const { sendMessageAnswer, sendMessageToChannel } = require('../services/Discord');
 const { cooldown } = require('../../config/bot');
 
 const DISTRICTS = {
@@ -59,7 +60,7 @@ module.exports = {
   */
   async execute(message, args) {
     if (this.args && args.length === 0) {
-      message.reply(`falta o parâmetro de filtro das ocorrências!\n${this.usage}`);
+      sendMessageAnswer(message, `falta o parâmetro de filtro das ocorrências!\n${this.usage}`);
 
       return;
     }
@@ -73,7 +74,7 @@ module.exports = {
       const [, requestedId] = args;
 
       if (!requestedId) {
-        message.reply(`falta o id da ocorrência!\n${this.usage}`);
+        sendMessageAnswer(message, `falta o id da ocorrência!\n${this.usage}`);
 
         return;
       }
@@ -81,7 +82,7 @@ module.exports = {
       const data = await Prociv.getById(requestedId);
 
       if (data.length === 0) {
-        message.channel.send(':fire: ***Sem Ocorrências***');
+        sendMessageToChannel(message.channel, ':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -112,7 +113,7 @@ module.exports = {
       const [, requestedCity] = args;
 
       if (!requestedCity) {
-        message.reply(this.usage);
+        sendMessageAnswer(message, this.usage);
 
         return;
       }
@@ -120,7 +121,7 @@ module.exports = {
       const reqCityFormatted = removeAccent(requestedCity.toLowerCase()).replace('#ir', '');
 
       if (reqCityFormatted.length < 3) {
-        message.reply('o nº mínimo de caracteres para pesquisa são 3 (sem espaços). Tenta outra vez\n');
+        sendMessageAnswer('o nº mínimo de caracteres para pesquisa são 3 (sem espaços). Tenta outra vez\n');
 
         return;
       }
@@ -128,7 +129,7 @@ module.exports = {
       const data = await Prociv.getByCityAndLocal(reqCityFormatted);
 
       if (data.length === 0) {
-        message.channel.send(':fire: ***Sem Ocorrências***');
+        sendMessageToChannel(message.channel, ':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -157,7 +158,7 @@ module.exports = {
 
     if (requestedArgument === 'vento') {
       if (this.args && args.length < 2) {
-        message.reply(`falta o id da cidade.\n${this.usage}`);
+        sendMessageAnswer(message, `falta o id da cidade.\n${this.usage}`);
 
         return;
       }
@@ -167,7 +168,7 @@ module.exports = {
       const data = await Winds.getById(cityId);
 
       if (!data) {
-        message.channel.send(':wind_blowing_face: :fire: ***Sem Ocorrência***');
+        sendMessageToChannel(message.channel, ':wind_blowing_face: :fire: ***Sem Ocorrência***')
 
         return;
       }
@@ -180,14 +181,15 @@ module.exports = {
         sentido: direction,
       } = data;
 
-      message.channel.send(`:wind_blowing_face: :fire: ***Ocorrência:***\n${id} - #IR${city},${local} - ${speed} KM/H ${direction}`);
+      sendMessageToChannel(message.channel, `:wind_blowing_face: :fire: ***Ocorrência:***\n${id} - #IR${city},${local} - ${speed} KM/H ${direction}`);
     }
 
     if (requestedArgument === 'status') {
       const [, requestedStatus] = args;
 
       if (!requestedStatus) {
-        message.reply(this.usage);
+        sendMessageAnswer(message, this.usage);
+
         return;
       }
 
@@ -195,7 +197,7 @@ module.exports = {
 
       const data = await Prociv.filterByStatus(reqStatusFormatted);
       if (data.length === 0) {
-        message.channel.send(':fire: ***Sem Ocorrências***');
+        sendMessageToChannel(message.channel, ':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -226,7 +228,7 @@ module.exports = {
       const [, district] = args;
 
       if (!district) {
-        message.reply(`é necessário fornecer um distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
+        sendMessageAnswer(message, `é necessário fornecer um distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
 
         return;
       }
@@ -234,7 +236,7 @@ module.exports = {
       const districtToSearch = DISTRICTS[district.toLowerCase()];
 
       if (!districtToSearch) {
-        message.reply(`não foi possível identificar esse distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
+        sendMessageAnswer(message, `não foi possível identificar esse distrito.\n\nDistritos reconhecíveis:\n${Object.keys(DISTRICTS).join(', ')}`);
 
         return;
       }
@@ -242,7 +244,7 @@ module.exports = {
       const fires = await Fires.getByDistrict(districtToSearch);
 
       if (fires.length === 0) {
-        message.channel.send(':fire: ***Sem Ocorrências***');
+        sendMessageToChannel(message.channel, ':fire: ***Sem Ocorrências***');
 
         return;
       }
@@ -270,11 +272,11 @@ module.exports = {
     }
 
     if (relevantEvents.length > 0) {
-      message.channel.send(`:fire: ***Ocorrências relevantes:***\n${relevantEvents.join('\n')}`);
+      sendMessageToChannel(message.channel, `:fire: ***Ocorrências relevantes:***\n${relevantEvents.join('\n')}`);
     }
 
     if (events.length > 0) {
-      message.channel.send(`:fire: ***Ocorrências:***\n${events.join('\n')}`);
+      sendMessageToChannel(message.channel, `:fire: ***Ocorrências:***\n${events.join('\n')}`);
     }
   },
 };
