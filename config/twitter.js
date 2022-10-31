@@ -11,6 +11,10 @@ const {
   TWITTER_EU_CONSUMER_SECRET,
   TWITTER_EU_ACCESS_TOKEN_KEY,
   TWITTER_EU_ACCESS_TOKEN_SECRET,
+  TWITTER_IA_CONSUMER_KEY,
+  TWITTER_IA_CONSUMER_SECRET,
+  TWITTER_IA_ACCESS_TOKEN_KEY,
+  TWITTER_IA_ACCESS_TOKEN_SECRET,
   TWITTER_DRE_CONSUMER_KEY,
   TWITTER_DRE_CONSUMER_SECRET,
   TWITTER_DRE_ACCESS_TOKEN_KEY,
@@ -52,6 +56,17 @@ const twitterKeys = [{
     consumer_secret: TWITTER_EU_CONSUMER_SECRET,
     access_token: TWITTER_EU_ACCESS_TOKEN_KEY,
     access_token_secret: TWITTER_EU_ACCESS_TOKEN_SECRET,
+  },
+},
+{
+  reference: 'vostptia',
+  screenName: 'VOSTPTia',
+  fetchTweets: false,
+  keys: {
+    consumer_key: TWITTER_IA_CONSUMER_KEY,
+    consumer_secret: TWITTER_IA_CONSUMER_SECRET,
+    access_token: TWITTER_IA_ACCESS_TOKEN_KEY,
+    access_token_secret: TWITTER_IA_ACCESS_TOKEN_SECRET,
   },
 },
 {
