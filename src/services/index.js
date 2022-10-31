@@ -15,6 +15,7 @@ const Mastodon = require('./Mastodon');
 const Facebook = require('./Facebook');
 const Rally = require('./Rally');
 const Ipma = require('./Ipma');
+const Medea = require('./Medea');
 
 module.exports = {
   Acronyms,
@@ -34,4 +35,5 @@ module.exports = {
   Facebook,
   Rally,
   Ipma,
+  Medea,
 };

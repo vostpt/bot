@@ -10,6 +10,7 @@ const {
   Facebook,
   Ipma,
   Weather,
+  Medea,
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter } = require('../services/Twitter');
@@ -63,6 +64,7 @@ class Jobs {
     Jobs.warningsMeteoAlarm();
     Jobs.clearMeteoAlarmDb();
     Jobs.scheduleVostEuTweets();
+    Jobs.checkMedeaMessages();
   }
 
   /**
@@ -139,6 +141,17 @@ class Jobs {
     ruleEcho.second = 0;
 
     schedule.scheduleJob(ruleEcho, () => Twitter.tweetVostEu(2));
+  }
+
+  /**
+   * Check new messages from Medea 
+   */
+  static checkMedeaMessages() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(1, 59, 1);
+
+    schedule.scheduleJob(rule, () => Medea.getMessages());
   }
 
   /**
