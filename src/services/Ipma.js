@@ -393,19 +393,19 @@ const { postMessageFacebook } = require('./Facebook');
 
      WarningsApi.postNewWarning(warning);
 
-     if (level === 'Laranja' || level === 'Vermelho') {
-       const post = {
-         status: strTwitter,
-         media: fileName,
-         options: {
-           spoiler_text: 'Meteorologia',
-           sensitive: false,
-           language: 'pt',
-         },
-       };
+     const post = {
+       status: strTwitter,
+       media: fileName,
+       options: {
+         spoiler_text: 'Meteorologia',
+         sensitive: false,
+         language: 'pt',
+       },
+     };
 
-       sendPostMastodon(post, 'main');
-      
+     sendPostMastodon(post, 'main');
+
+     if (level === 'Laranja' || level === 'Vermelho') {
        const fbpost = {
          message: strTwitter,
          media: fileName,
