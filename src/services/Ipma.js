@@ -397,7 +397,6 @@ const { postMessageFacebook } = require('./Facebook');
        status: strTwitter,
        media: fileName,
        options: {
-         spoiler_text: 'Meteorologia',
          sensitive: false,
          language: 'pt',
        },
