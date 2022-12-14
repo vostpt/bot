@@ -168,7 +168,6 @@ const checkNewDecrees = async (client) => {
     sendPostMastodon({
       status: post,
       options: {
-        spoiler_text: 'Novo decreto',
         sensitive: false,
         language: 'pt',
       },
