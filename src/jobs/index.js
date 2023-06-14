@@ -214,7 +214,7 @@ class Jobs {
     rule.second = 0;
 
     schedule.scheduleJob(rule, () => {
-      //Weather.getDailyReport(this.client);
+      Weather.getDailyReport(this.client);
     });
   }
 
