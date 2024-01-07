@@ -50,7 +50,10 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
     : twitterClients[accountPos].client;
 
   const tweetToSend = tweetSeq.shift();
-
+  if (String(tweetToSend).includes("#AvisoAmarelo"))
+  {
+    return;
+  }
   const uploadedMedia = tweetToSend.media !== undefined
     ? tweetToSend.media.map((filedata) => {
       const fileContent = getFileContent(filedata);
