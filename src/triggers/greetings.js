@@ -7,7 +7,7 @@ const PERSONAL_MESSAGES = {
   "501025896732426250": 'aqui tens o teu chá verde quentinho :tea:',
   "510877799029145611": 'já sei que não bebes café. Aceita antes um chá :tea:',
   "520251132333916181": 'aqui está o teu chá! :tea:',
-  "401531455832064010": 'mais trabalho, Jorge?! Toma lá, um duplo chá curto :tea:',
+  "401531455832064010": 'Agora que não podes beber café toma lá um descafeinado... yuck!',
   "420991347860701207": 'já estás um homenzinho! Toma lá um café!',
   "609076149447950357": 'olha quem cá está! O senhor Doutor que corre mais que o Bolt!',
   "506904794070384645": 'ora aqui está um chá fresquinho bem quentinho. Se quiseres uma farripa de leite é só dizer.',
