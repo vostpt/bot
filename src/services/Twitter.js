@@ -50,7 +50,7 @@ const uploadThreadTwitter = (tweetSeq, tweetId = '', reference) => {
     : twitterClients[accountPos].client;
 
   const tweetToSend = tweetSeq.shift();
-  if (String(tweetToSend).includes("#AvisoAmarelo"))
+  if (String(tweetToSend).includes("#AvisoAmarelo") && reference == "main")
   {
     return;
   }
