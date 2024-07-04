@@ -19,6 +19,7 @@ const { sendMessagesTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
 const { postMessageFacebook } = require('./Facebook');
+const { sendPostsToBsky } = require('./Bsky');
  
  const warningTypes = {
    'Tempo Frio': {
@@ -236,6 +237,8 @@ const { postMessageFacebook } = require('./Facebook');
    let strDiscord = '';
 
    const tlgMessages = [];
+
+   const bskyPosts = [];
  
    await newWarnings.forEach((newWarn) => {
      const resIndex = joinNewWarn.findIndex((warn) => (
@@ -378,10 +381,10 @@ const { postMessageFacebook } = require('./Facebook');
      if (zone === 'azores') {
        const azTweet = Object.assign([], splitStrTwitter);
 
-       uploadThreadTwitter(azTweet, '', 'azores');
+       // uploadThreadTwitter(azTweet, '', 'azores');
      }
 
-     uploadThreadTwitter(splitStrTwitter, '', 'main');
+     // uploadThreadTwitter(splitStrTwitter, '', 'main');
 
      tlgMessages.push({
        chatId: telegramKeys.chat_id,
@@ -389,6 +392,11 @@ const { postMessageFacebook } = require('./Facebook');
        options: {
          caption: strTelegram,
        },
+     });
+
+     bskyPosts.push({
+       imageUrl: photoURL,
+       message: strTwitter,
      });
 
      WarningsApi.postNewWarning(warning);
@@ -423,6 +431,8 @@ const { postMessageFacebook } = require('./Facebook');
    }
 
    await sendMessagesTelegram(tlgMessages);
+
+   await sendPostsToBsky(bskyPosts);
 };
  
  /**
@@ -434,9 +444,10 @@ const { postMessageFacebook } = require('./Facebook');
  const getWarnings = async (client=undefined) => {
    const warnings = await IpmaApi.fetch();
 
-   const newWarn = await Promise.all(warnings.map((warn) => filterWarn(warn)))
-       .then((newSrchRes) => warnings.filter(((_warning, i) => newSrchRes[i])));
+   // const newWarn = await Promise.all(warnings.map((warn) => filterWarn(warn)))
+       // .then((newSrchRes) => warnings.filter(((_warning, i) => newSrchRes[i])));
  
+   const newWarn = warnings;
      newWarn.forEach(async (warning) => {
        await db.IpmaWarnings.create({
          ...warning,

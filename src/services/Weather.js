@@ -7,6 +7,7 @@ const { sendMessagesTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { locale } = require('../../config/locale');
 const { convertBase64 } = require('../helpers');
+const { sendPostsToBsky } = require('./Bsky');
 
 /**
  * Get weather data for today or tomorrow
@@ -76,14 +77,14 @@ const getDailyReport = async (client) => {
     }
   ];
 
-  uploadThreadTwitter(tweetsPtMad, '', 'main');
+  // uploadThreadTwitter(tweetsPtMad, '', 'main');
 
   const tweetAz = [{
     status: reports.az.text,
     media: [reports.az.base64],
   }];
 
-  uploadThreadTwitter(tweetAz, '', 'azores');
+  // uploadThreadTwitter(tweetAz, '', 'azores');
 
   const tlgMessages = [];
 
@@ -124,6 +125,22 @@ const getDailyReport = async (client) => {
   });
 
   await sendMessagesTelegram(tlgMessages);
+
+  const bskyMessages = [];
+  bskyMessages.push({
+    message: reports.pt.text,
+    imageUrl: attachmentURLsPt[0]
+  });
+  bskyMessages.push({
+    message: reports.mad.text,
+    imageUrl: attachmentURLsMad[0]
+  });
+  bskyMessages.push({
+    message: reports.az.text,
+    imageUrl: attachmentURLsAz[0]
+  });
+
+  await sendPostsToBsky(bskyMessages);
 };
 
 module.exports = {
