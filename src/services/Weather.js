@@ -77,14 +77,14 @@ const getDailyReport = async (client) => {
     }
   ];
 
-  // uploadThreadTwitter(tweetsPtMad, '', 'main');
+  uploadThreadTwitter(tweetsPtMad, '', 'main');
 
   const tweetAz = [{
     status: reports.az.text,
     media: [reports.az.base64],
   }];
 
-  // uploadThreadTwitter(tweetAz, '', 'azores');
+  uploadThreadTwitter(tweetAz, '', 'azores');
 
   const tlgMessages = [];
 

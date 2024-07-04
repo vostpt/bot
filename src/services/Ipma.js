@@ -381,10 +381,10 @@ const { sendPostsToBsky } = require('./Bsky');
      if (zone === 'azores') {
        const azTweet = Object.assign([], splitStrTwitter);
 
-       // uploadThreadTwitter(azTweet, '', 'azores');
+       uploadThreadTwitter(azTweet, '', 'azores');
      }
 
-     // uploadThreadTwitter(splitStrTwitter, '', 'main');
+     uploadThreadTwitter(splitStrTwitter, '', 'main');
 
      tlgMessages.push({
        chatId: telegramKeys.chat_id,
@@ -444,10 +444,9 @@ const { sendPostsToBsky } = require('./Bsky');
  const getWarnings = async (client=undefined) => {
    const warnings = await IpmaApi.fetch();
 
-   // const newWarn = await Promise.all(warnings.map((warn) => filterWarn(warn)))
-       // .then((newSrchRes) => warnings.filter(((_warning, i) => newSrchRes[i])));
+   const newWarn = await Promise.all(warnings.map((warn) => filterWarn(warn)))
+       .then((newSrchRes) => warnings.filter(((_warning, i) => newSrchRes[i])));
  
-   const newWarn = warnings;
      newWarn.forEach(async (warning) => {
        await db.IpmaWarnings.create({
          ...warning,
