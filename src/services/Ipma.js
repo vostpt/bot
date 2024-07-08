@@ -19,6 +19,7 @@ const { sendMessagesTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
 const { postMessageFacebook } = require('./Facebook');
+const { sendPostsToBsky } = require('./Bsky');
  
  const warningTypes = {
    'Tempo Frio': {
@@ -236,6 +237,8 @@ const { postMessageFacebook } = require('./Facebook');
    let strDiscord = '';
 
    const tlgMessages = [];
+
+   const bskyPosts = [];
  
    await newWarnings.forEach((newWarn) => {
      const resIndex = joinNewWarn.findIndex((warn) => (
@@ -391,6 +394,11 @@ const { postMessageFacebook } = require('./Facebook');
        },
      });
 
+     bskyPosts.push({
+       imageUrl: photoURL,
+       message: strTwitter,
+     });
+
      WarningsApi.postNewWarning(warning);
 
      const post = {
@@ -423,6 +431,8 @@ const { postMessageFacebook } = require('./Facebook');
    }
 
    await sendMessagesTelegram(tlgMessages);
+
+   await sendPostsToBsky(bskyPosts);
 };
  
  /**
