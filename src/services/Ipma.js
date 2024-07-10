@@ -378,12 +378,12 @@ const { sendPostsToBsky } = require('./Bsky');
 
      splitStrTwitter[0].media = [fileName];
 
-     if (zone === 'azores') {
-       const azTweet = Object.assign([], splitStrTwitter);
-
-       uploadThreadTwitter(azTweet, '', 'azores');
-     }
-
+     // if (zone === 'azores') {
+     //   const azTweet = Object.assign([], splitStrTwitter);
+     //
+     //   uploadThreadTwitter(azTweet, '', 'azores');
+     // }
+     //
      uploadThreadTwitter(splitStrTwitter, '', 'main');
 
      tlgMessages.push({

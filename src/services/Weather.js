@@ -66,7 +66,7 @@ const getDailyReport = async (client) => {
     }
   };
 
-  const tweetsPtMad = [
+  const tweetsPtMadAz = [
     {
       status: reports.pt.text,
       media: [reports.pt.base64],
@@ -74,17 +74,21 @@ const getDailyReport = async (client) => {
     {
       status: reports.mad.text,
       media: [reports.mad.base64],
+    },
+    {
+      status: reports.az.text,
+      media: [reports.az.base64],
     }
   ];
 
-  uploadThreadTwitter(tweetsPtMad, '', 'main');
+  uploadThreadTwitter(tweetsPtMadAz, '', 'main');
 
-  const tweetAz = [{
-    status: reports.az.text,
-    media: [reports.az.base64],
-  }];
-
-  uploadThreadTwitter(tweetAz, '', 'azores');
+  // const tweetAz = [{
+  //   status: reports.az.text,
+  //   media: [reports.az.base64],
+  // }];
+  //
+  // uploadThreadTwitter(tweetAz, '', 'azores');
 
   const tlgMessages = [];
 
