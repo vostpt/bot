@@ -378,13 +378,17 @@ const { sendPostsToBsky } = require('./Bsky');
 
      splitStrTwitter[0].media = [fileName];
 
-     // if (zone === 'azores') {
-     //   const azTweet = Object.assign([], splitStrTwitter);
-     //
-     //   uploadThreadTwitter(azTweet, '', 'azores');
-     // }
-     //
-     uploadThreadTwitter(splitStrTwitter, '', 'main');
+     if (zone === 'azores') {
+       const azTweet = Object.assign([], splitStrTwitter);
+       uploadThreadTwitter(azTweet, '', 'azores');
+     } else if (zone === 'madeira') {
+       // TODO - Add Madeira Twitter account
+     } else {
+       if (level != 'Amarelo') {
+         //ignore yellow warning
+         uploadThreadTwitter(splitStrTwitter, '', 'main');
+       }
+     }
 
      tlgMessages.push({
        chatId: telegramKeys.chat_id,
