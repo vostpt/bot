@@ -1,4 +1,3 @@
-const Twit = require('twit');
 const { TwitterApi } = require('twitter-api-v2');
 const { getFileContent } = require('../helpers');
 const { twitterKeys } = require('../../config/twitter');
@@ -10,13 +9,6 @@ const twitterClients = twitterKeys.map((account) => ({
   reference: account.reference,
   screenName: account.screenName,
   fetchTweets: account.fetchTweets,
-  client: new Twit(account.keys),
-}));
-
-const twitterClientsV2 = twitterKeys.map((account) => ({
-  reference: account.reference,
-  screenName: account.screenName,
-  fetchTweets: account.fetchTweets,
   client: new TwitterApi({
     appKey: account.keys.consumer_key,
     appSecret: account.keys.consumer_secret,
@@ -25,7 +17,7 @@ const twitterClientsV2 = twitterKeys.map((account) => ({
   }),
 }));
 
-const defaultClientTwitter = twitterClientsV2.find((element) => element.reference === 'main');
+const defaultClientTwitter = twitterClients.find((element) => element.reference === 'main');
 
 const vostEuTweets = {
   1: [{
@@ -56,11 +48,11 @@ const uploadThreadTwitter = async (tweetSeq, tweetId = '', reference) => {
     return;
   }
 
-  const accountPos = twitterClientsV2.findIndex((element) => element.reference === reference);
+  const accountPos = twitterClients.findIndex((element) => element.reference === reference);
 
-  const clientTwitterV2 = accountPos < 0
-    ? twitterClientsV2[0].client
-    : twitterClientsV2[accountPos].client;
+  const clientTwitter = accountPos < 0
+    ? twitterClients[0].client
+    : twitterClients[accountPos].client;
 
   for(let i = 0; i < tweetSeq.length; i++){
     const tweetToSend = tweetSeq[i];
@@ -68,7 +60,7 @@ const uploadThreadTwitter = async (tweetSeq, tweetId = '', reference) => {
     ? await Promise.all(tweetToSend.media.map(async (filedata) => {
         const fileContent = getFileContent(filedata);
         const mediaType = "image/png";
-        const media = await clientTwitterV2.v1.uploadMedia(fileContent, { mimeType: mediaType });
+        const media = await clientTwitter.v1.uploadMedia(fileContent, { mimeType: mediaType });
         return media;
       }))
     : [];
@@ -78,93 +70,95 @@ const uploadThreadTwitter = async (tweetSeq, tweetId = '', reference) => {
       media: uploadedMedia.length > 0 ? { media_ids: uploadedMedia } : undefined,
     };
 
-    const response = await clientTwitterV2.v2.tweet(params);
+    const response = await clientTwitter.v2.tweet(params);
     if(response.data.errors){
       console.log(response.data.errors);
     }
   }
 };
 
-/**
-* Send new tweets, and update DB with last tweet ID
-*
-* @async
-* @param {Object} client
-* @param {String} reference
-* @param {Object} data
-*/
 
-const sendNewTweets = async (client, data, reference, screenName, lastTweetId) => {
-  const filteredData = lastTweetId
-    ? data.filter((tweet) => tweet.id_str !== lastTweetId).reverse()
-    : data.reverse();
-
-  const filteredDataLength = filteredData.length;
-
-  if (filteredDataLength > 0) {
-    const tweetIds = filteredData.map((tweet) => tweet.id_str);
-
-    const strArray = filteredData.map((tweet) => tweet.text);
-
-    const introStr = `***Novo(s) tweets da conta @${screenName}:***\n`;
-
-    sendMessageToChannel(client.channels.get(channels.TWFEED_CHANNEL_ID), introStr);
-
-    strArray.forEach((tweetText) => {
-      const string = `>>> ${tweetText}`;
-      sendMessageToChannel(client.channels.get(channels.TWFEED_CHANNEL_ID), string);
-    });
-
-    if (reference) {
-      db.Tweets.upsert({
-        reference,
-        lastTweetId: tweetIds[filteredDataLength - 1],
-      });
-    }
-  }
-};
-
-/**
-* Fetch new tweets made by VOST accounts
-*
-* @async
-* @param {Object} discordClient
-*/
-const getVostTweetsAndSendToDiscord = async (discordClient) => {
-  const enabledClients = twitterClients.filter((client) => client.fetchTweets);
-
-  for (let i = 0; i < enabledClients.length; i += 1) {
-    const {
-      reference,
-      screenName,
-      client,
-    } = enabledClients[i];
-
-    const result = await db.Tweets.findAll({
-      where: {
-        reference,
-      },
-    });
-
-    const params = {
-      screen_name: screenName,
-      trim_user: true,
-      count: 20,
-      exclude_replies: true,
-      include_rts: true,
-    };
-
-    params.since_id = result.length > 0 && result[0].dataValues.lastTweetId !== 'null'
-      ? result[0].dataValues.lastTweetId
-      : undefined;
-
-    client.get('statuses/user_timeline', params, (err, data, response) => {
-      if (!err && response !== '') {
-        sendNewTweets(discordClient, data, reference, screenName, params.since_id);
-      }
-    });
-  }
-};
+/******************* Unavailable in v2 free tier ****************** 
+// /**
+// * Send new tweets, and update DB with last tweet ID
+// *
+// * @async
+// * @param {Object} client
+// * @param {String} reference
+// * @param {Object} data
+// */
+//
+// const sendNewTweets = async (client, data, reference, screenName, lastTweetId) => {
+//   const filteredData = lastTweetId
+//     ? data.filter((tweet) => tweet.id_str !== lastTweetId).reverse()
+//     : data.reverse();
+//
+//   const filteredDataLength = filteredData.length;
+//
+//   if (filteredDataLength > 0) {
+//     const tweetIds = filteredData.map((tweet) => tweet.id_str);
+//
+//     const strArray = filteredData.map((tweet) => tweet.text);
+//
+//     const introStr = `***Novo(s) tweets da conta @${screenName}:***\n`;
+//
+//     sendMessageToChannel(client.channels.get(channels.TWFEED_CHANNEL_ID), introStr);
+//
+//     strArray.forEach((tweetText) => {
+//       const string = `>>> ${tweetText}`;
+//       sendMessageToChannel(client.channels.get(channels.TWFEED_CHANNEL_ID), string);
+//     });
+//
+//     if (reference) {
+//       db.Tweets.upsert({
+//         reference,
+//         lastTweetId: tweetIds[filteredDataLength - 1],
+//       });
+//     }
+//   }
+// };
+//
+// /**
+// * Fetch new tweets made by VOST accounts
+// *
+// * @async
+// * @param {Object} discordClient
+// */
+// const getVostTweetsAndSendToDiscord = async (discordClient) => {
+//   const enabledClients = twitterClients.filter((client) => client.fetchTweets);
+//
+//   for (let i = 0; i < enabledClients.length; i += 1) {
+//     const {
+//       reference,
+//       screenName,
+//       client,
+//     } = enabledClients[i];
+//
+//     const result = await db.Tweets.findAll({
+//       where: {
+//         reference,
+//       },
+//     });
+//
+//     const params = {
+//       screen_name: screenName,
+//       trim_user: true,
+//       count: 20,
+//       exclude_replies: true,
+//       include_rts: true,
+//     };
+//
+//     params.since_id = result.length > 0 && result[0].dataValues.lastTweetId !== 'null'
+//       ? result[0].dataValues.lastTweetId
+//       : undefined;
+//
+//     client.get('statuses/user_timeline', params, (err, data, response) => {
+//       if (!err && response !== '') {
+//         sendNewTweets(discordClient, data, reference, screenName, params.since_id);
+//       }
+//     });
+//   }
+// };
 
 const tweetVostEu = async (tweetId) => {
   const thread = vostEuTweets[tweetId];
@@ -175,7 +169,7 @@ const tweetVostEu = async (tweetId) => {
 module.exports = {
   clientTwitter: defaultClientTwitter.client,
   uploadThreadTwitter,
-  getVostTweetsAndSendToDiscord,
+  // getVostTweetsAndSendToDiscord,
   tweetVostEu,
 };
 
