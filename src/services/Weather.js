@@ -66,18 +66,14 @@ const getDailyReport = async (client) => {
     }
   };
 
-  const tweetsPtMad = [
+  const tweetsPt = [
     {
       status: reports.pt.text,
       media: [reports.pt.base64],
-    },
-    {
-      status: reports.mad.text,
-      media: [reports.mad.base64],
     }
   ];
 
-  uploadThreadTwitter(tweetsPtMad, '', 'main');
+  uploadThreadTwitter(tweetsPt, '', 'main');
 
   const tweetAz = [{
     status: reports.az.text,
@@ -91,7 +87,7 @@ const getDailyReport = async (client) => {
   const resultPt = await sendMessageToChannel(client.channels.get(reports.pt.channel), reports.pt.text, reports.pt.url);
 
   const attachmentURLsPt = resultPt.attachments.map((attachment) => attachment.url);
-  
+
   tlgMessages.push({
     chatId: telegramKeys.chat_id,
     photoURL: attachmentURLsPt[0],
@@ -103,7 +99,7 @@ const getDailyReport = async (client) => {
   const resultMad = await sendMessageToChannel(client.channels.get(reports.mad.channel), reports.mad.text, reports.mad.url);
 
   const attachmentURLsMad = resultMad.attachments.map((attachment) => attachment.url);
-  
+
   tlgMessages.push({
     chatId: telegramKeys.chat_id,
     photoURL: attachmentURLsMad[0],

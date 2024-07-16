@@ -178,15 +178,16 @@ class Jobs {
   /**
    * Update new tweets made by VOST accounts
    */
-  getTweets() {
-    const rule = new schedule.RecurrenceRule();
-
-    rule.minute = new schedule.Range(1, 59, 1);
-
-    schedule.scheduleJob(rule, () => {
-      Twitter.getVostTweetsAndSendToDiscord(this.client);
-    });
-  }
+  // TODO Not available  for now in v2 free tier, right?
+  // getTweets() {
+  //   const rule = new schedule.RecurrenceRule();
+  //
+  //   rule.minute = new schedule.Range(1, 59, 1);
+  //
+  //   schedule.scheduleJob(rule, () => {
+  //     Twitter.getVostTweetsAndSendToDiscord(this.client);
+  //   });
+  // }
 
   /**
    * Update new facebook posts made by VOST accounts

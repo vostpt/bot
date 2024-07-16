@@ -119,10 +119,11 @@ const isBase64 = (str) => {
  */
 const getFileContent = (filedata) => {
   if (isBase64(filedata)) {
-    return filedata;
+    return Buffer.from(filedata, 'base64');
   }
 
-  return fs.readFileSync(`${imageFolderPath}${path.sep}${filedata}`, { encoding: 'base64' });
+  var file = fs.readFileSync(`${imageFolderPath}${path.sep}${filedata}`, { encoding: 'base64' });
+  return Buffer.from(file, 'base64');
 };
 
 /**

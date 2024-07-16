@@ -380,11 +380,15 @@ const { sendPostsToBsky } = require('./Bsky');
 
      if (zone === 'azores') {
        const azTweet = Object.assign([], splitStrTwitter);
-
        uploadThreadTwitter(azTweet, '', 'azores');
+     } else if (zone === 'madeira') {
+       // TODO - Add Madeira Twitter account
+     } else {
+       if (level != 'Amarelo') {
+         //ignore yellow warning
+         uploadThreadTwitter(splitStrTwitter, '', 'main');
+       }
      }
-
-     uploadThreadTwitter(splitStrTwitter, '', 'main');
 
      tlgMessages.push({
        chatId: telegramKeys.chat_id,
