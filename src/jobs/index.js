@@ -56,7 +56,6 @@ class Jobs {
     this.checkUpdatesCoronaReports();
     this.warnings();
     this.fireRisk();
-    this.getTweets();
     this.getFacebookPosts();
     this.sendWeatherReport();
     this.checkNewDecrees();
