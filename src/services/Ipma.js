@@ -364,7 +364,7 @@ const { sendPostsToBsky } = require('./Bsky');
 
      const strTwitter = `ℹ️⚠️${emoji} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${emoji}⚠️ℹ️`;
 
-     const strTelegram = `ℹ️⚠️${emoji} ${getDistrictStr(true)} ${emoji}⚠️ℹ️\n 🕰️ ${getTime()}\n${strHeader}`;
+     const strTelegram = `ℹ️⚠️${emoji} ${strHeader} ${getDistrictStr(false)} ${getTime()} ${emoji}⚠️ℹ️`;
 
      strDiscord += `:information_source: :warning: ${emojiDiscord} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${emojiDiscord} :warning: :information_source:\n\n`;
 
