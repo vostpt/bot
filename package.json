@@ -28,7 +28,8 @@
     "rss-parser": "^3.10.0",
     "sequelize": "^6.3.5",
     "sqlite3": "^5.0.3",
-    "twit": "^2.2.11"
+    "twit": "^2.2.11",
+    "twitter-api-v2": "^1.17.2"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",
