@@ -1,4 +1,4 @@
-const mastodonURL = 'https://trombas.vost.pt/api/v1';
+const mastodonURL = 'https://trombas.vost.pt/api';
 
 const mastodonKeys = {
   main: {

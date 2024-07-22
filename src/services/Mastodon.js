@@ -4,6 +4,7 @@ const {
 } = require('../api/Mastodon');
 
 const { getImagesPath } = require('../helpers');
+const { getFileContent } = require('../helpers');
 
 /**
 * Send a message to Mastodon/Pleroma
@@ -19,8 +20,10 @@ const sendPostMastodon = async (post, reference = 'main') => {
   if (post.media !== undefined) {
     const filePath = `${getImagesPath()}${post.media}`;
 
+    const media = getFileContent(post.media);
+
     const fileObject = {
-      name: post.media,
+      name: media,
       path: filePath,
     };
 
@@ -36,6 +39,18 @@ const sendPostMastodon = async (post, reference = 'main') => {
   }, reference);
 };
 
+
+const uploadThreadMastodon = async (thread, reference = 'main') => {
+  if (thread.length === 0) {
+    return;
+  }
+  for (let i = 0; i < thread.length; i++) {
+    const post = thread[i];
+    await sendPostMastodon(post, reference);
+  }
+}
+
 module.exports = {
   sendPostMastodon,
+  uploadThreadMastodon,
 };
