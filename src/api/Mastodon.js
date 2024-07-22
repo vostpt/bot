@@ -3,51 +3,76 @@ const fs = require('fs');
 const FormData = require('form-data');
 
 const { mastodonKeys } = require('../../config/mastodon');
+const { request } = require('http');
 
 const defaultClientMasto = mastodonKeys.main;
 
-const getClient = async reference => (mastodonKeys[reference]
-  ? mastodonKeys[reference]
-  : defaultClientMasto);
+// const getClient = async reference => {
+//   const clientConfig = mastodonKeys[reference] ? mastodonKeys[reference] : defaultClientMasto;
+//   return clientConfig;
+// };
 
 const uploadMedia = async (fileObject, reference) => {
-  const client = await getClient(reference);
+  const client = mastodonKeys[reference] ? mastodonKeys[reference] : defaultClientMasto;
+  const url = `${client.api_url}/v2/media`;
 
-  const url = `${client.api_url}/media`;
-
+  const nodeBuf = Buffer.from(fileObject.name);
   const formData = new FormData();
-  formData.append('file', fs.createReadStream(fileObject.path));
+  formData.append('file', nodeBuf, 'image.png');
 
-  const res = await axios({
-    method: 'post',
-    url,
-    headers: {
-      Authorization: `Bearer ${client.access_token}`,
-      ...formData.getHeaders(),
-    },
-    data: formData,
-  })
-    // eslint-disable-next-line no-console
-    .catch(err => console.log(err));
-
-  return res.data;
+  try {
+  
+    const res = await axios({
+      method: 'post',
+      url,
+      headers: {
+        Authorization: `Bearer ${client.access_token}`,
+        ...formData.getHeaders(),
+      },
+      data: formData,
+    })
+    return res.data;
+  } catch (err) {
+    if (err.response) {
+      console.error('Error response data:', err.response.data);
+      console.error('Error response status:', err.response.status);
+      console.error('Error response headers:', err.response.headers);
+    } else if (err.request) {
+      console.error('Error request:', err.request);
+    } else {
+      console.error('Error message:', err.message);
+    }
+    console.error('Error config:', err.config);
+    return null;
+  }
 };
 
+
+
 const postStatus = async (postObject, reference) => {
-  const client = await getClient(reference);
-
-  const url = `${client.api_url}/statuses`;
-
-  await axios({
-    method: 'post',
-    url,
-    headers: {
-      Authorization: `Bearer ${client.access_token}`,
-    },
-    data: postObject,
-  })
-    // eslint-disable-next-line no-console
-    .catch(err => console.log(err));
+  const client = mastodonKeys[reference] ? mastodonKeys[reference] : defaultClientMasto;
+  const url = `${client.api_url}/v1/statuses`;
+  try {
+    const res = await axios({
+      method: 'post',
+      url,
+      headers: {
+        Authorization: `Bearer ${client.access_token}`,
+      },
+      data: postObject,
+    })
+  } catch (err) {
+    if (err.response) {
+      console.error('Error response data:', err.response.data);
+      console.error('Error response status:', err.response.status);
+      console.error('Error response headers:', err.response.headers);
+    } else if (err.request) {
+      console.error('Error request:', err.request);
+    } else {
+      console.error('Error message:', err.message);
+    }
+    console.error('Error config:', err.config);
+  }
 };
 
 module.exports = {

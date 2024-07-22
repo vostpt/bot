@@ -8,6 +8,7 @@ const { telegramKeys } = require('../../config/telegram');
 const { locale } = require('../../config/locale');
 const { convertBase64 } = require('../helpers');
 const { sendPostsToBsky } = require('./Bsky');
+const { uploadThreadMastodon } = require('./Mastodon');
 
 /**
  * Get weather data for today or tomorrow
@@ -81,6 +82,23 @@ const getDailyReport = async (client) => {
   }];
 
   uploadThreadTwitter(tweetAz, '', 'azores');
+
+  const postMast = [
+    {
+      status: reports.pt.text,
+      media: reports.pt.base64,
+    },
+    {
+      status: reports.mad.text,
+      media: reports.mad.base64,
+    },
+    {
+      status: reports.az.text,
+      media: reports.az.base64,
+    }
+  ]
+
+  uploadThreadMastodon(postMast, 'main');
 
   const tlgMessages = [];
 
