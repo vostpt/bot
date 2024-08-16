@@ -14,7 +14,8 @@ const PERSONAL_MESSAGES = {
   "700293627485880351": 'então o trânsito? Toma lá um cafezinho!',
   "548635895788601354": 'meu mais que tudo, meu pai, meu Deus, basta pedires e farei acontecer! :hearts:',
   "258897313722793985": 'MONSTER MONSTER, toma lá MONSTER!',
-  "503512060408233994": 'Bonjour! Prenez un café et une tarte à la crème!'
+  "503512060408233994": 'Bonjour! Prenez un café et une tarte à la crème!',
+  "1152193904553230416": 'já levaste a Lola à rua? Já tomaste o pequeno almoço? Vamos lá a isto que o código não se bate sozinho!'
 };
 
 const GREETINGS_BOM_DIA = [
