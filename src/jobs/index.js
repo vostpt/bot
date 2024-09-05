@@ -11,6 +11,7 @@ const {
   Ipma,
   Weather,
   Medea,
+  Viajar
 } = require('../services');
 const { channels } = require('../../config/bot');
 const { clientTwitter } = require('../services/Twitter');
@@ -64,6 +65,7 @@ class Jobs {
     Jobs.clearMeteoAlarmDb();
     Jobs.scheduleVostEuTweets();
     Jobs.checkMedeaMessages();
+    this.checkConselhoViajantes();
   }
 
   /**
@@ -357,6 +359,17 @@ class Jobs {
 
     schedule.scheduleJob(rule, () => sentEarthquakesNotifications.clear());
   }
+
+    checkConselhoViajantes() {
+    const rule = new schedule.RecurrenceRule();
+
+    rule.minute = [0, 30];
+
+    schedule.scheduleJob(rule, () => {
+      Viajar.checkNewTravelAdvices(this.client);
+    });
+  }
+
 }
 
 module.exports = Jobs;
