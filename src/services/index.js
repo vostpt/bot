@@ -16,6 +16,7 @@ const Facebook = require('./Facebook');
 const Rally = require('./Rally');
 const Ipma = require('./Ipma');
 const Medea = require('./Medea');
+const Viajar = require('./Viajar');
 
 module.exports = {
   Acronyms,
@@ -36,4 +37,5 @@ module.exports = {
   Rally,
   Ipma,
   Medea,
+  Viajar,
 };

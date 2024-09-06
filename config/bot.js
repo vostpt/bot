@@ -14,6 +14,7 @@ const channels = {
   DGSCORONA_CHANNEL_ID: process.env.DGSCORONA_CHANNEL_ID,
   CORONAFAQ_CHANNEL_ID: process.env.CORONAFAQ_CHANNEL_ID,
   JOURNAL_CHANNEL_ID: process.env.JOURNAL_CHANNEL_ID,
+  TRAVEL_GUIDELINES: process.env.TRAVEL_GUIDELINES,
 };
 
 const coronaUpdateUsers = process.env.CORONAUPDATEUSERS;
