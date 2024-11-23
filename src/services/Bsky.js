@@ -5,6 +5,7 @@ const { bskyKeys } = require('../../config/bsky');
 
 const handle = bskyKeys.keys.bsky_handle;
 const password = bskyKeys.keys.bsky_password;
+const repohandle = bskyKeys.keys.bsky_repohandle;
 let accessToken = null;
 
 // Function to authenticate and get a token
@@ -51,7 +52,7 @@ async function uploadImage(imageBuffer, imageType, token) {
 
 
 async function createPost(message, blob, token) {
-  let repoHandle = "vostpt.bsky.social";
+  let repoHandle = repohandle;
   const postData = {
     repo: repoHandle,
     collection: 'app.bsky.feed.post',
@@ -113,6 +114,7 @@ async function postToBluesky(message, imagePath) {
       }
     }
     const postResponse = await createPost(message, blob, accessToken);
+    console.log(postResponse);
   } catch (error) {
     console.error('Error:', error.message);
     if (error.response && error.response.status === 401) {

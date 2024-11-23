@@ -1,6 +1,7 @@
 const {
   BSKY_HANDLE,
-  BSKY_PASS
+  BSKY_PASS,
+  BSKY_REPOHANDLE,
 } = process.env;
 
 const bskyKeys = {
@@ -9,6 +10,7 @@ const bskyKeys = {
   keys: {
     bsky_handle: BSKY_HANDLE,
     bsky_password: BSKY_PASS,
+    bsky_repohandle: BSKY_REPOHANDLE,
   },
 };
 
