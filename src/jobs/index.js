@@ -363,7 +363,8 @@ class Jobs {
     checkConselhoViajantes() {
     const rule = new schedule.RecurrenceRule();
 
-    rule.minute = [0, 30];
+    rule.hour = 10;
+    rule.minute = 0;
 
     schedule.scheduleJob(rule, () => {
       Viajar.checkNewTravelAdvices(this.client);
