@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const { bskyKeys } = require('../../config/bsky');
+const sharp = require('sharp');
 
 const handle = bskyKeys.keys.bsky_handle;
 const password = bskyKeys.keys.bsky_password;
@@ -37,7 +38,21 @@ async function uploadImage(imageBuffer, imageType, token) {
     'Authorization': `Bearer ${token}`,
   };
   try {
-    const response = await axios.post('https://bsky.social/xrpc/com.atproto.repo.uploadBlob', imageBuffer, {
+    const sizeInBytes = imageBuffer.length;
+    const sizeInKb = sizeInBytes / 1024;
+
+    let processedBuffer = imageBuffer;
+    if (sizeInKb > 900) {
+        processedBuffer = await sharp(imageBuffer)
+          .resize(1200, 1200, {
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+        .png({ quality: 85 })
+      .toBuffer();
+    }
+
+    const response = await axios.post('https://bsky.social/xrpc/com.atproto.repo.uploadBlob', processedBuffer, {
       headers: headers,
     });
     if (response.data && response.data.blob) {
