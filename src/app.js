@@ -23,16 +23,24 @@ fs.readdirSync('./src/triggers')
   });
 client.triggers = triggers;
 client.once(Events.ClientReady, readyClient => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
 client.on(Events.MessageCreate, async message => {
-    if (message.author.bot) return;
-    
-    // Check if message is in allowed channels
-    if (greetingsModule.limitToChannels.includes(message.channel.id)) {
-        await greetingsModule.execute(message);
+  if (message.author.bot) return;
+
+  triggers.forEach(async (trigger) => {
+    // Check if channel is allowed for this trigger
+    if (trigger.limitToChannels && 
+      trigger.limitToChannels.includes(message.channel.id)) {
+      try {
+        await trigger.execute(message);
+      } catch (error) {
+        console.error(`Error executing trigger ${trigger.name}:`, error);
+      }
     }
+  });
+
 });
 
 client.login(process.env.BOT_TOKEN);
