@@ -4,7 +4,7 @@ require('dotenv').config();
 const fs = require('fs');
 const { Collection, Client, Events, GatewayIntentBits } = require('discord.js');
 const greetingsModule = require('./triggers/greetings.js');
-const command_prefix = require('./config/bot.js');
+const { command_prefix } = require('./config/bot.js');
 
 const client = new Client({ intents: [
   GatewayIntentBits.Guilds,
@@ -43,13 +43,11 @@ client.on(Events.MessageCreate, async message => {
   if (message.author.bot) return;
   console.log("Received message: ", message.content.toString());
 
-  if (message.content.startsWith(" " + command_prefix)) {
-    console.log("Received command: ", message.content.toString());
+  let msg = message.content.toString();
+  // COMMANDS
+  if (msg.startsWith(command_prefix)) {
     commands.forEach(async (command) => {
-      if (message.content.startsWith(command_prefix))
-        console.log("Received command: ", message.content.toString());
-      if (message.content.startsWith(command_prefix + command.name)) {
-        console.log("Received command: ", command.name);
+      if (message.content.startsWith(command_prefix + command.name.toLowerCase())) {
         const args = message.content.split(' ');
         args.shift();
         try {
@@ -60,8 +58,9 @@ client.on(Events.MessageCreate, async message => {
       }
     });
   }
+
+  //TRIGGERS
   triggers.forEach(async (trigger) => {
-    // Check if channel is allowed for this trigger
     if (trigger.limitToChannels && 
       trigger.limitToChannels.includes(message.channel.id)) {
       try {

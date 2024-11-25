@@ -20,6 +20,7 @@ const { COOLDOWN = '' } = process.env;
 
 const cooldown = COOLDOWN.length === 0 ? 10 : COOLDOWN;
 
+
 module.exports = {
   channels,
   cooldown,
