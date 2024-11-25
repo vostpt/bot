@@ -2,7 +2,8 @@
 require('dotenv').config();
 
 const fs = require('fs');
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Collection, Client, Events, GatewayIntentBits } = require('discord.js');
+const greetingsModule = require('./triggers/greetings.js');
 
 const client = new Client({ intents: [
   GatewayIntentBits.Guilds,
@@ -11,35 +12,27 @@ const client = new Client({ intents: [
   GatewayIntentBits.GuildMembers,
 ] });
 
-// const commands = new Discord.Collection();
-// const triggers = new Discord.Collection();
-// const cooldowns = new Discord.Collection();
+const triggers = new Collection();
 
-// Load commands
-// fs.readdirSync('./src/commands')
-//   .filter(file => file.endsWith('.js'))
-//   .forEach((file) => {
-//     const command = require(`./commands/${file}`);
-//     commands.set(command.name, command);
-//     cooldowns.set(command.name, new Discord.Collection());
-//   });
-
-// Load triggers
-// fs.readdirSync('./src/triggers')
-//   .filter(file => file.endsWith('.js'))
-//   .forEach((file) => {
-//     const trigger = require(`./triggers/${file}`);
-//     triggers.set(trigger.name, trigger);
-//   });
-//
-// client.commands = commands;
-// client.triggers = triggers;
-// client.cooldowns = cooldowns;
-//
-// client.on('ready', () => Events.ready(client));
-// client.on('message', message => Events.message(client, message));
+//Load triggers
+fs.readdirSync('./src/triggers')
+  .filter(file => file.endsWith('.js'))
+  .forEach((file) => {
+    const trigger = require(`./triggers/${file}`);
+    triggers.set(trigger.name, trigger);
+  });
+client.triggers = triggers;
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+});
+
+client.on(Events.MessageCreate, async message => {
+    if (message.author.bot) return;
+    
+    // Check if message is in allowed channels
+    if (greetingsModule.limitToChannels.includes(message.channel.id)) {
+        await greetingsModule.execute(message);
+    }
 });
 
 client.login(process.env.BOT_TOKEN);

@@ -1,4 +1,5 @@
 const prefix = '!';
+
 const channels = {
   MAIN_CHANNEL_ID: process.env.MAIN_CHANNEL_ID,
   EARTHQUAKES_CHANNEL_ID: process.env.EARTHQUAKES_CHANNEL_ID,
@@ -11,47 +12,17 @@ const channels = {
   VOLUNTEERS_CHANNEL_ID: process.env.VOLUNTEERS_CHANNEL_ID,
   TWFEED_CHANNEL_ID: process.env.TWFEED_CHANNEL_ID,
   FBFEED_CHANNEL_ID: process.env.FBFEED_CHANNEL_ID,
-  DGSCORONA_CHANNEL_ID: process.env.DGSCORONA_CHANNEL_ID,
-  CORONAFAQ_CHANNEL_ID: process.env.CORONAFAQ_CHANNEL_ID,
   JOURNAL_CHANNEL_ID: process.env.JOURNAL_CHANNEL_ID,
   TRAVEL_GUIDELINES: process.env.TRAVEL_GUIDELINES,
-};
-
-const coronaUpdateUsers = process.env.CORONAUPDATEUSERS;
-const rallyUpdateUsers = process.env.RALLYUPDATEUSERS;
-
-const userLists = {
-  coronaUpdate: typeof coronaUpdateUsers !== 'undefined'
-    ? coronaUpdateUsers.split(',')
-    : [],
-  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
-    ? rallyUpdateUsers.split(',')
-    : [],
-};
-
-const coronaUpdateRoles = process.env.CORONAUPDATEROLES;
-const rallyUpdateRoles = process.env.RALLYUPDATEROLES;
-
-const roleLists = {
-  coronaUpdate: typeof coronaUpdateRoles !== 'undefined'
-    ? coronaUpdateRoles.split(',')
-    : [],
-  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
-    ? rallyUpdateRoles.split(',')
-    : [],
 };
 
 const { COOLDOWN = '' } = process.env;
 
 const cooldown = COOLDOWN.length === 0 ? 10 : COOLDOWN;
 
-const betaMode = (/true/i).test(process.env.BETA_MODE);
 
 module.exports = {
-  prefix,
   channels,
-  userLists,
-  roleLists,
   cooldown,
-  betaMode,
-};
+  prefix,
+}
