@@ -1,4 +1,4 @@
-const prefix = '!';
+const command_prefix = '!';
 
 const channels = {
   MAIN_CHANNEL_ID: process.env.MAIN_CHANNEL_ID,
@@ -20,9 +20,8 @@ const { COOLDOWN = '' } = process.env;
 
 const cooldown = COOLDOWN.length === 0 ? 10 : COOLDOWN;
 
-
 module.exports = {
   channels,
   cooldown,
-  prefix,
+  command_prefix,
 }
