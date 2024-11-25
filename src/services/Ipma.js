@@ -231,7 +231,7 @@ const { sendPostsToBsky } = require('./Bsky');
   *
   * @param {Object} newWarnings
   */
- const tweetNewWarnings = async (client, zone, newWarnings) => {
+ const publishNewWarnings = async (client, zone, newWarnings) => {
    const joinNewWarn = [];
 
    let strDiscord = '';
@@ -366,7 +366,7 @@ const { sendPostsToBsky } = require('./Bsky');
 
      const strTelegram = `ℹ️⚠️${emoji} ${strHeader} ${getDistrictStr(false)} ${getTime()} ${emoji}⚠️ℹ️`;
 
-     const strImgDesc = `Aviso ${level} ${strDueType}`;
+     const strImgDesc = `Aviso ${level} devido a ${awarenessTypeName}`;
 
      strDiscord += `:information_source: :warning: ${emojiDiscord} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${emojiDiscord} :warning: :information_source:\n\n`;
 
@@ -464,19 +464,19 @@ const { sendPostsToBsky } = require('./Bsky');
        const newWarnMainland = newWarn.filter(warning => regionsData[warning.idAreaAviso].zone === 'mainland');
        
        if (newWarnMainland.length > 0) {
-        tweetNewWarnings(client, 'mainland', newWarnMainland);
+        publishNewWarnings(client, 'mainland', newWarnMainland);
        }
 
        const newWarnAzores = newWarn.filter(warning => regionsData[warning.idAreaAviso].zone === 'azores');
        
        if (newWarnAzores.length > 0) {
-        tweetNewWarnings(client, 'azores', newWarnAzores);
+        publishNewWarnings(client, 'azores', newWarnAzores);
        }
 
        const newWarnMadeira = newWarn.filter(warning => regionsData[warning.idAreaAviso].zone === 'madeira');
 
        if (newWarnMadeira.length > 0) {
-        tweetNewWarnings(client, 'madeira', newWarnMadeira);
+        publishNewWarnings(client, 'madeira', newWarnMadeira);
        }       
      }
  };

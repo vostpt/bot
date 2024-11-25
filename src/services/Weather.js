@@ -140,18 +140,23 @@ const getDailyReport = async (client) => {
 
   await sendMessagesTelegram(tlgMessages);
 
+  const imgDes = "Métricas de Extremos Diários Verificados pelas estações do IPMA";
+
   const bskyMessages = [];
   bskyMessages.push({
     message: reports.pt.text,
-    imageUrl: attachmentURLsPt[0]
+    imageUrl: attachmentURLsPt[0],
+    imageDes: imgDes,
   });
   bskyMessages.push({
     message: reports.mad.text,
-    imageUrl: attachmentURLsMad[0]
+    imageUrl: attachmentURLsMad[0],
+    imageDes: imgDes,
   });
   bskyMessages.push({
     message: reports.az.text,
-    imageUrl: attachmentURLsAz[0]
+    imageUrl: attachmentURLsAz[0],
+    imageDes: imgDes,
   });
 
   await sendPostsToBsky(bskyMessages);
