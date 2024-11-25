@@ -366,6 +366,8 @@ const { sendPostsToBsky } = require('./Bsky');
 
      const strTelegram = `ℹ️⚠️${emoji} ${strHeader} ${getDistrictStr(false)} ${getTime()} ${emoji}⚠️ℹ️`;
 
+     const strImgDesc = `Aviso ${level} ${strDueType}`;
+
      strDiscord += `:information_source: :warning: ${emojiDiscord} ${strHeader} ${getTime()} ${getDistrictStr(false)} ${emojiDiscord} :warning: :information_source:\n\n`;
 
      const fileName = `warnings/Twitter_Post_Aviso${level}_${removeAccent(strType)}.png`;
@@ -400,6 +402,7 @@ const { sendPostsToBsky } = require('./Bsky');
 
      bskyPosts.push({
        imageUrl: photoURL,
+       imageDes: strImgDesc,
        message: strTwitter,
      });
 

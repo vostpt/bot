@@ -40,6 +40,42 @@ async function authenticate(handle, password) {
   }
 }
 
+async function isTokenValid() {
+  if (!accessToken) {
+    console.log('[BSKY-AUTH] No access token present');
+    return false;
+  }
+
+  try {
+    const response = await axios.get('https://bsky.social/xrpc/com.atproto.server.getSession', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    if (response.data && response.data.handle) {
+      console.log('[BSKY-AUTH] Token validated successfully for handle:', response.data.handle);
+      return true;
+    }
+
+    console.log('[BSKY-AUTH] Token validation failed: Invalid response format');
+    return false;
+
+  } catch (error) {
+    if (error.response?.status === 401) {
+      console.log('[BSKY-AUTH] Token is invalid or expired');
+    } else {
+      console.error('[BSKY-AUTH] Error checking token validity:', {
+        error: error.message,
+        status: error.response?.status,
+        timestamp: new Date().toISOString()
+      });
+    }
+    return false;
+  }
+}
+
+
 async function fetchImage(imageUrl) {
   try {
     console.log('[BSKY-IMAGE] Fetching image from:', imageUrl);
@@ -97,6 +133,9 @@ async function uploadImage(imageBuffer, imageType, token) {
     if (response.data && response.data.blob) {
       console.log('[BSKY-UPLOAD] Successfully uploaded image');
       return response.data.blob;
+    } else if (response.data && response.data.error == "ExpiredToken") {
+      await authenticate(handle, password);
+      return await uploadImage(imageBuffer, imageType, accessToken);
     } else {
       console.error('[BSKY-UPLOAD-ERROR] Image upload failed:', {
         response: response.data,
@@ -115,7 +154,7 @@ async function uploadImage(imageBuffer, imageType, token) {
   }
 }
 
-async function createPost(message, blob, token) {
+async function createPost(message, blob, token, imageDes) {
   const postData = {
     repo: repohandle,
     collection: 'app.bsky.feed.post',
@@ -128,7 +167,7 @@ async function createPost(message, blob, token) {
         "images": [
           {
             "image": blob,
-            "alt": "test",
+            "alt": imageDes,
           },
         ],
       } : undefined,
@@ -149,13 +188,16 @@ async function createPost(message, blob, token) {
       },
     });
     
-    if (response.data) {
+    if (response.data && response.status == 200) {
       console.log('[BSKY-POST] Successfully created post:', {
         uri: response.data.uri,
         cid: response.data.cid,
         timestamp: new Date().toISOString()
       });
       return response.data;
+    } else if (response.data && response.data.error == "ExpiredToken") {
+      await authenticate(handle, password);
+      return await createPost(message, blob, accessToken);
     } else {
       console.error('[BSKY-POST-ERROR] Post creation failed:', {
         response: response.data,
@@ -176,12 +218,11 @@ async function createPost(message, blob, token) {
   }
 }
 
-async function postToBluesky(message, imagePath) {
+async function postToBluesky(message, imagePath, imageDes) {
   try {
     if (!accessToken) {
       await authenticate(handle, password);
     }
-
     let blob;
     if (imagePath) {
       let imageBuffer;
@@ -200,7 +241,7 @@ async function postToBluesky(message, imagePath) {
       }
     }
     
-    const postResponse = await createPost(message, blob, accessToken);
+    const postResponse = await createPost(message, blob, accessToken, imageDes);
     return postResponse;
   } catch (error) {
     console.error('[BSKY-ERROR] Main posting process failed:', {
@@ -234,9 +275,11 @@ async function sendPostsToBsky(messages) {
     timestamp: new Date().toISOString()
   });
 
+  isTokenValid();
+
   for (const message of messages) {
     try {
-      await postToBluesky(message.message, message.imageUrl);
+      await postToBluesky(message.message, message.imageUrl, message.imageDes);
     } catch (error) {
       console.error('[BSKY-BATCH-ERROR] Failed to process message in batch:', {
         message: message.message,
