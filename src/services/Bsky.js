@@ -40,45 +40,8 @@ async function authenticate(handle, password) {
   }
 }
 
-async function isTokenValid() {
-  if (!accessToken) {
-    console.log('[BSKY-AUTH] No access token present');
-    return false;
-  }
-
-  try {
-    const response = await axios.get('https://bsky.social/xrpc/com.atproto.server.getSession', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-
-    if (response.data && response.data.handle) {
-      console.log('[BSKY-AUTH] Token validated successfully for handle:', response.data.handle);
-      return true;
-    }
-
-    console.log('[BSKY-AUTH] Token validation failed: Invalid response format');
-    return false;
-
-  } catch (error) {
-    if (error.response?.status === 401) {
-      console.log('[BSKY-AUTH] Token is invalid or expired');
-    } else {
-      console.error('[BSKY-AUTH] Error checking token validity:', {
-        error: error.message,
-        status: error.response?.status,
-        timestamp: new Date().toISOString()
-      });
-    }
-    return false;
-  }
-}
-
-
 async function fetchImage(imageUrl) {
   try {
-    console.log('[BSKY-IMAGE] Fetching image from:', imageUrl);
     const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
     console.log('[BSKY-IMAGE] Successfully fetched image:', imageUrl);
     return Buffer.from(response.data, 'binary');
@@ -195,9 +158,6 @@ async function createPost(message, blob, token, imageDes) {
         timestamp: new Date().toISOString()
       });
       return response.data;
-    } else if (response.data && response.data.error == "ExpiredToken") {
-      await authenticate(handle, password);
-      return await createPost(message, blob, accessToken);
     } else {
       console.error('[BSKY-POST-ERROR] Post creation failed:', {
         response: response.data,
@@ -250,21 +210,6 @@ async function postToBluesky(message, imagePath, imageDes) {
       imagePath: imagePath,
       timestamp: new Date().toISOString()
     });
-
-    if (error.response?.status === 401) {
-      console.log('[BSKY-AUTH] Token expired, attempting re-authentication...');
-      try {
-        await authenticate(handle, password);
-        console.log('[BSKY-AUTH] Re-authentication successful, retrying post...');
-        return await createPost(message, blob, accessToken);
-      } catch (reAuthError) {
-        console.error('[BSKY-AUTH-ERROR] Re-authentication failed:', {
-          error: reAuthError.message,
-          timestamp: new Date().toISOString()
-        });
-        throw reAuthError;
-      }
-    }
     throw error;
   }
 }
@@ -275,7 +220,7 @@ async function sendPostsToBsky(messages) {
     timestamp: new Date().toISOString()
   });
 
-  isTokenValid();
+  authenticate(handle, password);
 
   for (const message of messages) {
     try {
@@ -291,7 +236,6 @@ async function sendPostsToBsky(messages) {
       continue;
     }
   }
-  
   console.log('[BSKY-BATCH] Completed batch post processing');
 }
 
