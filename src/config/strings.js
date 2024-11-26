@@ -1,4 +1,5 @@
 module.exports = {
+  // *********** Greetings ***********
   PERSONAL_MESSAGES: {
     "502617955100786709": 'aqui tens o teu chá verde :tea:',
     "501025896732426250": 'aqui tens o teu chá verde quentinho :tea:',
@@ -55,4 +56,25 @@ module.exports = {
     "senhorim"  : ':bear: **SENHORIM! SENHORIM! QUEM AQUI VEM NÃO MANDA AQUI!** :bear:',
     "scb"       : '**Braga Braga Braga, vamos para a frente!**',
   },
+  // *********** vost ***********
+  SIBLINGS: [
+    '🇪🇺 VOST Europe (https://twitter.com/VOSTeurope)',
+    '🇫🇷 VISOV France (https://twitter.com/VISOV1)',
+    '🇧🇪 VOST Belgique (https://twitter.com/VOSTbe)',
+    '🇩🇪 VOST Germany (https://twitter.com/VOST_de)',
+    '🇫🇷 VOST Nice (https://twitter.com/NiceVOST)',
+    '🇬🇧 VOST UK (https://twitter.com/VOSTUK)',
+    '🇮🇹 VOST Italy (https://twitter.com/VOSTitaly)',
+    '🇪🇸 VOST Spain (https://twitter.com/vostSPAIN)',
+    '🇬🇧 DGVost (https://twitter.com/DGVost)',
+  ],
+
+  SOCIALNETWORKS: [
+    'Twitter: https://twitter.com/vostpt',
+    'Facebook: https://pt-pt.facebook.com/Vostpt/',
+    'Instagram: https://www.instagram.com/vostpt/',
+    'Bluesky: https://bsky.app/profile/vost.pt',
+  ],
+
+
 };
