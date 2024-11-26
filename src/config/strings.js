@@ -48,6 +48,7 @@ module.exports = {
     'bonnenuit',
   ],
 
+  // *********** Football ***********
   FOOTBALL_JOKES: {
     "benfica"   : ':eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:',
     "sporting"  : ':lion_face: **Rapaziada oiçam bem o que eu vos digo, gritem todos comigo: VIVA O SPORTING!** :lion_face:',
@@ -69,12 +70,30 @@ module.exports = {
     '🇬🇧 DGVost (https://twitter.com/DGVost)',
   ],
 
-  SOCIALNETWORKS: [
+  SOCIAL_NETWORKS: [
     'Twitter: https://twitter.com/vostpt',
     'Facebook: https://pt-pt.facebook.com/Vostpt/',
     'Instagram: https://www.instagram.com/vostpt/',
     'Bluesky: https://bsky.app/profile/vost.pt',
   ],
 
+  // *********** Lousy Language ***********
+  LOUSY_WORDS: [
+    'merda',
+    'caralho',
+    'crl',
+    'puta',
+    'fodase',
+    'foda-se',
+  ],
 
+  // *********** Discord Others ***********
+  MISCELLANEOUS: {
+    "coffee": "@everyone A pedido de ${msgInstance.author} tomem lá um café! :coffee:",
+    "champagne": "@everyone A pedido de ${msgInstance.author} vamos todos celebrar :champagne: :champagne_glass",
+    "bolo": "@everyone A pedido de ${msgInstance.author} aqui está o bolo! :cake:\nhttps://media1.tenor.com/images/930e055fd80ba465ad20ee13e5badb1d/tenor.gif",
+    "alheira": "@everyone A pedido de ${msgInstance.author}, aqui está a alheira!\nhttps://www.teleculinaria.pt/wp-content/uploads/2016/01/alheiras-no-forno-com-grelos-e-batatas-cozidas.jpg",
+    "voluntários": "Desculpa interromper, mas na VOST Portugal ser voluntário é trabalhar para a invisibilidade e sempre com transparência",
+    "💪": "Muito vai esta gente ao ginásio, graças a Deus :rolling_eyes: ",
+  },
 };
