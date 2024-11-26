@@ -46,4 +46,13 @@ module.exports = {
     'bonsoir',
     'bonnenuit',
   ],
+
+  FOOTBALL_JOKES: {
+    "benfica"   : ':eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:',
+    "sporting"  : ':lion_face: **Rapaziada oiçam bem o que eu vos digo, gritem todos comigo: VIVA O SPORTING!** :lion_face:',
+    "fcp"       : ':dragon: :**Azul e branco é o coração! E salta Porto! E salta Porto! Allez! Allez!** :dragon:',
+    "fc porto"  : ':dragon: **E salta Porto! E salta Porto! Allez! Allez!** :dragon:',
+    "senhorim"  : ':bear: **SENHORIM! SENHORIM! QUEM AQUI VEM NÃO MANDA AQUI!** :bear:',
+    "scb"       : '**Braga Braga Braga, vamos para a frente!**',
+  },
 };
