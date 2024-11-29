@@ -8,6 +8,7 @@ module.exports = {
   args: false,
   cooldown,
   usage: ['coffee', 'champagne', 'bolo', 'alheira', 'voluntários', '💪'],
+  commands: ["!coffee", "!champagne", "!bolo", "!alheira", "!voluntários", "!💪"],
 
 
   /**

@@ -3,6 +3,15 @@ const {
   FOOTBALL_JOKES
 } = require('../config/strings');
 
+function findMagicWordInMessage(message) {
+  const keys = Object.keys(FOOTBALL_JOKES);
+  const foundKey = keys.find(key => message.toLowerCase().includes(key.toLowerCase()));
+  if (foundKey) {
+    return FOOTBALL_JOKES[foundKey];
+  }
+  return null;
+}
+
 module.exports = {
   name: 'football',
   description: 'Football related replies',
@@ -24,12 +33,3 @@ module.exports = {
     }
   },
 };
-
-function findMagicWordInMessage(message) {
-  const keys = Object.keys(FOOTBALL_JOKES);
-  const foundKey = keys.find(key => message.toLowerCase().includes(key.toLowerCase()));
-  if (foundKey) {
-    return FOOTBALL_JOKES[foundKey];
-  }
-  return null;
-}

@@ -15,6 +15,7 @@ module.exports = {
   cooldown,
   name: 'vost',
   usage: ``,
+  commands: ['!vost registro', '!vost irmaos', '!vost rs'],
 
   /**
   * Send to Discord info intern to VOST Portugal
