@@ -1,4 +1,4 @@
-const { TELEGRAM } = require('../../config/services');
+const { TELEGRAM } = require('../config/services');
 const { TelegramClient } = require('messaging-api-telegram');
 const { telegramKeys, telegramKeysRally } = require('../../config/telegram');
 

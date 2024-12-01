@@ -1,9 +1,10 @@
+const { TWITTER } = require('../config/services');
 const { TwitterApi } = require('twitter-api-v2');
 const { getFileContent } = require('../helpers');
 const { twitterKeys } = require('../../config/twitter');
 const { channels } = require('../../config/bot');
 const { db } = require('../database/models');
-const { sendMessageToChannel } = require('./Discord');
+const { sendMessageToChannel } = require('./siscord');
 
 // Constants
 const LOG_PREFIX = '[Twitter]';
@@ -24,6 +25,10 @@ const logger = {
  */
 const initializeTwitterClients = () => {
   try {
+    if (!TWITTER || !TWITTER.enabled) {
+      logger.warning('Twitter service is disabled in configuration');
+      return null;
+    }
     const clients = twitterKeys.map((account) => ({
       reference: account.reference,
       screenName: account.screenName,

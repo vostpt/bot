@@ -1,4 +1,4 @@
-const { MASTODON } = require('../config');
+const { MASTODON } = require('../config/services');
 const { uploadMedia, postStatus } = require('../api/Mastodon');
 const { getImagesPath, getFileContent } = require('../helpers');
 

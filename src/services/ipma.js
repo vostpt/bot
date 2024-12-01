@@ -17,9 +17,9 @@ const { telegramKeys } = require('../../config/telegram');
 const { uploadThreadTwitter } = require('./twitter');
 const { sendMessageToChannel } = require('./discord');
 const { removeAccent, splitMessageString } = require('../helpers');
-const { sendMessagesTelegram } = require('./Telegram');
+const { sendMessagesTelegram } = require('./telegram');
 const { sendPostMastodon } = require('./Mastodon');
-const { postMessageFacebook } = require('./Facebook');
+const { postMessageFacebook } = require('./facebook');
 const { sendPostsToBsky } = require('./Bsky');
 
 // Constants

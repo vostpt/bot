@@ -1,5 +1,5 @@
-const { FACEBOOK } = require('../constants');
-const bizSdk = require('facebook-nodejs-business-sdk');
+const { FACEBOOK } = require('../config/services');
+const facebookSdk = require('facebook-nodejs-business-sdk');
 const { facebookKeys, defaultReference } = require('../../config/facebook');
 const { baseImagesURL } = require('../../config/api');
 
@@ -39,7 +39,7 @@ const initializeFacebookApi = (clientConfig) => {
   if (FACEBOOK || !FACEBOOK.enabled) {
     return null;
   }
-  const api = bizSdk.FacebookAdsApi.init(clientConfig.keys.access_token);
+  const api = facebookSdk.FacebookAdsApi.init(clientConfig.keys.access_token);
   api.setDebug(true); // Set to false in production
   return api;
 };
@@ -57,7 +57,7 @@ const postMessageFacebook = async (post, reference) => {
     const api = initializeFacebookApi(clientToUse);
     
     const filePath = post.media ? `${baseImagesURL}/${post.media}` : '';
-    const page = new bizSdk.Page(clientToUse.pageName);
+    const page = new facebookSdk.Page(clientToUse.pageName);
 
     const fields = ['id', 'message'];
     const params = {
@@ -87,7 +87,7 @@ const postPhotoFacebook = async (post, reference) => {
     const clientToUse = loadAccountFromReference(reference);
     const api = initializeFacebookApi(clientToUse);
     
-    const page = new bizSdk.Page(clientToUse.pageName);
+    const page = new facebookSdk.Page(clientToUse.pageName);
     const photoUrl = `${baseImagesURL}/${post.media}`;
 
     const fields = ['id', 'message'];
