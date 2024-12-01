@@ -220,7 +220,7 @@ async function sendPostsToBsky(messages) {
     timestamp: new Date().toISOString()
   });
 
-  authenticate(handle, password);
+  await authenticate(handle, password);
 
   for (const message of messages) {
     try {
