@@ -18,7 +18,7 @@ const { uploadThreadTwitter } = require('./twitter');
 const { sendMessageToChannel } = require('./discord');
 const { removeAccent, splitMessageString } = require('../helpers');
 const { sendMessagesTelegram } = require('./telegram');
-const { sendPostMastodon } = require('./Mastodon');
+const { sendPostMastodon } = require('./mastodon');
 const { postMessageFacebook } = require('./facebook');
 const { sendPostsToBsky } = require('./Bsky');
 

@@ -3,7 +3,6 @@ const { TwitterApi } = require('twitter-api-v2');
 const { getFileContent } = require('../helpers');
 const { twitterKeys } = require('../../config/twitter');
 const { channels } = require('../../config/bot');
-const { db } = require('../database/models');
 const { sendMessageToChannel } = require('./siscord');
 
 // Constants

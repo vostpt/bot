@@ -3,6 +3,7 @@ const earthquakesApi = require('./earthquakes');
 const firesApi = require('./fires');
 const ipmaApi = require('./ipma');
 const journalApi = require('./journal');
+const mastodon = require('./mastodon');
 const meteoAlarmApi = require('./meteo-alarm');
 const procivApi = require('./prociv');
 const warningsApi = require('./warnings');
@@ -21,4 +22,3 @@ module.exports = {
   weatherApi,
   windApi
 };
-
