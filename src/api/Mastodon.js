@@ -15,13 +15,15 @@ const defaultClientMasto = mastodonKeys.main;
 const uploadMedia = async (fileObject, reference) => {
   const client = mastodonKeys[reference] ? mastodonKeys[reference] : defaultClientMasto;
   const url = `${client.api_url}/v2/media`;
-
   const nodeBuf = Buffer.from(fileObject.name);
   const formData = new FormData();
   formData.append('file', nodeBuf, 'image.png');
+  
+  if (fileObject.description) {
+    formData.append('description', fileObject.description);
+  }
 
   try {
-  
     const res = await axios({
       method: 'post',
       url,
@@ -46,7 +48,6 @@ const uploadMedia = async (fileObject, reference) => {
     return null;
   }
 };
-
 
 
 const postStatus = async (postObject, reference) => {

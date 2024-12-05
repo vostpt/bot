@@ -415,6 +415,7 @@ const { sendPostsToBsky } = require('./Bsky');
          sensitive: false,
          language: 'pt',
        },
+       description: strImgDesc,
      };
 
      sendPostMastodon(post, 'main');

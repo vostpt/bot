@@ -37,6 +37,7 @@ const sendReportDiscord = async () => {
  *
  */
 const getDailyReport = async (client) => {
+  const imgDes = "Métricas de Extremos Diários Verificados pelas estações do IPMA";
   const reportImg = await WeatherApi.getDailyReportImg();
 
   const reportUrl = await WeatherApi.getDailyReportURL();
@@ -85,16 +86,19 @@ const getDailyReport = async (client) => {
 
   const postMast = [
     {
-      status: reports.pt.text,
+      status: reports.pt.text.replace('@ipma_pt', 'IPMA'),
       media: reports.pt.base64,
+      description: imgDes,
     },
     {
-      status: reports.mad.text,
+      status: reports.mad.text.replace('@ipma_pt', 'IPMA'),
       media: reports.mad.base64,
+      description: imgDes,
     },
     {
-      status: reports.az.text,
+      status: reports.az.text.replace('@ipma_pt', 'IPMA'),
       media: reports.az.base64,
+      description: imgDes,
     }
   ]
 
@@ -140,21 +144,20 @@ const getDailyReport = async (client) => {
 
   await sendMessagesTelegram(tlgMessages);
 
-  const imgDes = "Métricas de Extremos Diários Verificados pelas estações do IPMA";
 
   const bskyMessages = [];
   bskyMessages.push({
-    message: reports.pt.text,
+    message: reports.pt.text.replace('@ipma_pt', 'IPMA'),
     imageUrl: attachmentURLsPt[0],
     imageDes: imgDes,
   });
   bskyMessages.push({
-    message: reports.mad.text,
+    message: reports.mad.text.replace('@ipma_pt', 'IPMA'),
     imageUrl: attachmentURLsMad[0],
     imageDes: imgDes,
   });
   bskyMessages.push({
-    message: reports.az.text,
+    message: reports.az.text.replace('@ipma_pt', 'IPMA'),
     imageUrl: attachmentURLsAz[0],
     imageDes: imgDes,
   });

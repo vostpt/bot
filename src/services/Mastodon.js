@@ -27,7 +27,11 @@ const sendPostMastodon = async (post, reference = 'main') => {
       path: filePath,
     };
 
-    const result = await uploadMedia(fileObject, reference);
+    const result = await uploadMedia({
+      ...fileObject,
+      description: post.description ?? "",
+    },
+      reference);
 
     mediaIds.push(result.id);
   }
