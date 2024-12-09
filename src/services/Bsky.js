@@ -62,7 +62,7 @@ async function uploadImage(imageBuffer, imageType, token) {
     'Content-Type': mimeType,
     'Authorization': `Bearer ${token}`,
   };
-  
+
   try {
     const sizeInBytes = imageBuffer.length;
     const sizeInKb = sizeInBytes / 1024;
@@ -81,7 +81,7 @@ async function uploadImage(imageBuffer, imageType, token) {
         })
         .png({ quality: 85 })
         .toBuffer();
-      
+
       const newSizeKb = processedBuffer.length / 1024;
       console.log('[BSKY-UPLOAD] Image resized:', {
         newSize: `${newSizeKb.toFixed(2)}KB`,
@@ -92,7 +92,7 @@ async function uploadImage(imageBuffer, imageType, token) {
     const response = await axios.post('https://bsky.social/xrpc/com.atproto.repo.uploadBlob', processedBuffer, {
       headers: headers,
     });
-    
+
     if (response.data && response.data.blob) {
       console.log('[BSKY-UPLOAD] Successfully uploaded image');
       return response.data.blob;
@@ -117,13 +117,62 @@ async function uploadImage(imageBuffer, imageType, token) {
   }
 }
 
+const processInlineHashtags = (text) => {
+  try {
+    const hashtagRegex = /#[\p{L}\p{N}_]+/gu;
+    const hashtags = text.match(hashtagRegex) || [];
+
+    const facets = [];
+
+    hashtags.forEach(hashTag => {
+      const tagPosition = text.indexOf(hashTag);
+
+      if (tagPosition !== -1) {
+        const beforeTag = text.slice(0, tagPosition);
+        const beforeTagBytes = new TextEncoder().encode(beforeTag);
+        const tagBytes = new TextEncoder().encode(hashTag);
+
+        facets.push({
+          index: {
+            byteStart: beforeTagBytes.length,
+            byteEnd: beforeTagBytes.length + tagBytes.length
+          },
+          features: [{
+            $type: 'app.bsky.richtext.facet#tag',
+            tag: hashTag.slice(1) // Remove the # symbol
+          }]
+        });
+      }
+    });
+
+    console.log('[BSKY-HASHTAGS] Processed inline hashtags:', {
+      hashtagCount: hashtags.length,
+      facetsCreated: facets.length,
+      hashtags: hashtags
+    });
+
+    return { text, facets };
+  } catch (error) {
+    console.error('[BSKY-HASHTAGS-ERROR] Failed to process inline hashtags:', {
+      error: error.message,
+      text: text,
+      timestamp: new Date().toISOString()
+    });
+    throw error;
+  }
+};
+
+
 async function createPost(message, blob, token, imageDes) {
+  const processedPost = processInlineHashtags(message);
+
   const postData = {
     repo: repohandle,
     collection: 'app.bsky.feed.post',
     validate: true,
     record: {
-      text: message,
+      text: processedPost.text,
+      facets: processedPost.facets,
       createdAt: new Date().toISOString(),
       embed: blob ? {
         "$type": "app.bsky.embed.images",
@@ -150,7 +199,7 @@ async function createPost(message, blob, token, imageDes) {
         'Content-Type': 'application/json',
       },
     });
-    
+
     if (response.data && response.status == 200) {
       console.log('[BSKY-POST] Successfully created post:', {
         uri: response.data.uri,
@@ -200,7 +249,7 @@ async function postToBluesky(message, imagePath, imageDes) {
         blob = await uploadImage(imageBuffer, imageType, accessToken);
       }
     }
-    
+
     const postResponse = await createPost(message, blob, accessToken, imageDes);
     return postResponse;
   } catch (error) {
@@ -253,4 +302,3 @@ async function sendPostsToBsky(messages) {
 module.exports = {
   sendPostsToBsky
 };
-
