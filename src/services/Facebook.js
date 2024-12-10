@@ -26,10 +26,10 @@ const postMessageFacebook = (post, reference) => {
     const fb = FB.withAccessToken(clientToUse.keys.access_token);
 
     fb.api(
-        `/${clientToUse.pageName}/feed`,
+        `/${clientToUse.pageName}/photos`,
         'POST', {
-        "message": post.message,
-        'link': filePath
+        "caption": post.message,
+        'url': filePath
     },
         (res) => {
             if (res.error) {
