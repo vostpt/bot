@@ -1,9 +1,8 @@
-const { TWITTER } = require('../config/services');
+const config = require('../config');
 const { TwitterApi } = require('twitter-api-v2');
 const { getFileContent } = require('../helpers');
-const { twitterKeys } = require('../../config/twitter');
-const { channels } = require('../../config/bot');
-const { sendMessageToChannel } = require('./siscord');
+const { channels } = require('../config/bot');
+const { sendMessageToChannel } = require('./discord');
 
 // Constants
 const LOG_PREFIX = '[Twitter]';
@@ -24,21 +23,22 @@ const logger = {
  */
 const initializeTwitterClients = () => {
   try {
-    if (!TWITTER || !TWITTER.enabled) {
+    if (!config.twitter.enabled) {
       logger.warning('Twitter service is disabled in configuration');
       return null;
     }
-    const clients = twitterKeys.map((account) => ({
-      reference: account.reference,
-      screenName: account.screenName,
-      fetchTweets: account.fetchTweets,
-      client: new TwitterApi({
-        appKey: account.keys.consumer_key,
-        appSecret: account.keys.consumer_secret,
-        accessToken: account.keys.access_token,
-        accessSecret: account.keys.access_token_secret,
-      }),
-    }));
+
+    const clients = Object.entries(config.twitter.accounts)
+      .filter(([_, accountConfig]) => accountConfig !== null) // Filter out unconfigured accounts
+      .map(([reference, accountConfig]) => ({
+        reference,
+        client: new TwitterApi({
+          appKey: accountConfig.consumer_key,
+          appSecret: accountConfig.consumer_secret,
+          accessToken: accountConfig.access_token,
+          accessSecret: accountConfig.access_token_secret,
+        })
+      }));
 
     logger.info(`Initialized ${clients.length} Twitter clients`);
     return clients;
@@ -49,7 +49,7 @@ const initializeTwitterClients = () => {
 };
 
 const twitterClients = initializeTwitterClients();
-const defaultClientTwitter = twitterClients.find((element) => element.reference === 'main');
+const defaultClientTwitter = twitterClients?.find((element) => element.reference === 'main');
 
 /**
  * Pre-defined tweets for VOST Europe
@@ -130,18 +130,28 @@ const sendTweet = async (client, tweetData) => {
  * @param {String} reference - Twitter client reference
  */
 const uploadThreadTwitter = async (tweetSeq, tweetId = '', reference) => {
-  if (tweetSeq.length === 0) {
+  if (!config.twitter.enabled) {
+    logger.warning('Twitter service is disabled');
+    return;
+  }
+
+  if (!tweetSeq || tweetSeq.length === 0) {
+    logger.warning('No tweets to send');
     return;
   }
 
   try {
-    const accountPos = twitterClients.findIndex((element) => element.reference === reference);
-    const clientTwitter = accountPos < 0 ? twitterClients[0].client : twitterClients[accountPos].client;
+    const client = twitterClients?.find((element) => element.reference === reference)?.client 
+                  || defaultClientTwitter?.client;
+
+    if (!client) {
+      throw new Error(`No Twitter client available for reference: ${reference}`);
+    }
 
     logger.info(`Starting tweet thread with ${tweetSeq.length} tweets`);
 
     for (const tweet of tweetSeq) {
-      await sendTweet(clientTwitter, tweet);
+      await sendTweet(client, tweet);
     }
 
     logger.info('Tweet thread completed successfully');
@@ -156,6 +166,11 @@ const uploadThreadTwitter = async (tweetSeq, tweetId = '', reference) => {
  * @param {Number} tweetId - ID of the pre-defined tweet
  */
 const tweetVostEu = async (tweetId) => {
+  if (!config.twitter.enabled || !config.twitter.accounts.europe) {
+    logger.warning('Twitter or Europe account is not configured');
+    return;
+  }
+
   try {
     const thread = vostEuTweets[tweetId];
     if (!thread) {
@@ -171,19 +186,10 @@ const tweetVostEu = async (tweetId) => {
   }
 };
 
-/*
- * Note: The following features are currently unavailable in v2 free tier:
- * - getVostTweetsAndSendToDiscord
- * - sendNewTweets
- * These features have been removed from the exports but can be reimplemented
- * when using a paid tier or when the API supports these features.
- */
-
 module.exports = {
-  clientTwitter: defaultClientTwitter.client,
+  clientTwitter: defaultClientTwitter?.client,
   uploadThreadTwitter,
   tweetVostEu,
-  // Export additional utilities if needed by other services
   uploadMediaFiles,
   sendTweet,
 };

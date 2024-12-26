@@ -1,4 +1,4 @@
-const { MASTODON } = require('../config/services');
+const config = require('../config');
 const { uploadMedia, postStatus } = require('../api/Mastodon');
 const { getImagesPath, getFileContent } = require('../helpers');
 
@@ -78,7 +78,7 @@ const sendPostMastodon = async (post, reference = 'main') => {
  * @param {string} [reference='main'] - Mastodon account reference
  */
 const uploadThreadMastodon = async (thread, reference = 'main') => {
-  if (!MASTODON || !MASTODON.enabled) {
+  if (!config.mastodon.enabled) {
     logger.warning('Mastodon service is disabled');
     return;
   }

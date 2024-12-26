@@ -1,4 +1,4 @@
-const { FACEBOOK } = require('../config/services');
+const config = require('../config');
 const facebookSdk = require('facebook-nodejs-business-sdk');
 const { facebookKeys, defaultReference } = require('../../config/facebook');
 const { baseImagesURL } = require('../../config/api');
@@ -36,7 +36,7 @@ const loadAccountFromReference = (reference = defaultReference) => {
  * @returns {Object} Facebook API instance
  */
 const initializeFacebookApi = (clientConfig) => {
-  if (FACEBOOK || !FACEBOOK.enabled) {
+  if (!config.facebook.enabled) {
     return null;
   }
   const api = facebookSdk.FacebookAdsApi.init(clientConfig.keys.access_token);

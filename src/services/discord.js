@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { DISCORD } = require('../config/services.js');
+const config = require('../config');
 const fs = require('fs');
 const { Collection, Client, Events, GatewayIntentBits } = require('discord.js');
 const { command_prefix } = require('../config/bot.js');
@@ -9,7 +9,7 @@ const discordApiLimit = 1950;
 
 // Create Discord client only if enabled
 const createDiscordClient = () => {
-  if (!DISCORD || !DISCORD.enabled) {
+  if (!config.discord.enabled) {
     console.log('Discord service is disabled in configuration');
     return null;
   }

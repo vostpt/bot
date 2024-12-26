@@ -1,6 +1,5 @@
-const { TELEGRAM } = require('../config/services');
+const config = require('../config');
 const { TelegramClient } = require('messaging-api-telegram');
-const { telegramKeys, telegramKeysRally } = require('../../config/telegram');
 
 // Constants
 const LOG_PREFIX = '[Telegram]';
@@ -21,8 +20,7 @@ const logger = {
  */
 const initializeClients = () => {
   try {
-    if (!TELEGRAM || !TELEGRAM.enabled) {
-
+    if (!config.telegram.enabled) {
       logger.warning('Telegram service is disabled in configuration');
       return null;
     }

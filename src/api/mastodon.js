@@ -1,4 +1,4 @@
-const { MASTODON } = require('../config/services');
+const config = require('../config');
 const axios = require('axios');
 const fs = require('fs');
 const FormData = require('form-data');
@@ -18,7 +18,9 @@ const logger = {
 };
 
 // Default client configuration
-const defaultClientMasto = mastodonKeys.main;
+const defaultClientMasto = {
+  access_token: config.mastodon.tokens.vostpt
+};
 
 /**
  * Upload media file to Mastodon
@@ -28,7 +30,7 @@ const defaultClientMasto = mastodonKeys.main;
  * @returns {Promise<Object|null>} Uploaded media object or null if upload fails
  */
 const uploadMedia = async (fileObject, reference) => {
-  if (!MASTODON || MASTODON.enabled === false) {
+if(!config.mastodon.enabled) {
     logger.warning('Mastodon service is disabled');
     return;
   }
@@ -82,7 +84,7 @@ const uploadMedia = async (fileObject, reference) => {
  * @returns {Promise<void>}
  */
 const postStatus = async (postObject, reference) => {
-  if (!MASTODON || MASTODON.enabled === false) {
+if(!config.mastodon.enabled) {
     logger.warning('Mastodon service is disabled');
     return;
   }

@@ -1,8 +1,7 @@
-const { BSKY } = require('../config/services');
+const config = require('../config');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-const { bskyKeys } = require('../../config/bsky');
 const sharp = require('sharp');
 
 // Constants
@@ -13,10 +12,10 @@ const MAX_IMAGE_DIMENSION = 1200;
 const IMAGE_QUALITY = 85;
 
 // Configuration
-const config = {
-  handle: bskyKeys.keys.bsky_handle,
-  password: bskyKeys.keys.bsky_password,
-  repoHandle: bskyKeys.keys.bsky_repohandle,
+const bskyConfig = {
+  handle: config.bluesky.handle,
+  password: config.bluesky.password,
+  repoHandle: config.bluesky.repohandle,
   accessToken: null
 };
 
@@ -246,7 +245,7 @@ const postToBluesky = async (message, imagePath, imageDes) => {
  * Send multiple posts to Bluesky
  */
 const sendPostsToBsky = async (messages) => {
-  if (!BSKY || !BSKY.enabled) {
+  if (!config.bluesky.enabled) {
     logger.warning('Bluesky service is disabled');
     return;
   }
