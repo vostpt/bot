@@ -4,6 +4,7 @@ require('dotenv').config();
 const fs = require('fs');
 const Discord = require('discord.js');
 const Events = require('./events');
+const startHttpServer = require('./server/server');
 
 const client = new Discord.Client();
 const commands = new Discord.Collection();
@@ -31,7 +32,10 @@ client.commands = commands;
 client.triggers = triggers;
 client.cooldowns = cooldowns;
 
-client.on('ready', () => Events.ready(client));
+client.once('ready', () => {
+  Events.ready(client);
+  startHttpServer(client);
+});
 client.on('message', message => Events.message(client, message));
 
 client.login(process.env.BOT_TOKEN);

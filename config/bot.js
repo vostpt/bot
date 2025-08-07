@@ -15,6 +15,7 @@ const channels = {
   CORONAFAQ_CHANNEL_ID: process.env.CORONAFAQ_CHANNEL_ID,
   JOURNAL_CHANNEL_ID: process.env.JOURNAL_CHANNEL_ID,
   TRAVEL_GUIDELINES: process.env.TRAVEL_GUIDELINES,
+  COPERNICUS_CHANNEL_ID: process.env.COPERNICUS_CHANNEL_ID,
 };
 
 const coronaUpdateUsers = process.env.CORONAUPDATEUSERS;
