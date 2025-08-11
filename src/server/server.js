@@ -8,6 +8,10 @@ app.use(bodyParser.json());
 
 module.exports = (client) => {
   app.post("/copernicus", async (req, res) => {
+    console.log("📥 Incoming /copernicus request:");
+    console.log("Headers:", req.headers);
+    console.log("Body:", JSON.stringify(req.body, null, 2));
+
     const rawAuth = req.headers["authorization"];
     const token = process.env.COPERNICUS_WEBHOOK_SECRET;
 
@@ -26,6 +30,7 @@ module.exports = (client) => {
         type,
         burnt_area_ha,
         acquisition_date,
+        expected_delivery,
         aoi,
         download_link,
       } = data;
@@ -36,17 +41,21 @@ module.exports = (client) => {
         return res.status(404).send({ error: "Discord channel not found." });
       }
 
-      // Format the date nicely if it exists
+      const parseDate = (iso) => {
+        if (!iso) return null;
+        const d = new Date(iso);
+        return Number.isFinite(d.getTime()) ? d : null;
+      };
+
       const formattedDate = acquisition_date
         ? new Date(acquisition_date).toLocaleString("pt-PT")
-        : "1/1/1970, 12:00:00 AM";
+        : expected_delivery
+        ? new Date(expected_delivery).toLocaleString("pt-PT")
+        : "Data não disponível";
 
       let message = "";
 
-      const isProductAvailable =
-        Number.isFinite(burnt_area_ha) &&
-        download_link &&
-        download_link.trim() !== "";
+      const isProductAvailable = download_link && download_link.trim() !== "";
 
       if (isProductAvailable) {
         // ✅ Product available
@@ -81,7 +90,7 @@ O link para download ainda não está disponível`;
   });
 
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, '0.0.0.0', () => {
+  app.listen(PORT, "0.0.0.0", () => {
     console.log(`🌐 Webhook server listening on port ${PORT}`);
   });
 };
