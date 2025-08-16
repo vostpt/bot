@@ -82,6 +82,13 @@ const message = async (client, msg) => {
 
     /* eslint-disable max-len */
     const command = client.commands.find(({ name, aliases = [] }) => (name === commandName) || aliases.includes(commandName));
+    const ignore = ["firestats", "firemajor", "firemeans"];
+
+    console.log(`Command_to_ignore: ${commandName} (${msg.author.username})`);
+    if (ignore.includes(commandName)) {
+      console.log(`Ignoring command: ${commandName}`);
+      return;
+    }
 
     if (!command) {
       sendMessageToAuthor(msg, `${prefix}${commandName} não existe. Experimenta ${prefixHelp}commands`);
@@ -90,6 +97,7 @@ const message = async (client, msg) => {
 
       return;
     }
+
 
     if (command.limitToChannels && command.limitToChannels.length > 0 && !command.limitToChannels.includes(channelId)) {
       return;
