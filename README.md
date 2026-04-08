@@ -56,7 +56,7 @@ BOT_TOKEN=
 COOLDOWN=
 
 #
-# The channels to where messages should be sent
+# The channels where messages should be sent
 #
 MAIN_CHANNEL_ID=
 EARTHQUAKES_CHANNEL_ID=
@@ -210,7 +210,7 @@ BSKY_PASS=
 BSKY_REPOHANDLE=
 ```
 
-You will also need a `data/auth/vostpt-bot.json` config (can be test version).
+You will also need a `data/auth/vostpt-bot.json` config file (a test version is acceptable).
 
 # Running
 If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
@@ -219,7 +219,7 @@ If you went through the previous steps successfully, you should now be able to r
 npm start
 ```
 
-Tip: use the `BETA_MODE` env variable to toggle which function in [src/jobs/index.json](src/jobs/index.js) is executed  `startProd` (`BETA_MODE=false`) for production and `startBeta`  (`BETA_MODE=true`). 
+Tip: use the `BETA_MODE` env variable to choose which function in [src/jobs/index.js](src/jobs/index.js) is executed: `startProd` (`BETA_MODE=false`) for production or `startBeta` (`BETA_MODE=true`).
 
 
 You should see an output similar to this:

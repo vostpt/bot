@@ -15,9 +15,9 @@ npm install
 ```
 
 ## Configuração
-Após instalar, it's time for a quick configuration.
+Após instalar as dependências, é altura de fazer uma configuração rápida.
 
-Cria um ficheiro `.env` na raíz do projeto.
+Cria um ficheiro `.env` na raiz do projeto.
 
 ```sh
 cp .env.example .env
@@ -50,13 +50,13 @@ TWITTER_ACCESS_TOKEN_SECRET=
 ```
 
 ## Arrancar o bot
-Se já percorreste todos os passos anteriores deves estar tudo pronto para arrancar o bot. Para isso basta executar:
+Se já percorreste todos os passos anteriores, deves ter tudo pronto para arrancar o bot. Para isso, basta executar:
 
 ```sh
 npm start
 ```
 
-E deve aparecer algo do género no terminal:
+Deve aparecer algo do género no terminal:
 ```sh
 READY :: Bot started @ 2019-4-14 21:27:00
 ```

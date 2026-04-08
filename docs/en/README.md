@@ -23,7 +23,7 @@ Create a `.env` file in the project root.
 cp .env.example .env
 ```
 
-Add and replace values where needed:
+Add or replace values where needed:
 
 ```
 #
@@ -32,7 +32,7 @@ Add and replace values where needed:
 BOT_TOKEN=
 
 #
-# The channels to where messages should be sent
+# The channels where messages should be sent
 #
 MAIN_CHANNEL_ID=
 EARTHQUAKES_CHANNEL_ID=

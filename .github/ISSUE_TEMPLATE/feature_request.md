@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Choose this option if you want to suggest an idea to implement in the bot
+about: Choose this option if you want to suggest an idea for the bot
 title: "[FEAT] New feature request"
 labels: enhancement
 assignees: ''
@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+A clear and concise description of what the problem is. E.g. I'm always frustrated when [...]
 
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
