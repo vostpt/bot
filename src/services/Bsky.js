@@ -288,6 +288,7 @@ async function sendPostsToBsky(messages) {
   console.log('[BSKY-BATCH] Completed batch post processing');
 }
 
+/*
 (async () => {
   try {
     await authenticate(handle, password);
@@ -298,6 +299,7 @@ async function sendPostsToBsky(messages) {
     });
   }
 })();
+*/
 
 module.exports = {
   sendPostsToBsky

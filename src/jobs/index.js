@@ -1,60 +1,64 @@
 const schedule = require('node-schedule');
 const moment = require('moment');
+const IpmaApi = require('../api/Ipma');
+
+// Tracks earthquake `time` values already sent today; cleared at midnight
+const sentEarthquakesNotifications = new Set();
+
 const {
   Fires,
   Earthquakes,
   MeteoAlarm,
-  Twitter,
-  Corona,
+//  Twitter,
   Journal,
   Facebook,
   Ipma,
   Weather,
   Medea,
-  Viajar
+  Viajar,
 } = require('../services');
+
 const { channels } = require('../../config/bot');
-const { clientTwitter } = require('../services/Twitter');
+//const { clientTwitter } = require('../services/Twitter');
 
 /**
- * Check if the earthquake level above threshold
- *
- * @param {String} event
- * @param {Number} threshold
+ * Helper: safe channel send (v14)
  */
-const eventAboveThreshold = (event, threshold = 0) => {
-  const regexp = /\*\*(\d\.\d)\*\*/;
+async function sendToChannel(client, channelId, content) {
+  try {
+    const channel = await client.channels.fetch(channelId);
+    if (!channel) return console.warn(`Channel not found: ${channelId}`);
 
-  const matchs = event.match(regexp) || [];
-  const [, intensity = 0] = matchs;
-
-  return intensity >= threshold;
-};
+    return await channel.send(content);
+  } catch (err) {
+    console.error(`Failed sending to channel ${channelId}:`, err);
+  }
+}
 
 /**
- * In memory Set to track already sent notifications
+ * Helper: safe channel send with files
  */
-const sentEarthquakesNotifications = new Set();
+async function sendFileToChannel(client, channelId, content, files) {
+  try {
+    const channel = await client.channels.fetch(channelId);
+    if (!channel) return console.warn(`Channel not found: ${channelId}`);
 
-/**
- * Check if notification has already been sent
- *
- * @param {String} event
- */
-const checkNotSentYet = (event) => !sentEarthquakesNotifications.has(event);
+    return await channel.send({
+      content,
+      files,
+    });
+  } catch (err) {
+    console.error(`Failed sending file to channel ${channelId}:`, err);
+  }
+}
 
 class Jobs {
   constructor(client) {
     this.client = client;
   }
 
-  /**
-   * Start all production (non-beta) jobs
-   */
   startProd() {
     this.forestFires();
-    this.checkNewCoronaReports();
-    this.checkUpdatesCoronaReports();
     this.warnings();
     this.fireRisk();
     this.getFacebookPosts();
@@ -68,136 +72,83 @@ class Jobs {
     this.checkConselhoViajantes();
   }
 
-  /**
-   * Start all beta jobs
-   */
   startBeta() {
     this.earthquakes();
     this.noticeableEarthquakes({ threshold: 2.5 });
-
     Jobs.resetSentNotifications();
   }
 
-  /**
-   * Check for forest fires
-   */
   forestFires() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(1, 56, 5);
     rule.second = 30;
 
     schedule.scheduleJob(rule, () => Fires.getForestFires(this.client));
   }
 
-  /**
-   * Check for warnings
-   */
   warnings() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(0, 59, 5);
 
     schedule.scheduleJob(rule, () => Ipma.getWarnings(this.client));
   }
 
-  /**
-   * Check for MeteoAlarm warnings
-   */
   static warningsMeteoAlarm() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(3, 59, 10);
 
     schedule.scheduleJob(rule, () => MeteoAlarm.getWarnings());
   }
 
-  /**
-   * Clean MeteoAlarm DB
-   */
   static clearMeteoAlarmDb() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = new schedule.Range(0, 23, 4);
 
     schedule.scheduleJob(rule, () => MeteoAlarm.clearDb());
   }
 
-  /**
-   * Schedule VOST Europe tweets
-   */
   static scheduleVostEuTweets() {
-    const ruleWarning = new schedule.RecurrenceRule();
+    const rule1 = new schedule.RecurrenceRule();
+    rule1.hour = 8;
+    rule1.minute = 0;
 
-    ruleWarning.hour = 8;
-    ruleWarning.minute = 0;
-    ruleWarning.second = 0;
+    schedule.scheduleJob(rule1, () => Twitter.tweetVostEu(1));
 
-    schedule.scheduleJob(ruleWarning, () => Twitter.tweetVostEu(1));
+    const rule2 = new schedule.RecurrenceRule();
+    rule2.hour = 12;
+    rule2.minute = 0;
 
-    const ruleEcho = new schedule.RecurrenceRule();
-
-    ruleEcho.hour = 12;
-    ruleEcho.minute = 0;
-    ruleEcho.second = 0;
-
-    schedule.scheduleJob(ruleEcho, () => Twitter.tweetVostEu(2));
+    schedule.scheduleJob(rule2, () => Twitter.tweetVostEu(2));
   }
 
-  /**
-   * Check new messages from Medea 
-   */
   static checkMedeaMessages() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(1, 59, 1);
 
     schedule.scheduleJob(rule, () => Medea.getMessages());
   }
 
-  /**
-   * Check for fires probabilities for today
-   */
   fireRisk() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 7;
     rule.minute = 0;
-    rule.second = 0;
 
-    schedule.scheduleJob(rule, () => {
-      const map = Fires.getMap();
-
-      try {
-        this.client.channels.get(channels.FIRES_CHANNEL_ID).send('Risco de Incêndio para hoje', { files: [map] });
-      } catch (e) {
-        //
-      }
+    schedule.scheduleJob(rule, async () => {
+      const result = await IpmaApi.fetch();
+      if (!result) return console.warn('fireRisk: falhou a gerar o mapa RCM');
+      await sendFileToChannel(
+        this.client,
+        channels.FIRES_CHANNEL_ID,
+        '🔥 Risco de Incêndio para hoje',
+        [{ attachment: result.attachment, name: result.name }]
+      );
     });
   }
 
-  /**
-   * Update new tweets made by VOST accounts
-   */
-  // TODO Not available  for now in v2 free tier, right?
-  // getTweets() {
-  //   const rule = new schedule.RecurrenceRule();
-  //
-  //   rule.minute = new schedule.Range(1, 59, 1);
-  //
-  //   schedule.scheduleJob(rule, () => {
-  //     Twitter.getVostTweetsAndSendToDiscord(this.client);
-  //   });
-  // }
-
-  /**
-   * Update new facebook posts made by VOST accounts
-   */
   getFacebookPosts() {
     Facebook.getVostPostsAndSendToDiscord(this.client);
 
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(1, 59, 2);
 
     schedule.scheduleJob(rule, () => {
@@ -205,56 +156,18 @@ class Jobs {
     });
   }
 
-  /**
-   * Send the daily extreme weather reports to Discord and social networks
-   */
-   sendWeatherReport() {
+  sendWeatherReport() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 10;
     rule.minute = 15;
-    rule.second = 0;
 
     schedule.scheduleJob(rule, () => {
       Weather.getDailyReport(this.client);
     });
   }
 
-  /**
-   * Update new DGS coronavirus reports and send to Discord
-   */
-  checkNewCoronaReports() {
-    const rule = new schedule.RecurrenceRule();
-
-    rule.minute = new schedule.Range(1, 59, 3);
-    rule.second = 30;
-
-    schedule.scheduleJob(rule, () => {
-      Corona.checkNewReports(this.client);
-    });
-  }
-
-  /**
-   * Update new DGS coronavirus reports and send to Discord
-   */
-  checkUpdatesCoronaReports() {
-    const rule = new schedule.RecurrenceRule();
-
-    rule.hour = 9;
-    rule.minute = 0;
-    rule.second = 0;
-
-    schedule.scheduleJob(rule, () => {
-      Corona.checkOldReports(this.client);
-    });
-  }
-
-  /**
-   * Update new Decrees and send to Discord
-   */
   checkNewDecrees() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(0, 59, 2);
     rule.second = 40;
 
@@ -263,106 +176,82 @@ class Jobs {
     });
   }
 
-  /**
-   * Update new Decrees and send to Discord
-   */
   static clearDecreesDb() {
     const rule = new schedule.RecurrenceRule();
-
     rule.dayOfMonth = new schedule.Range(1, 28, 2);
 
-    schedule.scheduleJob(rule, () => {
-      Journal.clearDb();
-    });
+    schedule.scheduleJob(rule, () => Journal.clearDb());
   }
 
-  /**
-   * Checks for yesterday's earthquakes
-   */
   earthquakes() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 0;
     rule.minute = 0;
     rule.second = 10;
 
-    try {
-      schedule.scheduleJob(rule, () => {
-        const yesterday = moment().subtract(1, 'days').format('L');
-        const { events, eventsSensed } = Earthquakes.getEarthquakes(yesterday);
+    schedule.scheduleJob(rule, async () => {
+      const yesterday = moment().subtract(1, 'days').format('L');
+      const { events, eventsSensed } = Earthquakes.getEarthquakes(yesterday);
 
-        if (eventsSensed.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) sentido(s) dia ${yesterday}:***\n${eventsSensed.join('\n')}`);
-        }
+      if (eventsSensed.length > 0) {
+        await sendToChannel(
+          this.client,
+          channels.EARTHQUAKES_CHANNEL_ID,
+          `***Sismo(s) sentido(s) dia ${yesterday}:***\n${eventsSensed.join('\n')}`
+        );
+      }
 
-        if (events.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) de ${yesterday}:***\n${events.join('\n')}`);
-        }
-      });
-    } catch (e) {
-      //
-    }
+      if (events.length > 0) {
+        await sendToChannel(
+          this.client,
+          channels.EARTHQUAKES_CHANNEL_ID,
+          `***Sismo(s) de ${yesterday}:***\n${events.join('\n')}`
+        );
+      }
+    });
   }
 
-  /**
-   * Checks for noticeable earthquakes worthing immediate annoucement
-   *
-   * @param {Object} config
-   */
   noticeableEarthquakes({ threshold } = {}) {
     const rule = new schedule.RecurrenceRule();
+    rule.minute = new schedule.Range(0, 59, 1);
 
-    rule.minute = new schedule.Range(0, 59, 1); // every minute
+    schedule.scheduleJob(rule, async () => {
+      const today = moment().format('L');
+      const earthquakes = await Earthquakes.getByDate(today);
 
-    try {
-      schedule.scheduleJob(rule, async () => {
-        const today = moment().format('L');
-        const { events, eventsSensed } = await Earthquakes.getEarthquakes(today);
+      const noticeable = earthquakes.filter(e => parseFloat(e.magnitud) >= threshold);
 
-        const noticeableEvents = events
-          .filter(checkNotSentYet)
-          .filter((event) => eventAboveThreshold(event, threshold));
+      for (const eq of noticeable) {
+        // Use time as unique ID — skip if already sent today
+        if (sentEarthquakesNotifications.has(eq.time)) continue;
+        sentEarthquakesNotifications.add(eq.time);
 
-        const noticeableSensedEvents = eventsSensed
-          .filter(checkNotSentYet)
-          .filter((event) => eventAboveThreshold(event, threshold));
+        const formattedTime = moment(eq.time).format('LT');
+        let msg;
 
-        if (noticeableSensedEvents.length > 0) {
-          const message = `***Sismo(s) sentido(s) dia ${today}:***\n${noticeableSensedEvents.join('\n')}`;
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableSensedEvents.forEach((event) => sentEarthquakesNotifications.add(event));
-
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n(${noticeableSensedEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
+        if (eq.sensed) {
+          msg = `⚠️ **Sismo sentido**\n${formattedTime}h - M${eq.magType} **${eq.magnitud}** em ${eq.obsRegion} a ${eq.depth}Km prof.\n**Sentido em ${eq.local} com Int. ${eq.degree}** ${eq.shakemapref} // ${eq.lat},${eq.lon}`;
+        } else {
+          msg = `🔔 **Sismo M${eq.magnitud}**\n${formattedTime}h - M${eq.magType} **${eq.magnitud}** em ${eq.obsRegion} a ${eq.depth}Km prof. // ${eq.lat},${eq.lon}`;
         }
 
-        if (noticeableEvents.length > 0) {
-          const message = `***Sismo(s) de ${today}:***\n${noticeableEvents.join('\n')}`;
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableEvents.forEach((event) => sentEarthquakesNotifications.add(event));
-
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
-        }
-      });
-    } catch (e) {
-      //
-    }
+        await sendToChannel(this.client, channels.EARTHQUAKES_CHANNEL_ID, msg);
+      }
+    });
   }
 
-  /**
-   * Clear yesterday's notifications
-   */
   static resetSentNotifications() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 0;
     rule.minute = 0;
 
-    schedule.scheduleJob(rule, () => sentEarthquakesNotifications.clear());
+    schedule.scheduleJob(rule, () => {
+      sentEarthquakesNotifications.clear();
+    });
   }
 
-    checkConselhoViajantes() {
+  checkConselhoViajantes() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 10;
     rule.minute = 0;
 
@@ -370,7 +259,6 @@ class Jobs {
       Viajar.checkNewTravelAdvices(this.client);
     });
   }
-
 }
 
 module.exports = Jobs;

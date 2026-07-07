@@ -6,7 +6,7 @@ const { DateTime } = require('luxon');
 const { db } = require('../database/models');
 const { csvURL } = require('../../config/medea');
 const { api } = require('../api');
-const { uploadThreadTwitter } = require('./Twitter');
+//const { uploadThreadTwitter } = require('./Twitter');
 const { splitMessageString } = require('../helpers');
 
  /**

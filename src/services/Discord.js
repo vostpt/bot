@@ -3,66 +3,67 @@ const { splitMessageString } = require('../helpers');
 const discordApiLimit = 1950;
 
 /**
-* Send message to Discord channel
-* Returns the API response of the last message sent
-*
-* @param {Object} channel
-* @param {String} message
-* @param {String} fileUrl
-*/
+ * Send message to Discord channel
+ * Returns the API response of the last message sent
+ */
 const sendMessageToChannel = async (channel, message, fileUrl) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
   const lastMessage = messageArray.pop();
 
-  const fileArray = [];
+  const files = fileUrl
+    ? Array.isArray(fileUrl)
+      ? fileUrl
+      : [fileUrl]
+    : [];
 
-  if (fileUrl) {
-    fileArray.push(fileUrl);    
+  // envia partes anteriores
+  for (const msg of messageArray) {
+    await channel.send({ content: msg });
   }
 
-  messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
-
-  return await channel.send(lastMessage, { files: fileArray });
+  // última mensagem com ficheiros (se existirem)
+  return await channel.send({
+    content: lastMessage,
+    files,
+  });
 };
 
 /**
-* Send answer to message
-*
-* @param {Object} msgInstance
-* @param {String} message
-*/
+ * Send answer to message
+ */
 const sendMessageAnswer = async (msgInstance, message, fileUrl) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
   const firstMessage = messageArray.shift();
 
-  if (fileUrl) {
-    const fileArray = Array.isArray(fileUrl)
-      ? { files: fileUrl }
-      : { files: [fileUrl] };
+  const files = fileUrl
+    ? Array.isArray(fileUrl)
+      ? fileUrl
+      : [fileUrl]
+    : [];
 
-    const answer = msgInstance.reply(firstMessage, fileArray);
+  // reply principal (v14 format)
+  await msgInstance.reply({
+    content: firstMessage,
+    files,
+  });
 
-    return answer;
-  } else {
-    msgInstance.reply(firstMessage);
-  }  
-
-  messageArray.forEach((msgSubSet) => { msgInstance.channel.send(msgSubSet); });
-
+  // resto vai para o canal
+  for (const msgSubSet of messageArray) {
+    await msgInstance.channel.send({ content: msgSubSet });
+  }
 };
 
 /**
-* Send DM to the message author
-*
-* @param {Object} msgInstance
-* @param {String} message
-*/
+ * Send DM to the message author
+ */
 const sendMessageToAuthor = async (msgInstance, message) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
-  messageArray.forEach((msgSubSet) => { msgInstance.author.send(msgSubSet); });
+  for (const msg of messageArray) {
+    await msgInstance.author.send({ content: msg });
+  }
 };
 
 module.exports = {

@@ -8,7 +8,7 @@ const Winds = require('./Winds');
 const Weather = require('./Weather');
 const Discord = require('./Discord');
 const Twitter = require('./Twitter');
-const Corona = require('./Corona');
+//const Corona = require('./Corona');
 const MeteoAlarm = require('./MeteoAlarm');
 const Journal = require('./Journal');
 const Mastodon = require('./Mastodon');
@@ -29,7 +29,7 @@ module.exports = {
   Weather,
   Discord,
   Twitter,
-  Corona,
+//  Corona,
   MeteoAlarm,
   Journal,
   Mastodon,

@@ -50,7 +50,7 @@ const message = async (client, msg) => {
     return;
   }
 
-  if (msg.isMemberMentioned(client.user)) {
+  if (msg.mentions.has(client.user.id)) {
     sendMessageToChannel(msg.channel, getRandomMessage());
   }
 

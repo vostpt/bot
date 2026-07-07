@@ -5,6 +5,7 @@ const { channels } = require('../../config/bot');
 const { db } = require('../database/models');
 const { sendMessageToChannel } = require('./Discord');
 
+/*
 const twitterClients = twitterKeys.map((account) => ({
   reference: account.reference,
   screenName: account.screenName,
@@ -32,6 +33,7 @@ const vostEuTweets = {
     media: ['vost_eu/daily_tweets/DAILY_TWEETS_ECHOFLASH.png'],
   }],
 };
+*/
 
 /**
 * Recursive function
@@ -160,6 +162,7 @@ const uploadThreadTwitter = async (tweetSeq, tweetId = '', reference) => {
 //   }
 // };
 
+/*
 const tweetVostEu = async (tweetId) => {
   const thread = vostEuTweets[tweetId];
 
@@ -172,4 +175,4 @@ module.exports = {
   // getVostTweetsAndSendToDiscord,
   tweetVostEu,
 };
-
+*/
