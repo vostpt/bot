@@ -25,6 +25,21 @@ client.prefixCommands = new Collection();
 client.triggers = new Collection();
 client.cooldowns = new Collection();
 
+const migratedCommands = new Set([
+  'acronym',
+  'alerts',
+  'all',
+  'corona',
+  'debug',
+  'earthquakes',
+  'op',
+  'rcm',
+  'snsAlerts',
+  'stats',
+  'vost',
+  'weather',
+])
+
 const slashCommandsPath = path.join(__dirname, 'slashCommands');
 
 if (fs.existsSync(slashCommandsPath)) {
@@ -47,6 +62,11 @@ if (fs.existsSync(commandsPath)) {
     .filter(file => file.endsWith('.js'));
 
   for (const file of commandFiles) {
+    if (migratedCommands.has(path.basename(file, '.js'))) {
+      console.log(`⚠️ Ignoring migrated command: ${file}`);
+      continue;
+    }
+
     const command = require(path.join(commandsPath, file));
 
     if (!command?.name) continue;

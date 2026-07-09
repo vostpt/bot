@@ -17,7 +17,7 @@ module.exports = {
   async execute(message) {
     const messageContent = message.content.toLowerCase();
 
-    if (messageContent.includes('benfica')) {
+    if (messageContent.includes('benfica') || messageContent.includes('slb')) {
       message.reply(':eagle: **SLB! SLB! SLB! SLB! SLB! SLB! Glorioso SLB! GLORIOSO SLB!** :eagle:');
     }
 

@@ -16,6 +16,10 @@ const socialNetworks = [
   'Twitter: https://twitter.com/vostpt',
   'Facebook: https://pt-pt.facebook.com/Vostpt/',
   'Instagram: https://www.instagram.com/vostpt/',
+  'LinkedIn: https://www.linkedin.com/company/vost-portugal/',
+  'BlueSky: https://bsky.app/profile/vost.pt',
+  'Mastodon: https://masto.pt/@vostpt@trombas.vost.pt',
+  'Telegram: https://t.me/vostpt',
 ];
 
 module.exports = {

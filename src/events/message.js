@@ -56,22 +56,26 @@ const message = async (client, msg) => {
 
   const { id: channelId } = msg.channel;
 
-  client.triggers.forEach(({ execute, limitToChannels }) => {
+  for (const { execute, limitToChannels } of client.triggers.values()) {
     if (
       !limitToChannels ||
       limitToChannels.length <= 0 ||
       limitToChannels.includes(channelId)
     ) {
-      execute(msg, client);
+      const handled = await execute(msg, client);
+
+      if (handled) {
+        return;
+      }
     }
-  });
+  }
 
   if (msg.content.startsWith(prefixHelp)) {
     const args = msg.content.slice(prefixHelp.length).split(" ");
     const command = args.shift().toLowerCase();
 
     if (command === "commands") {
-      const commandUsage = client.commands
+      const commandUsage = client.prefixCommands
         .filter(({ active }) => active)
         .map(({ usage }) => usage);
 
@@ -82,66 +86,66 @@ const message = async (client, msg) => {
   }
 
   if (msg.content.startsWith(prefix)) {
-    const args = msg.content.slice(prefix.length).split(" ");
-    const commandName = args.shift().toLowerCase();
-
-    /* eslint-disable max-len */
-    const command = client.commands.find(
-      ({ name, aliases = [] }) =>
-        name === commandName || aliases.includes(commandName),
-    );
-    const ignore = [
-      "firestatus",
-      "firemajor",
-      "firemeans",
-      "firestats",
-      "firelocation",
-      "firenature",
-      "firetime",
-      "firepriority",
-      "firecoverage",
-      "fireupdate",
-      "firecoords",
-      "fireinfo",
-    ];
-
-    console.log(`Command_to_ignore: ${commandName} (${msg.author.username})`);
-    if (ignore.includes(commandName)) {
-      console.log(`Ignoring command: ${commandName}`);
-      return;
-    }
-
-    if (!command) {
-      sendMessageToAuthor(
-        msg,
-        `${prefix}${commandName} não existe. Experimenta ${prefixHelp}commands`,
-      );
-
-      react(msg, ["📧", "📥"]);
-
-      return;
-    }
-
-    if (
-      command.limitToChannels &&
-      command.limitToChannels.length > 0 &&
-      !command.limitToChannels.includes(channelId)
-    ) {
-      return;
-    }
-
-    if (!command.active) {
-      sendMessageToAuthor(
-        msg,
-        `O comando *${prefix}${commandName}* encontra-se desativado.`,
-      );
-
-      react(msg, ["📧", "📥"]);
-
-      return;
-    }
-
     try {
+      const args = msg.content.slice(prefix.length).split(" ");
+      const commandName = args.shift().toLowerCase();
+
+      /* eslint-disable max-len */
+      const command = client.prefixCommands.find(
+        ({ name, aliases = [] }) =>
+          name === commandName || aliases.includes(commandName),
+      );
+      const ignore = [
+        "firestatus",
+        "firemajor",
+        "firemeans",
+        "firestats",
+        "firelocation",
+        "firenature",
+        "firetime",
+        "firepriority",
+        "firecoverage",
+        "fireupdate",
+        "firecoords",
+        "fireinfo",
+      ];
+
+      console.log(`Command_to_ignore: ${commandName} (${msg.author.username})`);
+      if (ignore.includes(commandName)) {
+        console.log(`Ignoring command: ${commandName}`);
+        return;
+      }
+
+      if (!command) {
+        sendMessageToAuthor(
+          msg,
+          `${prefix}${commandName} não existe. Experimenta ${prefixHelp}commands`,
+        );
+
+        react(msg, ["📧", "📥"]);
+
+        return;
+      }
+
+      if (
+        command.limitToChannels &&
+        command.limitToChannels.length > 0 &&
+        !command.limitToChannels.includes(channelId)
+      ) {
+        return;
+      }
+
+      if (!command.active) {
+        sendMessageToAuthor(
+          msg,
+          `O comando *${prefix}${commandName}* encontra-se desativado.`,
+        );
+
+        react(msg, ["📧", "📥"]);
+
+        return;
+      }
+
       const now = Date.now();
       const timestamps = client.cooldowns.get(command.name);
       const cooldownAmount = command.cooldown * 1000;
@@ -171,6 +175,7 @@ const message = async (client, msg) => {
     } catch (e) {
       // log exception
       sendMessageAnswer(msg, "infelizmente não consigo satisfazer esse pedido");
+      console.error("[DISCORD] Error executing command:", e);
       console.error(e);
     }
   }

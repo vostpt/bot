@@ -19,7 +19,38 @@ const {
 } = require('../services');
 
 const { channels } = require('../../config/bot');
-//const { clientTwitter } = require('../services/Twitter');
+
+/** 
+ * Jobs are enabled by default
+ * If the env variable exists and is set to "false", the job is skipped.
+ *
+ * Examples:
+ * JOB_FOREST_FIRES=false
+ * JOB_WARNINGS=0
+ * JOB_FACEBOOK=no
+ * JOB_WEATHER_REPORT=off
+  */
+  function isJobEnabled(envName) {
+  const value = process.env[envName];
+
+  if (value === undefined) return true;
+  
+  return !['false', '0', 'no', 'off'].includes(value.toLowerCase());
+}
+
+/**
+ * Schedule a job only if it is enabled.
+*/
+function scheduleIfEnabled(envName, jobName, scheduler) {
+  if (!isJobEnabled(envName)) {
+    console.log(`[Jobs] Skipped ${jobName} because ${envName}=${process.env[envName]}`);
+    return;
+  }
+
+  console.log(`[Jobs] Scheduling ${jobName}...`);
+  scheduler();
+}
+
 
 /**
  * Helper: safe channel send (v14)
@@ -57,27 +88,54 @@ class Jobs {
     this.client = client;
   }
 
+  // startProd() {
+  //   this.forestFires();
+  //   this.warnings();
+  //   this.fireRisk();
+  //   this.getFacebookPosts();
+  //   this.sendWeatherReport();
+  //   this.checkNewDecrees();
+  //   Jobs.clearDecreesDb();
+  //   Jobs.warningsMeteoAlarm();
+  //   Jobs.clearMeteoAlarmDb();
+  //   Jobs.scheduleVostEuTweets();
+  //   Jobs.checkMedeaMessages();
+  //   this.checkConselhoViajantes();
+  // }
   startProd() {
-    this.forestFires();
-    this.warnings();
-    this.fireRisk();
-    this.getFacebookPosts();
-    this.sendWeatherReport();
-    this.checkNewDecrees();
-    Jobs.clearDecreesDb();
-    Jobs.warningsMeteoAlarm();
-    Jobs.clearMeteoAlarmDb();
-    Jobs.scheduleVostEuTweets();
-    Jobs.checkMedeaMessages();
-    this.checkConselhoViajantes();
+    scheduleIfEnabled('JOB_FOREST_FIRES', 'forest fires', () => this.forestFires());
+    scheduleIfEnabled('JOB_WARNINGS', 'IPMA warnings', () => this.warnings());
+    scheduleIfEnabled('JOB_FIRE_RISK', 'fire risk', () => this.fireRisk());
+    scheduleIfEnabled('JOB_FACEBOOK', 'Facebook posts', () => this.getFacebookPosts());
+    scheduleIfEnabled('JOB_WEATHER_REPORT', 'weather report', () => this.sendWeatherReport());
+    scheduleIfEnabled('JOB_DECREES', 'new decrees', () => this.checkNewDecrees());
+    scheduleIfEnabled('JOB_CLEAR_DECREES_DB', 'clear decrees DB', () => Jobs.clearDecreesDb());
+    scheduleIfEnabled('JOB_METEOALARM', 'MeteoAlarm warnings', () => Jobs.warningsMeteoAlarm());
+    scheduleIfEnabled('JOB_CLEAR_METEOALARM_DB', 'clear MeteoAlarm DB', () => Jobs.clearMeteoAlarmDb());
+    scheduleIfEnabled('JOB_VOST_EU_TWEETS', 'VOST EU tweets', () => Jobs.scheduleVostEuTweets());
+    scheduleIfEnabled('JOB_MEDEA', 'Medea messages', () => Jobs.checkMedeaMessages());
+    scheduleIfEnabled('JOB_VIAJAR', 'Conselho Viajantes', () => this.checkConselhoViajantes());
   }
+
+  // startBeta() {
+  //   this.earthquakes();
+  //   this.noticeableEarthquakes({ threshold: 2.5 });
+  //   Jobs.resetSentNotifications();
+  // }
 
   startBeta() {
-    this.earthquakes();
-    this.noticeableEarthquakes({ threshold: 2.5 });
-    Jobs.resetSentNotifications();
+    scheduleIfEnabled('JOB_EARTHQUAKES_DAILY', 'daily earthquakes', () => this.earthquakes());
+    scheduleIfEnabled('JOB_EARTHQUAKES_NOTICEABLE', 'noticeable earthquakes', () => 
+      this.noticeableEarthquakes({ threshold: 2.5 })
+    );
+    scheduleIfEnabled('JOB_EARTHQUAKES_RESET', 'reset earthquake notifications', () =>
+      Jobs.resetSentNotifications()
+    );
   }
-
+    
+  /*
+  * Schedule jobs below
+  */
   forestFires() {
     const rule = new schedule.RecurrenceRule();
     rule.minute = new schedule.Range(1, 56, 5);
