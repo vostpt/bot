@@ -2,6 +2,12 @@ const { splitMessageString } = require('../helpers');
 
 const discordApiLimit = 1950;
 
+const getChannel = async (client, channelId) => {
+  if (!client || !channelId) return null;
+
+  return client.channels.cache?.get(channelId) || client.channels.fetch(channelId);
+};
+
 /**
  * Send message to Discord channel
  * Returns the API response of the last message sent
@@ -19,14 +25,13 @@ const sendMessageToChannel = async (channel, message, fileUrl) => {
 
   // envia partes anteriores
   for (const msg of messageArray) {
-    await channel.send({ content: msg });
+    await channel.send(msg);
   }
 
   // última mensagem com ficheiros (se existirem)
-  return await channel.send({
-    content: lastMessage,
-    files,
-  });
+  if (files.length === 0) return channel.send(lastMessage);
+
+  return channel.send({ content: lastMessage, files });
 };
 
 /**
@@ -44,14 +49,15 @@ const sendMessageAnswer = async (msgInstance, message, fileUrl) => {
     : [];
 
   // reply principal (v14 format)
-  await msgInstance.reply({
-    content: firstMessage,
-    files,
-  });
+  if (files.length === 0) {
+    await msgInstance.reply(firstMessage);
+  } else {
+    await msgInstance.reply({ content: firstMessage, files });
+  }
 
   // resto vai para o canal
   for (const msgSubSet of messageArray) {
-    await msgInstance.channel.send({ content: msgSubSet });
+    await msgInstance.channel.send(msgSubSet);
   }
 };
 
@@ -62,11 +68,12 @@ const sendMessageToAuthor = async (msgInstance, message) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
   for (const msg of messageArray) {
-    await msgInstance.author.send({ content: msg });
+    await msgInstance.author.send(msg);
   }
 };
 
 module.exports = {
+  getChannel,
   sendMessageToChannel,
   sendMessageAnswer,
   sendMessageToAuthor,

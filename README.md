@@ -219,6 +219,31 @@ If you went through the previous steps successfully, you should now be able to r
 npm start
 ```
 
+This version requires Node.js 20 or 22. The Discord application must have the
+Message Content privileged intent enabled when triggers or the remaining prefix
+commands are used.
+
+Slash commands are registered to the guild configured by `CLIENT_ID` and
+`GUILD_ID`:
+
+```sh
+npm run commands:deploy
+```
+
+They can be removed from that guild with:
+
+```sh
+npm run commands:clear
+```
+
+The Corona slash command is intentionally excluded from registration. VOST
+Europe's scheduled 08:00/12:00 Twitter posts and Twitter-to-Discord polling
+remain disabled, matching `master`.
+
+Scheduled jobs can be controlled with the `JOB_*` variables documented in
+`.env.example`. Existing non-Corona production jobs default to enabled; the
+already-disabled VOST Europe scheduled posts default to disabled.
+
 Tip: use the `BETA_MODE` env variable to toggle which function in [src/jobs/index.json](src/jobs/index.js) is executed  `startProd` (`BETA_MODE=false`) for production and `startBeta`  (`BETA_MODE=true`). 
 
 

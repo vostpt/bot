@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const moment = require('moment');
 const { Sns } = require('../services');
+const { editReplyInChunks } = require('../helpers');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -31,7 +32,7 @@ module.exports = {
             `**${item.title}**\n${item.description}\n${item.link}\n${moment(item.dateTime, moment.ISO_8601)}`
             );
 
-        return await interaction.editReply(`***SNS24 Alertas:***\n\n${events.join('\n\n')}`);
+        return editReplyInChunks(interaction, `***SNS24 Alertas:***\n\n${events.join('\n\n')}`);
 
         } catch (err) {
         console.error(err);

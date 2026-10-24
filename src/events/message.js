@@ -110,9 +110,9 @@ const message = async (client, msg) => {
         "fireinfo",
       ];
 
-      console.log(`Command_to_ignore: ${commandName} (${msg.author.username})`);
+      console.warn(`Command_to_ignore: ${commandName} (${msg.author.username})`);
       if (ignore.includes(commandName)) {
-        console.log(`Ignoring command: ${commandName}`);
+        console.warn(`Ignoring command: ${commandName}`);
         return;
       }
 

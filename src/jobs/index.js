@@ -1,6 +1,8 @@
 const schedule = require('node-schedule');
 const moment = require('moment');
-const IpmaApi = require('../api/Ipma');
+const { RcmApi } = require('../api');
+const { uploadThreadTwitter } = require('../services/Twitter');
+const { splitMessageString } = require('../helpers');
 
 // Tracks earthquake `time` values already sent today; cleared at midnight
 const sentEarthquakesNotifications = new Set();
@@ -9,7 +11,7 @@ const {
   Fires,
   Earthquakes,
   MeteoAlarm,
-//  Twitter,
+  Twitter,
   Journal,
   Facebook,
   Ipma,
@@ -30,10 +32,10 @@ const { channels } = require('../../config/bot');
  * JOB_FACEBOOK=no
  * JOB_WEATHER_REPORT=off
   */
-  function isJobEnabled(envName) {
+function isJobEnabled(envName, defaultEnabled = true) {
   const value = process.env[envName];
 
-  if (value === undefined) return true;
+  if (value === undefined) return defaultEnabled;
   
   return !['false', '0', 'no', 'off'].includes(value.toLowerCase());
 }
@@ -41,14 +43,23 @@ const { channels } = require('../../config/bot');
 /**
  * Schedule a job only if it is enabled.
 */
-function scheduleIfEnabled(envName, jobName, scheduler) {
-  if (!isJobEnabled(envName)) {
+function scheduleIfEnabled(envName, jobName, scheduler, defaultEnabled = true) {
+  if (!isJobEnabled(envName, defaultEnabled)) {
     console.log(`[Jobs] Skipped ${jobName} because ${envName}=${process.env[envName]}`);
     return;
   }
 
   console.log(`[Jobs] Scheduling ${jobName}...`);
   scheduler();
+}
+
+async function runJob(jobName, callback) {
+  try {
+    return await callback();
+  } catch (error) {
+    console.error(`[Jobs] ${jobName} failed:`, error);
+    return null;
+  }
 }
 
 
@@ -112,7 +123,7 @@ class Jobs {
     scheduleIfEnabled('JOB_CLEAR_DECREES_DB', 'clear decrees DB', () => Jobs.clearDecreesDb());
     scheduleIfEnabled('JOB_METEOALARM', 'MeteoAlarm warnings', () => Jobs.warningsMeteoAlarm());
     scheduleIfEnabled('JOB_CLEAR_METEOALARM_DB', 'clear MeteoAlarm DB', () => Jobs.clearMeteoAlarmDb());
-    scheduleIfEnabled('JOB_VOST_EU_TWEETS', 'VOST EU tweets', () => Jobs.scheduleVostEuTweets());
+    scheduleIfEnabled('JOB_VOST_EU_TWEETS', 'VOST EU tweets', () => Jobs.scheduleVostEuTweets(), false);
     scheduleIfEnabled('JOB_MEDEA', 'Medea messages', () => Jobs.checkMedeaMessages());
     scheduleIfEnabled('JOB_VIAJAR', 'Conselho Viajantes', () => this.checkConselhoViajantes());
   }
@@ -141,28 +152,28 @@ class Jobs {
     rule.minute = new schedule.Range(1, 56, 5);
     rule.second = 30;
 
-    schedule.scheduleJob(rule, () => Fires.getForestFires(this.client));
+    schedule.scheduleJob(rule, () => runJob('forest fires', () => Fires.getForestFires(this.client)));
   }
 
   warnings() {
     const rule = new schedule.RecurrenceRule();
     rule.minute = new schedule.Range(0, 59, 5);
 
-    schedule.scheduleJob(rule, () => Ipma.getWarnings(this.client));
+    schedule.scheduleJob(rule, () => runJob('IPMA warnings', () => Ipma.getWarnings(this.client)));
   }
 
   static warningsMeteoAlarm() {
     const rule = new schedule.RecurrenceRule();
     rule.minute = new schedule.Range(3, 59, 10);
 
-    schedule.scheduleJob(rule, () => MeteoAlarm.getWarnings());
+    schedule.scheduleJob(rule, () => runJob('MeteoAlarm warnings', () => MeteoAlarm.getWarnings()));
   }
 
   static clearMeteoAlarmDb() {
     const rule = new schedule.RecurrenceRule();
     rule.hour = new schedule.Range(0, 23, 4);
 
-    schedule.scheduleJob(rule, () => MeteoAlarm.clearDb());
+    schedule.scheduleJob(rule, () => runJob('clear MeteoAlarm database', () => MeteoAlarm.clearDb()));
   }
 
   static scheduleVostEuTweets() {
@@ -183,7 +194,7 @@ class Jobs {
     const rule = new schedule.RecurrenceRule();
     rule.minute = new schedule.Range(1, 59, 1);
 
-    schedule.scheduleJob(rule, () => Medea.getMessages());
+    schedule.scheduleJob(rule, () => runJob('Medea messages', () => Medea.getMessages()));
   }
 
   fireRisk() {
@@ -192,7 +203,7 @@ class Jobs {
     rule.minute = 0;
 
     schedule.scheduleJob(rule, async () => {
-      const result = await IpmaApi.fetch();
+      const result = await runJob('fire risk map', () => RcmApi.fetch());
       if (!result) return console.warn('fireRisk: falhou a gerar o mapa RCM');
       await sendFileToChannel(
         this.client,
@@ -204,13 +215,13 @@ class Jobs {
   }
 
   getFacebookPosts() {
-    Facebook.getVostPostsAndSendToDiscord(this.client);
+    runJob('Facebook feed', () => Facebook.getVostPostsAndSendToDiscord(this.client));
 
     const rule = new schedule.RecurrenceRule();
     rule.minute = new schedule.Range(1, 59, 2);
 
     schedule.scheduleJob(rule, () => {
-      Facebook.getVostPostsAndSendToDiscord(this.client);
+      runJob('Facebook feed', () => Facebook.getVostPostsAndSendToDiscord(this.client));
     });
   }
 
@@ -220,7 +231,7 @@ class Jobs {
     rule.minute = 15;
 
     schedule.scheduleJob(rule, () => {
-      Weather.getDailyReport(this.client);
+      runJob('daily weather report', () => Weather.getDailyReport(this.client));
     });
   }
 
@@ -230,7 +241,7 @@ class Jobs {
     rule.second = 40;
 
     schedule.scheduleJob(rule, () => {
-      Journal.checkNewDecrees(this.client);
+      runJob('new decrees', () => Journal.checkNewDecrees(this.client));
     });
   }
 
@@ -238,7 +249,7 @@ class Jobs {
     const rule = new schedule.RecurrenceRule();
     rule.dayOfMonth = new schedule.Range(1, 28, 2);
 
-    schedule.scheduleJob(rule, () => Journal.clearDb());
+    schedule.scheduleJob(rule, () => runJob('clear decrees database', () => Journal.clearDb()));
   }
 
   earthquakes() {
@@ -249,7 +260,7 @@ class Jobs {
 
     schedule.scheduleJob(rule, async () => {
       const yesterday = moment().subtract(1, 'days').format('L');
-      const { events, eventsSensed } = Earthquakes.getEarthquakes(yesterday);
+      const { events, eventsSensed } = await Earthquakes.getEarthquakes(yesterday);
 
       if (eventsSensed.length > 0) {
         await sendToChannel(
@@ -294,6 +305,11 @@ class Jobs {
         }
 
         await sendToChannel(this.client, channels.EARTHQUAKES_CHANNEL_ID, msg);
+        const twitterText = `ℹ️⚠️ #ATerraTreme\n\n${msg.replace(/\*\*/g, '')}\n\nSentiste este sismo? ⚠️ℹ️`;
+        const thread = splitMessageString(twitterText, 280).map((status) => ({ status }));
+        await runJob('earthquake Twitter notification', () => (
+          uploadThreadTwitter(thread, '', 'main')
+        ));
       }
     });
   }
@@ -314,7 +330,7 @@ class Jobs {
     rule.minute = 0;
 
     schedule.scheduleJob(rule, () => {
-      Viajar.checkNewTravelAdvices(this.client);
+      runJob('travel advisories', () => Viajar.checkNewTravelAdvices(this.client));
     });
   }
 }

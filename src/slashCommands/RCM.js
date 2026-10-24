@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const ipma = require('../api/Ipma');
+const rcm = require('../api/Rcm');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,7 +23,7 @@ module.exports = {
 
     await interaction.deferReply();
 
-    const result = await ipma.fetch();
+    const result = await rcm.fetch();
 
     if (!result) {
       return interaction.editReply('❌ Não foi possível gerar o mapa.');

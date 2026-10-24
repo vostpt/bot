@@ -36,7 +36,10 @@ module.exports = {
             'https://media.discordapp.net/attachments/1191900860045852813/1524751245586468864/tenor.gif'
           ),
         ],
-      })
+      });
+      return true;
     }
+
+    return false;
   },
 };

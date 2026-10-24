@@ -15,7 +15,7 @@ module.exports = {
     plugins: ["jest"],
     rules: {
         "no-unsafe-optional-chaining": "off",
-        "no-console": ["error", { allow: ["warn", "error"] }],
+        "no-console": ["warn"],
         "max-len": ["warn", { "code": 300 }],
         "eol-last": ["error", "always"],
         "linebreak-style": "off"

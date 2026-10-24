@@ -36,7 +36,7 @@ const sendPostMastodon = async (post, reference = 'main') => {
     mediaIds.push(result.id);
   }
 
-  postStatus({
+  return postStatus({
     status: post.status,
     media_ids: mediaIds,
     ...post.options,
@@ -52,7 +52,7 @@ const uploadThreadMastodon = async (thread, reference = 'main') => {
     const post = thread[i];
     await sendPostMastodon(post, reference);
   }
-}
+};
 
 module.exports = {
   sendPostMastodon,

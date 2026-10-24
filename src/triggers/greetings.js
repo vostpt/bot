@@ -88,11 +88,12 @@ module.exports = {
             message.reply('bom dia, aqui tens o teu café :coffee:');
           }
 
-          return;
+          return true;
         }
       } catch (e) {
       //
       }
+      return true;
     }
 
     // Good Afternoon routine
@@ -113,6 +114,7 @@ module.exports = {
       } catch (e) {
       //
       }
+      return true;
     }
 
     // Good Night routine
@@ -128,6 +130,9 @@ module.exports = {
       } catch (e) {
       //
       }
+      return true;
     }
+
+    return false;
   },
 };

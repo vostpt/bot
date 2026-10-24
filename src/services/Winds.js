@@ -57,7 +57,24 @@ const getWindGlobal = async () => {
   };
 };
 
+// Compatibility for the remaining Rally/prefix command loader. New slash
+// commands use getWindGlobal instead of the legacy city endpoint.
+const getById = async (stationId) => {
+  const stations = await getAll();
+  const station = stations.find((item) => item.stationId === stationId);
+  if (!station) return null;
+
+  return {
+    id: station.stationId,
+    l: station.stationId,
+    s: '',
+    velocidade: station.intensidadeVentoKM,
+    sentido: station.idDireccVento,
+  };
+};
+
 module.exports = {
   getAll,
+  getById,
   getWindGlobal,
 };

@@ -5,7 +5,7 @@ const {
 } = require('../../config/facebook');
 const { channels } = require('../../config/bot');
 const { db } = require('../database/models');
-const { sendMessageToChannel } = require('./Discord');
+const { getChannel, sendMessageToChannel } = require('./Discord');
 const { baseImagesURL } = require('../../config/api');
 
 const serviceName = 'FacebookService';
@@ -25,7 +25,7 @@ const postMessageFacebook = (post, reference) => {
     const clientToUse = loadAccountFromReference(reference);
     const fb = FB.withAccessToken(clientToUse.keys.access_token);
 
-    fb.api(
+    return new Promise((resolve, reject) => fb.api(
         `/${clientToUse.pageName}/feed`,
         'POST', {
         "message": post.message,
@@ -34,9 +34,12 @@ const postMessageFacebook = (post, reference) => {
         (res) => {
             if (res.error) {
                 console.error(`[${serviceName}] error when sending the following message:\n\n '${post.message}', reason:\n\n`, res.error);
+                reject(res.error);
+                return;
             }
+            resolve(res);
         }
-    );
+    ));
 }
 
 /**
@@ -46,7 +49,7 @@ const postMessageFacebook = (post, reference) => {
 const getVostPostsAndSendToDiscord = async (discordClient) => {
     const enabledClients = facebookKeys.filter(client => client.fetchPosts);
 
-    enabledClients.forEach(async client => {
+    return Promise.all(enabledClients.map(async client => {
         const fb = FB.withAccessToken(client.keys.access_token);
         const result = await db.FbPosts.findOne({
             where: {
@@ -55,31 +58,38 @@ const getVostPostsAndSendToDiscord = async (discordClient) => {
         });
         const latestSentPostId = result?.lastPostId ?? 0;
 
-        fb.api(
+        return new Promise((resolve, reject) => fb.api(
             `/${client.pageName}/feed`,
             'GET', {},
             (res) => {
                 if (res.error) {
                     console.error(`[${serviceName}] error when getting posts for ${client.pageName}, reason:\n\n`, res.error);
-                } else if (res?.data?.length) {
-                    const newPosts = res.data.filter(post => post.id.split("_")[1] > latestSentPostId);
-
-                    sendPostsToDiscord(discordClient, newPosts, client);
-
-                    if (newPosts.length > 0) {
-                        const postIds = newPosts.map(post => getPostId(post));
-
-                        const lastPostId = Math.max(...postIds);
-                        
-                        db.FbPosts.upsert({
-                            reference: client.reference,
-                            lastPostId
-                        });
-                    }                    
+                    reject(res.error);
+                    return;
                 }
+
+                Promise.resolve()
+                    .then(async () => {
+                        if (!res?.data?.length) return;
+
+                        const newPosts = res.data.filter(post => post.id.split("_")[1] > latestSentPostId);
+
+                        await sendPostsToDiscord(discordClient, newPosts, client);
+
+                        if (newPosts.length > 0) {
+                            const postIds = newPosts.map(post => getPostId(post));
+                            const lastPostId = Math.max(...postIds);
+
+                            await db.FbPosts.upsert({
+                                reference: client.reference,
+                                lastPostId
+                            });
+                        }
+                    })
+                    .then(resolve, reject);
             }
-        );
-    })
+        ));
+    }));
 }
 
 /**
@@ -87,17 +97,20 @@ const getVostPostsAndSendToDiscord = async (discordClient) => {
  * @param {Object} discordClient 
  * @param {Array<String>} newPosts 
  */
-const sendPostsToDiscord = (discordClient, newPosts, client) => {
+const sendPostsToDiscord = async (discordClient, newPosts, client) => {
     newPosts = newPosts.filter(post => (!/^.+was live\.$/.test(post.story)) && (post.message?.length || post.story?.length));
     if (!newPosts.length) return;
     const plural = newPosts.length > 1 ? 's' : '';
     const introStr = `***${newPosts.length} novo${plural} post${plural} da conta @${client.pageName}:***\n`;
 
-    sendMessageToChannel(discordClient.channels.get(channels.FBFEED_CHANNEL_ID), introStr);
-    newPosts.reverse().forEach(post => {
-        const message = `>>> ${post.message ?? ''} ${post?.story ?? ''}\n<https://www.facebook.com/${client.pageName}/posts/${getPostId(post)}>`
-        sendMessageToChannel(discordClient.channels.get(channels.FBFEED_CHANNEL_ID), message);
-    })
+    const channel = await getChannel(discordClient, channels.FBFEED_CHANNEL_ID);
+    if (!channel) throw new Error('Discord Facebook feed channel is not configured or accessible');
+
+    await sendMessageToChannel(channel, introStr);
+    for (const post of newPosts.reverse()) {
+        const message = `>>> ${post.message ?? ''} ${post?.story ?? ''}\n<https://www.facebook.com/${client.pageName}/posts/${getPostId(post)}>`;
+        await sendMessageToChannel(channel, message);
+    }
 }
 
 /**

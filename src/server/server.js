@@ -1,4 +1,4 @@
-const { sendMessageToChannel } = require("../services/Discord");
+const { getChannel, sendMessageToChannel } = require("../services/Discord");
 const { channels } = require("../../config/bot");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -35,17 +35,11 @@ module.exports = (client) => {
         download_link,
       } = data;
 
-      const channel = client.channels.get(channels.COPERNICUS_CHANNEL_ID);
+      const channel = await getChannel(client, channels.COPERNICUS_CHANNEL_ID);
 
       if (!channel) {
         return res.status(404).send({ error: "Discord channel not found." });
       }
-
-      const parseDate = (iso) => {
-        if (!iso) return null;
-        const d = new Date(iso);
-        return Number.isFinite(d.getTime()) ? d : null;
-      };
 
       const formattedDate = acquisition_date
         ? new Date(acquisition_date).toLocaleString("pt-PT")

@@ -9,6 +9,7 @@ const {
 } = require('../services');
 
 const {
+  editReplyInChunks,
   isSevere,
   removeAccent,
 } = require('../helpers');
@@ -67,12 +68,7 @@ module.exports = {
     .addSubcommand(sub =>
       sub
         .setName('vento')
-        .setDescription('Informação de vento')
-        .addStringOption(opt =>
-          opt.setName('id')
-            .setDescription('ID da cidade')
-            .setRequired(true)
-        )
+        .setDescription('Resumo das estações com vento mais intenso')
     )
 
     .addSubcommand(sub =>
@@ -148,16 +144,14 @@ module.exports = {
       }
 
       if (sub === 'vento') {
-        const id = interaction.options.getString('id').toLowerCase();
-
-        const data = await Winds.getById(id);
+        const data = await Winds.getWindGlobal();
 
         if (!data) {
           return interaction.editReply('💨🔥 Sem ocorrência');
         }
 
         return interaction.editReply(
-          `💨🔥 **Vento:**\n${data.id} - #IR${data.l}, ${data.s} - ${data.velocidade} KM/H ${data.sentido}`
+          `💨 **Vento nas estações mais intensas:** ${data.speed} km/h (média de ${data.stations} estações)\nDireção da estação mais intensa: ${data.direction}`
         );
       }
 
@@ -215,7 +209,7 @@ module.exports = {
         output += `🚒 **Ocorrências:**\n${events.join('\n')}`;
       }
 
-      return interaction.editReply(output || '🔥 Sem Ocorrências');
+      return editReplyInChunks(interaction, output || '🔥 Sem Ocorrências');
 
     } catch (err) {
       console.error(err);

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { Prociv } = require('../services');
+const { editReplyInChunks } = require('../helpers');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -52,7 +53,7 @@ Total:
 `;
       });
 
-      await interaction.editReply(messageText);
+      await editReplyInChunks(interaction, messageText);
 
     } catch (err) {
       console.error(err);

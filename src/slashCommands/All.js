@@ -5,7 +5,7 @@ const {
   Fires,
 } = require('../services');
 
-const { isSevere } = require('../helpers');
+const { editReplyInChunks, isSevere } = require('../helpers');
 
 function formatOccurrence(o) {
   return `${o.d} - ${o.id} - #IR${o.l}, #${o.s} - ${o.o}👨‍🚒 ${o.t}🚒 ${o.a}🚁 - ${o.e}`;
@@ -164,7 +164,7 @@ module.exports = {
         output += `🚒 **Ocorrências:**\n${events.join('\n')}`;
       }
 
-      return interaction.editReply(output || '🔥 Sem Ocorrências');
+      return editReplyInChunks(interaction, output || '🔥 Sem Ocorrências');
 
     } catch (err) {
       console.error(err);

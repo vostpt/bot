@@ -4,6 +4,9 @@ const DiscordService = require('../../src/services/Discord');
 
 jest.mock('../../src/services/Discord');
 jest.mock('../../data/auth/vostpt-bot', () => {}, { virtual: true });
+jest.mock('node-fetch', () => jest.fn(() => Promise.resolve({
+  json: () => Promise.resolve({ ip: '203.0.113.1' }),
+})));
 
 
 const client = new Discord.Client();

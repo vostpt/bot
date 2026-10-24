@@ -25,7 +25,7 @@ const userLists = {
   coronaUpdate: typeof coronaUpdateUsers !== 'undefined'
     ? coronaUpdateUsers.split(',')
     : [],
-  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
+  rallyUpdate: typeof rallyUpdateUsers !== 'undefined'
     ? rallyUpdateUsers.split(',')
     : [],
 };
@@ -37,7 +37,7 @@ const roleLists = {
   coronaUpdate: typeof coronaUpdateRoles !== 'undefined'
     ? coronaUpdateRoles.split(',')
     : [],
-  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
+  rallyUpdate: typeof rallyUpdateRoles !== 'undefined'
     ? rallyUpdateRoles.split(',')
     : [],
 };

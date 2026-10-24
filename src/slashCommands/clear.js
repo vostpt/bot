@@ -4,6 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("clear")
     .setDescription("Apaga mensagens do canal")
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages)
     .addIntegerOption(option =>
       option.setName("quantidade")
         .setDescription("Número de mensagens para apagar (1-100)")

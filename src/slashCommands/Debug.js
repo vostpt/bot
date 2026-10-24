@@ -5,8 +5,11 @@ const {
 
 const ip = require('ip');
 const fetch = require('node-fetch');
+const { channels } = require('../../config/bot');
 
 module.exports = {
+  limitToChannels: [channels.MGMT_CHANNEL_ID].filter(Boolean),
+  cooldown: 30,
   data: new SlashCommandBuilder()
     .setName('debug')
     .setDescription('Mostra informações de diagnóstico do bot'),
@@ -24,7 +27,8 @@ module.exports = {
 
         const data = await response.json();
         publicIp = data.ip;
-      } catch {
+      } catch (error) {
+        console.warn('Unable to determine public IP:', error.message);
       }
 
       const versions = Object.entries(process.versions)

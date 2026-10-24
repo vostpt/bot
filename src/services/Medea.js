@@ -6,7 +6,7 @@ const { DateTime } = require('luxon');
 const { db } = require('../database/models');
 const { csvURL } = require('../../config/medea');
 const { api } = require('../api');
-//const { uploadThreadTwitter } = require('./Twitter');
+const { uploadThreadTwitter } = require('./Twitter');
 const { splitMessageString } = require('../helpers');
 
  /**
@@ -93,7 +93,7 @@ const getMessages = async () => {
 
   const fileName = 'medea/MEDEA_Exercise_Twitter_Post.png';
 
-   newMsg.forEach(async (msg) => {
+  await Promise.all(newMsg.map(async (msg) => {
     await db.MedeaMessages.create({
       ...msg,
     });
@@ -106,8 +106,8 @@ const getMessages = async () => {
 
     splitStrTwitter[0].media = [fileName];
 
-    uploadThreadTwitter(splitStrTwitter, '', 'vostptia');
-  });
+    await uploadThreadTwitter(splitStrTwitter, '', 'vostptia');
+  }));
 };
 
 module.exports = {

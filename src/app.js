@@ -11,6 +11,7 @@ const {
 
 const Events = require('./events');
 const startHttpServer = require('./server/server');
+const { cooldown: defaultCooldown } = require('../config/bot');
 
 const client = new Client({
   intents: [
@@ -38,13 +39,15 @@ const migratedCommands = new Set([
   'stats',
   'vost',
   'weather',
-])
+]);
+const disabledSlashCommands = new Set(['corona']);
 
 const slashCommandsPath = path.join(__dirname, 'slashCommands');
 
 if (fs.existsSync(slashCommandsPath)) {
   const slashFiles = fs.readdirSync(slashCommandsPath)
-    .filter(file => file.endsWith('.js'));
+    .filter(file => file.endsWith('.js'))
+    .filter(file => !disabledSlashCommands.has(path.basename(file, '.js').toLowerCase()));
 
   for (const file of slashFiles) {
     const command = require(path.join(slashCommandsPath, file));
@@ -52,6 +55,7 @@ if (fs.existsSync(slashCommandsPath)) {
     if (!command?.data?.name) continue;
 
     client.slashCommands.set(command.data.name, command);
+    client.cooldowns.set(command.data.name, new Collection());
   }
 }
 
@@ -63,7 +67,7 @@ if (fs.existsSync(commandsPath)) {
 
   for (const file of commandFiles) {
     if (migratedCommands.has(path.basename(file, '.js'))) {
-      console.log(`⚠️ Ignoring migrated command: ${file}`);
+      console.warn(`Ignoring migrated prefix command: ${file}`);
       continue;
     }
 
@@ -95,7 +99,6 @@ client.once('ready', () => {
   Events.ready(client);
   startHttpServer(client);
 
-  console.log(`READY :: Bot started @ ${new Date().toLocaleString()}`);
 });
 
 client.on('messageCreate', message => {
@@ -123,7 +126,32 @@ client.on('interactionCreate', async interaction => {
   if (!command) return;
 
   try {
+    if (command.limitToChannels?.length
+      && !command.limitToChannels.includes(interaction.channelId)) {
+      await interaction.reply({
+        content: 'Este comando não está disponível neste canal.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const cooldown = Number(command.cooldown ?? defaultCooldown) * 1000;
+    const timestamps = client.cooldowns.get(command.data.name);
+    const previous = timestamps.get(interaction.user.id);
+    if (cooldown > 0 && previous && Date.now() < previous + cooldown) {
+      const seconds = Math.ceil((previous + cooldown - Date.now()) / 1000);
+      await interaction.reply({
+        content: `Espera ${seconds} segundo(s) antes de voltares a usar este comando.`,
+        ephemeral: true,
+      });
+      return;
+    }
+
     await command.execute(interaction);
+    if (cooldown > 0) {
+      timestamps.set(interaction.user.id, Date.now());
+      setTimeout(() => timestamps.delete(interaction.user.id), cooldown);
+    }
   } catch (err) {
     console.error(err);
 
