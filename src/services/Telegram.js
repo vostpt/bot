@@ -34,9 +34,12 @@ const sendMessageTelegram = async (message) => {
 */
 
 const sendMessagesTelegram = async (messages) => {
-  const lastMessage = messages.pop();
+  if (!messages.length) return;
 
-  await messages.reduce(async (previous, message) => {
+  const messageQueue = [...messages];
+  const lastMessage = messageQueue.pop();
+
+  await messageQueue.reduce(async (previous, message) => {
     await previous;
 
     await new Promise((r) => setTimeout(r, 1000));

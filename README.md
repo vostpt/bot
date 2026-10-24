@@ -244,6 +244,22 @@ Scheduled jobs can be controlled with the `JOB_*` variables documented in
 `.env.example`. Existing non-Corona production jobs default to enabled; the
 already-disabled VOST Europe scheduled posts default to disabled.
 
+Run the offline startup and adapter smoke tests with:
+
+```sh
+npm run test:smoke
+```
+
+Live smoke tests authenticate against configured social APIs without creating
+posts. They are intentionally opt-in:
+
+```sh
+LIVE_SMOKE_TESTS=true npm run test:smoke:live
+```
+
+Use `LIVE_SMOKE_TARGETS=discord,twitter` to restrict the live checks. Missing
+credentials for an explicitly requested target fail the smoke run.
+
 Tip: use the `BETA_MODE` env variable to toggle which function in [src/jobs/index.json](src/jobs/index.js) is executed  `startProd` (`BETA_MODE=false`) for production and `startBeta`  (`BETA_MODE=true`). 
 
 

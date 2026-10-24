@@ -44,6 +44,8 @@
   },
   "scripts": {
     "test": "jest",
+    "test:smoke": "jest __tests__/smoke --runInBand",
+    "test:smoke:live": "node scripts/smoke-live.js",
     "lint": "eslint",
     "lint-fix": "eslint --fix src/",
     "start": "node src/app",
