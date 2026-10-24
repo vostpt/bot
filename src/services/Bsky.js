@@ -3,6 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const { bskyKeys } = require('../../config/bsky');
 const sharp = require('sharp');
+const { isDryRun, recordPublication } = require('../helpers/publicationLog');
 
 const handle = bskyKeys.keys.bsky_handle;
 const password = bskyKeys.keys.bsky_password;
@@ -264,6 +265,15 @@ async function postToBluesky(message, imagePath, imageDes) {
 }
 
 async function sendPostsToBsky(messages) {
+  if (isDryRun()) {
+    return Promise.all(messages.map((message) => recordPublication('bluesky', {
+      account: bskyKeys.reference,
+      text: message.message,
+      media: message.imageUrl,
+      description: message.imageDes,
+    })));
+  }
+
   console.log('[BSKY-BATCH] Starting batch post processing:', {
     messageCount: messages.length,
     timestamp: new Date().toISOString()

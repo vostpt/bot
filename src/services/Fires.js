@@ -1,7 +1,7 @@
 const { FireApi } = require('../api');
 const { channels } = require('../../config/bot');
 const { isSevere } = require('../helpers');
-const { getChannel } = require('./Discord');
+const { getChannel, sendMessageToChannel } = require('./Discord');
 
 const EVENT_TYPES = {
   GENERAL: '1',
@@ -100,17 +100,17 @@ const getForestFires = async (client) => {
       }
       case EVENT_TYPES.RELEVANT_EVENT: {
         const msg = `__**${id} - #IR${city},${local} - ${operatives}:man_firefighter: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}**__`;
-        await channel.send(`:warning: :fire: ***Ocorrência relevante:***\n${msg}`);
+        await sendMessageToChannel(channel, `:warning: :fire: ***Ocorrência relevante:***\n${msg}`);
         break;
       }
       case EVENT_TYPES.RELEVANT_EVENT_WARN_ALL: {
         const msg = `__**${id} - #IR${city},${local} - ${operatives}:man_firefighter: ${vehicles}:fire_engine: ${aircrafts}:helicopter: - ${status}**__`;
-        await channel.send(`@here :warning: :fire: ***Ocorrência relevante:***\n${msg}`);
+        await sendMessageToChannel(channel, `@here :warning: :fire: ***Ocorrência relevante:***\n${msg}`);
         break;
       }
       case EVENT_TYPES.RELEVANT_UPDATE_WARN_ALL: {
         const msg = `__**${id} - #IR${city},${local} - ${previousStatus} :track_next: ${status}**__`;
-        await channel.send(`@here :warning: :fire: ***Atualização relevante:***\n${msg}`);
+        await sendMessageToChannel(channel, `@here :warning: :fire: ***Atualização relevante:***\n${msg}`);
         break;
       }
       default: {
@@ -120,11 +120,11 @@ const getForestFires = async (client) => {
   }
 
   if (events.length > 0 || relevantEvents.length > 0) {
-    await channel.send(`:fire: ***Novas Ocorrências:***\n${relevantEvents.join('\n')}\n${events.join('\n')}`);
+    await sendMessageToChannel(channel, `:fire: ***Novas Ocorrências:***\n${relevantEvents.join('\n')}\n${events.join('\n')}`);
   }
 
   if (updatedEvents.length > 0 || updatedRelevantEvents.length > 0) {
-    await channel.send(`:fire: ***Ocorrências actualizadas:***\n${updatedRelevantEvents.join('\n')}\n${updatedEvents.join('\n')}`);
+    await sendMessageToChannel(channel, `:fire: ***Ocorrências actualizadas:***\n${updatedRelevantEvents.join('\n')}\n${updatedEvents.join('\n')}`);
   }
 };
 

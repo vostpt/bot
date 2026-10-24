@@ -14,6 +14,11 @@ module.exports = {
     dialect: 'sqlite',
     storage: 'data/db.test.sqlite',
   },
+  shadow: {
+    dialect: 'sqlite',
+    storage: 'data/db.shadow.sqlite',
+    logging: false,
+  },
   production: {
     dialect: 'sqlite',
     storage: 'data/db.production.sqlite',

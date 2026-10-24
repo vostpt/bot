@@ -5,6 +5,7 @@ const {
 
 const { getImagesPath } = require('../helpers');
 const { getFileContent } = require('../helpers');
+const { isDryRun, recordPublication } = require('../helpers/publicationLog');
 
 /**
 * Send a message to Mastodon/Pleroma
@@ -15,6 +16,16 @@ const { getFileContent } = require('../helpers');
 */
 
 const sendPostMastodon = async (post, reference = 'main') => {
+  if (isDryRun()) {
+    return recordPublication('mastodon', {
+      account: reference,
+      text: post.status,
+      media: post.media,
+      description: post.description,
+      options: post.options,
+    });
+  }
+
   const mediaIds = [];
 
   if (post.media !== undefined) {

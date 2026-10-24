@@ -260,6 +260,66 @@ LIVE_SMOKE_TESTS=true npm run test:smoke:live
 Use `LIVE_SMOKE_TARGETS=discord,twitter` to restrict the live checks. Missing
 credentials for an explicitly requested target fail the smoke run.
 
+### Compare planned publications with production
+
+Shadow mode fetches current source data and runs the real message-building
+code, but replaces outbound Discord and social-network calls with console and
+JSON-lines log entries. It uses `data/db.shadow.sqlite`; it does not use the
+development or production databases.
+
+Run current IPMA warnings, the daily weather report, and fire events once:
+
+```sh
+npm run shadow
+```
+
+Choose specific workflows and treat all current records as unseen:
+
+```sh
+SHADOW_RESET_DB=true npm run shadow -- warnings weather fire-risk
+```
+
+Run the normal production schedule continuously without connecting a Discord
+bot or sending social posts:
+
+```sh
+npm run shadow:watch
+```
+
+Every planned publication is printed as `Would publish to facebook`,
+`twitter`, `mastodon`, `telegram`, `bluesky`, or `discord`. The same entries are
+written to `logs/publications.jsonl`; set `PUBLISH_LOG_FILE` to choose another
+file. Each JSON object includes a timestamp, run ID, destination, account or
+channel, exact post text, and media reference. Buffers and very large base64
+images are summarized so the log remains usable.
+
+For example, an orange or red IPMA warning produces output similar to:
+
+```text
+[DRY-RUN] Would publish to facebook:
+{
+  "account": "main",
+  "message": "ℹ️⚠️🟠 #AvisoLaranja ...",
+  "media": "warnings/Twitter_Post_AvisoLaranja_....png"
+}
+```
+
+This reflects the current rules: yellow IPMA warnings are not sent to Facebook,
+and the daily weather report currently has no Facebook publisher. Those absences
+are therefore expected in the shadow log and useful when comparing with prod.
+
+Available one-shot workflows are shown with:
+
+```sh
+npm run shadow -- --help
+```
+
+Shadow mode uses live upstream data, so it only logs content that the bot would
+actually consider new. Keep the shadow database to compare behavior over time,
+or use `SHADOW_RESET_DB=true` when you want to replay all currently active
+warnings. The optional `facebook-feed` workflow needs a Facebook token because
+it reads the page feed, but it still does not publish anything.
+
 Tip: use the `BETA_MODE` env variable to toggle which function in [src/jobs/index.json](src/jobs/index.js) is executed  `startProd` (`BETA_MODE=false`) for production and `startBeta`  (`BETA_MODE=true`). 
 
 

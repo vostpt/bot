@@ -4,6 +4,7 @@ node_modules/
 
 # Coverage tools
 coverage/
+logs/
 
 # Database queries
 data/

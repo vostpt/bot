@@ -1,8 +1,13 @@
 const { splitMessageString } = require('../helpers');
+const { isDryRun, recordPublication } = require('../helpers/publicationLog');
 
 const discordApiLimit = 1950;
 
 const getChannel = async (client, channelId) => {
+  if (isDryRun() && !channelId) {
+    return { id: 'unconfigured', name: 'shadow-unconfigured' };
+  }
+
   if (!client || !channelId) return null;
 
   return client.channels.cache?.get(channelId) || client.channels.fetch(channelId);
@@ -13,6 +18,17 @@ const getChannel = async (client, channelId) => {
  * Returns the API response of the last message sent
  */
 const sendMessageToChannel = async (channel, message, fileUrl) => {
+  if (isDryRun()) {
+    return recordPublication('discord', {
+      channelId: channel?.id,
+      channelName: channel?.name,
+      text: message,
+      files: fileUrl
+        ? Array.isArray(fileUrl) ? fileUrl : [fileUrl]
+        : [],
+    });
+  }
+
   const messageArray = splitMessageString(message, discordApiLimit);
 
   const lastMessage = messageArray.pop();

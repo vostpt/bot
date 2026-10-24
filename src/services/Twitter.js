@@ -1,6 +1,7 @@
 const { TwitterApi } = require('twitter-api-v2');
 const FileType = require('file-type');
 const { getFileContent } = require('../helpers');
+const { isDryRun, recordPublication } = require('../helpers/publicationLog');
 const { twitterKeys } = require('../../config/twitter');
 
 const clients = new Map();
@@ -46,6 +47,16 @@ const uploadThreadTwitter = async (tweetSeq, _tweetId = '', reference = 'main') 
   void _tweetId;
   if (tweetSeq.length === 0) {
     return;
+  }
+
+  if (isDryRun()) {
+    return Promise.all(tweetSeq.map((tweet, index) => recordPublication('twitter', {
+      account: reference,
+      sequence: index + 1,
+      sequenceLength: tweetSeq.length,
+      text: tweet.status,
+      media: tweet.media || [],
+    })));
   }
 
   const clientTwitter = getTwitterClient(reference);
