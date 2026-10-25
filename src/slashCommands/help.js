@@ -38,13 +38,13 @@ module.exports = {
 
       const line = `\`/${name}\` — ${desc}`;
 
-      if (['all', 'op', 'alerts', 'rcm', 'stats'].includes(name)) {
+      if (['all', 'op', 'alerts', 'rcm', 'stats', 'resumo', 'reportar'].includes(name)) {
         categories.slash['🚒 Proteção Civil'].push(line);
       }
-      else if (['weather', 'sismos', 'sns24', 'corona', 'acronimo'].includes(name)) {
+      else if (['weather', 'sismos', 'sns24', 'corona', 'acronimo', 'dica'].includes(name)) {
         categories.slash['🌍 Informação'].push(line);
       }
-      else if (['ping', 'debug', 'clear'].includes(name)) {
+      else if (['ping', 'debug', 'clear', 'cafe'].includes(name)) {
         categories.slash['⚙️ Utilitários'].push(line);
       }
       else {

@@ -8,7 +8,11 @@ const { Warnings } = require('../services');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('alerts')
-    .setDescription('Mostra os avisos meteorológicos do IPMA'),
+    .setDescription('Mostra avisos meteorológicos IPMA, opcionalmente filtrados por localidade')
+    .addStringOption(option => option
+      .setName('local')
+      .setDescription('Filtra pelo nome do distrito ou região')
+      .setRequired(false)),
 
   async execute(interaction) {
     await interaction.deferReply();
@@ -20,27 +24,39 @@ module.exports = {
         continente = [],
       } = await Warnings.getAll();
 
+      const requestedLocal = interaction.options.getString('local') || '';
+      const normalize = (value) => String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLocaleLowerCase('pt-PT');
+
       const allRegions = [
         ...continente,
         ...madeira,
         ...acores,
-      ];
+      ].filter((region) => !requestedLocal
+        || normalize(region.local || '').includes(normalize(requestedLocal)));
 
-      if (!allRegions.length) {
+      const regionsWithAlerts = allRegions
+        .map((region) => ({ ...region, alertas: region.alertas || [] }))
+        .filter((region) => region.alertas.length > 0);
+
+      if (!regionsWithAlerts.length) {
         return interaction.editReply(
-          '✅ Não existem avisos ativos.'
+          requestedLocal
+            ? `✅ Não existem avisos ativos para **${requestedLocal}**.`
+            : '✅ Não existem avisos ativos.'
         );
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('⚠️ Avisos Meteorológicos')
+        .setTitle(requestedLocal
+          ? `⚠️ Avisos Meteorológicos · ${requestedLocal}`
+          : '⚠️ Avisos Meteorológicos')
         .setTimestamp();
 
-      for (const region of allRegions) {
-        const alerts = region.alertas || [];
-
-        if (!alerts.length) continue;
-
+      for (const region of regionsWithAlerts.slice(0, 25)) {
+        const alerts = region.alertas;
         const value = alerts
           .map(alert => {
             const weatherType =

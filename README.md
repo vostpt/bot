@@ -219,6 +219,29 @@ If you went through the previous steps successfully, you should now be able to r
 npm start
 ```
 
+# Discord commands
+
+The slash commands include operational summaries and public information:
+
+- `/resumo` — combines current IPMA warnings, ProCiv occurrences, important
+  fires, and earthquakes from the last 24 hours. It labels unavailable sources
+  and is informational, not a dispatch channel.
+- `/alerts [local]` — shows active IPMA warnings, optionally filtered by a
+  district or region name (for example, `/alerts local:Lisboa`).
+- `/sismos recentes [horas]` — shows up to ten earthquakes from the last 1–168
+  hours (24 by default). `/sismos data data:DD/MM/AAAA` keeps the date lookup.
+- `/reportar` — displays official emergency contact guidance. The bot does not
+  forward reports; call 112 for immediate emergencies and 117 for rural fire
+  alerts.
+- `/dica` — shares a randomly selected preparedness tip with an ANEPC source.
+- `/cafe` — a light, unofficial team caffeine status.
+
+Deploy slash command registration after updating the bot:
+
+```sh
+npm run commands:deploy
+```
+
 For local preview without running the Discord bot or sending posts, use the
 [shadow publishing guide](docs/en/shadow-mode.md) or run `npm run shadow`.
 

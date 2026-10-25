@@ -9,41 +9,71 @@ const { Earthquakes } = require('../services');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('sismos')
-    .setDescription('Consulta os sismos registados numa determinada data')
-    .addStringOption(option =>
-      option
+    .setDescription('Consulta os sismos registados')
+    .addSubcommand((subcommand) => subcommand
+      .setName('data')
+      .setDescription('Consulta sismos numa data específica')
+      .addStringOption((option) => option
         .setName('data')
         .setDescription('Formato: DD/MM/AAAA')
-        .setRequired(true)
-    ),
+        .setRequired(true)))
+    .addSubcommand((subcommand) => subcommand
+      .setName('recentes')
+      .setDescription('Mostra os sismos mais recentes')
+      .addIntegerOption((option) => option
+        .setName('horas')
+        .setDescription('Período a consultar (por omissão: 24 horas)')
+        .setMinValue(1)
+        .setMaxValue(168)
+        .setRequired(false))),
 
   async execute(interaction) {
-    const requestedDate = interaction.options.getString('data');
+    const subcommand = interaction.options.getSubcommand();
 
-    if (!moment(requestedDate, 'DD/MM/YYYY', true).isValid()) {
-      return interaction.reply({
-        content:
-          '❌ Data inválida. Utilize o formato **DD/MM/AAAA**.\nExemplo: `07/06/2026`',
-        ephemeral: true,
-      });
+    if (subcommand === 'data') {
+      const requestedDate = interaction.options.getString('data');
+      if (!moment(requestedDate, 'DD/MM/YYYY', true).isValid()) {
+        return interaction.reply({
+          content:
+            '❌ Data inválida. Utilize o formato **DD/MM/AAAA**.\nExemplo: `07/06/2026`',
+          ephemeral: true,
+        });
+      }
     }
 
     await interaction.deferReply();
 
     try {
-      const earthquakes = await Earthquakes.getByDate(requestedDate);
+      let earthquakes;
+      let responseTitle;
+
+      if (subcommand === 'recentes') {
+        const hours = interaction.options.getInteger('horas') || 24;
+        const threshold = Date.now() - (hours * 60 * 60 * 1000);
+        earthquakes = (await Earthquakes.getAll())
+          .filter((earthquake) => new Date(earthquake.time).getTime() >= threshold)
+          .sort((a, b) => new Date(b.time) - new Date(a.time))
+          .slice(0, 10);
+        responseTitle = `últimas ${hours} hora(s)`;
+      } else {
+        const requestedDate = interaction.options.getString('data');
+        earthquakes = await Earthquakes.getByDate(requestedDate);
+        responseTitle = requestedDate;
+      }
 
       if (!earthquakes?.length) {
-        return interaction.editReply(
-          `📭 Não existem dados de sismos para **${requestedDate}**.`
-        );
+        return interaction.editReply(subcommand === 'recentes'
+          ? '📭 Não há sismos recentes no período selecionado.'
+          : `📭 Não existem dados de sismos para **${responseTitle}**.`);
       }
 
       const sensed = [];
       const notSensed = [];
 
       earthquakes
-        .sort((a, b) => new Date(a.time) - new Date(b.time))
+        .sort((a, b) => subcommand === 'recentes'
+          ? new Date(b.time) - new Date(a.time)
+          : new Date(a.time) - new Date(b.time))
         .forEach(eq => {
           const text = formatEarthquake(eq);
 
@@ -59,7 +89,7 @@ module.exports = {
       if (sensed.length) {
         embeds.push(
           new EmbedBuilder()
-            .setTitle(`🌍 Sismos sentidos - ${requestedDate}`)
+            .setTitle(`🌍 Sismos sentidos - ${responseTitle}`)
             .setDescription(limitText(sensed.join('\n')))
             .setTimestamp()
         );
@@ -68,7 +98,7 @@ module.exports = {
       if (notSensed.length) {
         embeds.push(
           new EmbedBuilder()
-            .setTitle(`📊 Restantes sismos - ${requestedDate}`)
+            .setTitle(`📊 Restantes sismos - ${responseTitle}`)
             .setDescription(limitText(notSensed.join('\n')))
             .setTimestamp()
         );
