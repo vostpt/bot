@@ -49,7 +49,7 @@ const uploadThreadTwitter = async (tweetSeq, _tweetId = '', reference = 'main') 
     return;
   }
 
-  if (skipSocialPost('Twitter/X')) return { skipped: true, reason: 'social-posts-disabled' };
+  if (skipSocialPost('TWITTER', reference)) return { skipped: true, reason: 'social-posts-disabled' };
 
   if (isDryRun()) {
     return Promise.all(tweetSeq.map((tweet, index) => recordPublication('twitter', {

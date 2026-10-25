@@ -16,7 +16,7 @@ const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publ
 */
 
 const sendPostMastodon = async (post, reference = 'main') => {
-  if (skipSocialPost('Mastodon')) return { skipped: true, reason: 'social-posts-disabled' };
+  if (skipSocialPost('MASTODON', reference)) return { skipped: true, reason: 'social-posts-disabled' };
 
   if (isDryRun()) {
     return recordPublication('mastodon', {

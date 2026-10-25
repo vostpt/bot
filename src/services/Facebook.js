@@ -20,7 +20,8 @@ const getPostId = (post) => post.id.split("_")[1];
  * @param {String} reference which Facebook client to use (defaults to `main`)
  */
 const postMessageFacebook = (post, reference) => {
-    if (skipSocialPost('Facebook')) {
+    const profile = reference || defaultReference;
+    if (skipSocialPost('FACEBOOK', profile)) {
         return Promise.resolve({ skipped: true, reason: 'social-posts-disabled' });
     }
 

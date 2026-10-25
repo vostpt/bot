@@ -11,13 +11,30 @@ const isDryRun = () => ['dry-run', 'shadow'].includes(
 // Social posting remains enabled by default for backward compatibility.
 // Set SOCIAL_POSTS_ENABLED=false to keep Discord workflows active without
 // sending any outbound posts to external social networks.
-const areSocialPostsEnabled = () => !['false', '0', 'no', 'off'].includes(
-  (process.env.SOCIAL_POSTS_ENABLED || 'true').trim().toLowerCase(),
-);
+const isEnvEnabled = (name, defaultEnabled = true) => {
+  const value = process.env[name];
+  if (value === undefined || value.trim() === '') return defaultEnabled;
+  return !['false', '0', 'no', 'off'].includes(value.trim().toLowerCase());
+};
 
-const skipSocialPost = (destination) => {
-  if (areSocialPostsEnabled()) return false;
-  console.log(`[SOCIAL-DISABLED] Skipping outbound ${destination} publication`);
+const toEnvPart = (value) => String(value).replace(/([a-z])([A-Z])/g, '$1_$2')
+  .replace(/[^a-zA-Z0-9]+/g, '_')
+  .replace(/^_|_$/g, '')
+  .toUpperCase();
+
+const areSocialPostsEnabled = (network, profile) => {
+  if (!isEnvEnabled('SOCIAL_POSTS_ENABLED')) return false;
+  if (network && !isEnvEnabled(`SOCIAL_${toEnvPart(network)}_ENABLED`)) return false;
+  if (network && profile
+    && !isEnvEnabled(`SOCIAL_${toEnvPart(network)}_${toEnvPart(profile)}_ENABLED`)) {
+    return false;
+  }
+  return true;
+};
+
+const skipSocialPost = (network, profile = 'main') => {
+  if (areSocialPostsEnabled(network, profile)) return false;
+  console.log(`[SOCIAL-DISABLED] Skipping outbound ${network}/${profile} publication`);
   return true;
 };
 

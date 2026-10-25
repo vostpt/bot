@@ -233,6 +233,14 @@ setting defaults to enabled to preserve the current production behavior; add
 feed polling may still read Facebook posts and forward them into Discord; it
 does not publish to Facebook.
 
+You can also disable one network or one account/profile in `.env`. For example,
+`SOCIAL_TWITTER_ENABLED=false` disables all Twitter/X accounts, while
+`SOCIAL_TWITTER_AZORES_ENABLED=false` disables only the Azores account. The
+same pattern is available for Facebook (`MAIN`, `RALLY`), Telegram (`MAIN`,
+`RALLY`), Mastodon (`MAIN`, `DRE`), Bluesky (`MAIN`), and Twitter/X (`MAIN`,
+`AZORES`, `EUROPE`, `VOSTPTIA`, `DRE`, `RALLY`). A `false` global or network
+flag overrides narrower profile flags.
+
 # Discord commands
 
 The slash commands include operational summaries and public information:

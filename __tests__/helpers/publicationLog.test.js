@@ -61,6 +61,32 @@ describe('shadow publication log', () => {
     expect(skipSocialPost('Facebook')).toBe(false);
   });
 
+  test('supports network and account/profile switches independently', () => {
+    const flagNames = [
+      'SOCIAL_POSTS_ENABLED', 'SOCIAL_TWITTER_ENABLED',
+      'SOCIAL_FACEBOOK_ENABLED', 'SOCIAL_FACEBOOK_MAIN_ENABLED',
+      'SOCIAL_FACEBOOK_RALLY_ENABLED',
+    ];
+    const originalValues = Object.fromEntries(flagNames.map((name) => [name, process.env[name]]));
+
+    try {
+      Object.keys(originalValues).forEach((name) => delete process.env[name]);
+      process.env.SOCIAL_TWITTER_ENABLED = 'false';
+      process.env.SOCIAL_FACEBOOK_RALLY_ENABLED = 'false';
+
+      expect(areSocialPostsEnabled('TWITTER', 'main')).toBe(false);
+      expect(areSocialPostsEnabled('FACEBOOK', 'main')).toBe(true);
+      expect(areSocialPostsEnabled('FACEBOOK', 'rally')).toBe(false);
+      process.env.SOCIAL_FACEBOOK_ENABLED = 'false';
+      expect(areSocialPostsEnabled('FACEBOOK', 'main')).toBe(false);
+    } finally {
+      Object.entries(originalValues).forEach(([name, value]) => {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      });
+    }
+  });
+
   test('writes a structured JSON line without serializing binary media', () => {
     const result = recordPublication('facebook', {
       account: 'main',

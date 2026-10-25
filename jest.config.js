@@ -123,6 +123,9 @@ module.exports = {
   // setupFiles: [],
   setupFiles: ['dotenv/config'],
 
+  // Runtime social switches in a developer's .env must not change test expectations.
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
 

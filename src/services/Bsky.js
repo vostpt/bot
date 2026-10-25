@@ -265,7 +265,7 @@ async function postToBluesky(message, imagePath, imageDes) {
 }
 
 async function sendPostsToBsky(messages) {
-  if (skipSocialPost('Bluesky')) return { skipped: true, reason: 'social-posts-disabled' };
+  if (skipSocialPost('BLUESKY', bskyKeys.reference)) return { skipped: true, reason: 'social-posts-disabled' };
 
   if (isDryRun()) {
     return Promise.all(messages.map((message) => recordPublication('bluesky', {
