@@ -52,6 +52,7 @@ describe('shadow publication log', () => {
   });
 
   test('keeps social publishing enabled by default and supports an explicit off switch', () => {
+    process.env.PUBLISH_MODE = 'live';
     delete process.env.SOCIAL_POSTS_ENABLED;
     expect(areSocialPostsEnabled()).toBe(true);
     process.env.SOCIAL_POSTS_ENABLED = 'false';
@@ -88,6 +89,14 @@ describe('shadow publication log', () => {
         else process.env[name] = value;
       });
     }
+  });
+
+  test('shadow previews record planned posts even when live social posting is disabled', () => {
+    process.env.PUBLISH_MODE = 'shadow';
+    process.env.SOCIAL_POSTS_ENABLED = 'false';
+    process.env.SOCIAL_TWITTER_ENABLED = 'false';
+
+    expect(skipSocialPost('TWITTER', 'main')).toBe(false);
   });
 
   test('writes a structured JSON line without serializing binary media', () => {

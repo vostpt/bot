@@ -16,6 +16,11 @@ Não são necessárias credenciais de publicação das redes sociais. O workflow
 opcional `facebook-feed` precisa de um token Facebook porque consulta o feed da
 página.
 
+As pré-visualizações shadow registam as publicações sociais previstas mesmo
+quando `SOCIAL_POSTS_ENABLED` ou os interruptores de rede/perfil estão a
+`false` no `.env`. Esses interruptores continuam a bloquear publicações reais
+ao executar `npm start`.
+
 ## Pré-visualização única
 
 Na raiz do projeto, executa:

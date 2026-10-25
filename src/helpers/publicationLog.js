@@ -33,6 +33,9 @@ const areSocialPostsEnabled = (network, profile) => {
 };
 
 const skipSocialPost = (network, profile = 'main') => {
+  // Shadow mode records planned output through each adapter's dry-run path.
+  // Live-publishing switches must not hide those preview entries.
+  if (isDryRun()) return false;
   if (areSocialPostsEnabled(network, profile)) return false;
   console.log(`[SOCIAL-DISABLED] Skipping outbound ${network}/${profile} publication`);
   return true;

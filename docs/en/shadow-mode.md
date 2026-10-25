@@ -15,6 +15,10 @@ social network.
 Social publishing credentials are not needed for shadow output. The optional
 `facebook-feed` workflow needs a Facebook token because it reads the page feed.
 
+Shadow previews log planned social posts even when `SOCIAL_POSTS_ENABLED` or
+individual network/profile switches are `false` in `.env`. Those switches still
+block live posts when running `npm start`.
+
 ## Run a one-time preview
 
 From the repository root, run:
