@@ -6,6 +6,7 @@ module.exports = {
     { text: 'Home', link: '/' },
     { text: 'Shadow mode', link: '/en/shadow-mode' },
     { text: 'Testing', link: '/en/testing' },
+    { text: 'Workflow tests', link: '/en/workflow-testing' },
     { text: 'Join us!', link: 'https://docs.google.com/forms/d/e/1FAIpQLSf6PgIPl4XrAkGLYnPOJ2KSu2cujzSBg9XiKcfG7QHoHAZgFA/viewform' },
   ],
 };

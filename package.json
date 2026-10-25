@@ -44,6 +44,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:e2e": "jest __tests__/workflows --runInBand",
     "test:smoke": "jest __tests__/smoke --runInBand",
     "test:smoke:live": "node scripts/smoke-live.js",
     "shadow": "node scripts/shadow-run.js",

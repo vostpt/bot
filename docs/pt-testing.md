@@ -20,6 +20,15 @@ npm run test:smoke
 Verificam o carregamento dos módulos principais e os contratos dos adaptadores
 de redes sociais usando mocks.
 
+## Testes end-to-end dos workflows
+
+```sh
+npm run test:e2e
+```
+
+Executam workflows completos com dados de origem fixos e adaptadores de
+publicação em dry-run. Verificam mensagens e destinos sem publicar externamente.
+
 ## Verificações live opcionais
 
 As verificações live fazem pedidos de autenticação/identidade só de leitura e

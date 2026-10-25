@@ -20,6 +20,17 @@ npm run test:smoke
 These check that core API, service, and job modules load and verify the main
 social adapter contracts using mocks.
 
+## End-to-end workflow tests
+
+```sh
+npm run test:e2e
+```
+
+These run complete service workflows with fixed upstream data and dry-run
+publication adapters. They assert the messages and destinations recorded by
+the workflow without posting externally. See [Workflow testing](./workflow-testing.md)
+for the current coverage matrix and remaining gaps.
+
 ## Optional live authentication checks
 
 Live checks make read-only authentication or identity requests. They do not
@@ -53,3 +64,6 @@ with an error only for lint errors.
 
 Use [Shadow mode](./shadow-mode.md) to run real message construction over live
 source data while logging planned outbound messages instead of posting them.
+
+For the end-to-end workflow coverage matrix and the plan to test the remaining
+scheduled and interactive workflows, see [Workflow testing](./workflow-testing.md).

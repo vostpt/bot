@@ -261,6 +261,12 @@ Run the offline startup and adapter smoke tests with:
 npm run test:smoke
 ```
 
+Run end-to-end workflow tests with fixtures and dry-run publishers:
+
+```sh
+npm run test:e2e
+```
+
 Check code style with:
 
 ```sh
