@@ -5,7 +5,7 @@ const {
 
 const { getImagesPath } = require('../helpers');
 const { getFileContent } = require('../helpers');
-const { isDryRun, recordPublication } = require('../helpers/publicationLog');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 
 /**
 * Send a message to Mastodon/Pleroma
@@ -16,6 +16,8 @@ const { isDryRun, recordPublication } = require('../helpers/publicationLog');
 */
 
 const sendPostMastodon = async (post, reference = 'main') => {
+  if (skipSocialPost('Mastodon')) return { skipped: true, reason: 'social-posts-disabled' };
+
   if (isDryRun()) {
     return recordPublication('mastodon', {
       account: reference,

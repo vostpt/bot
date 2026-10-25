@@ -219,6 +219,20 @@ If you went through the previous steps successfully, you should now be able to r
 npm start
 ```
 
+To run the Discord bot without publishing to Twitter/X, Facebook, Telegram,
+Mastodon, or Bluesky, disable social posts for that process:
+
+```sh
+SOCIAL_POSTS_ENABLED=false npm start
+```
+
+Discord commands, scheduled Discord notifications, and source polling continue
+to work. Any outbound social post is skipped and reported in the logs. This
+setting defaults to enabled to preserve the current production behavior; add
+`SOCIAL_POSTS_ENABLED=false` to `.env` to make the choice persistent. Facebook
+feed polling may still read Facebook posts and forward them into Discord; it
+does not publish to Facebook.
+
 # Discord commands
 
 The slash commands include operational summaries and public information:

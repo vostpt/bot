@@ -8,6 +8,19 @@ const isDryRun = () => ['dry-run', 'shadow'].includes(
   (process.env.PUBLISH_MODE || '').trim().toLowerCase(),
 );
 
+// Social posting remains enabled by default for backward compatibility.
+// Set SOCIAL_POSTS_ENABLED=false to keep Discord workflows active without
+// sending any outbound posts to external social networks.
+const areSocialPostsEnabled = () => !['false', '0', 'no', 'off'].includes(
+  (process.env.SOCIAL_POSTS_ENABLED || 'true').trim().toLowerCase(),
+);
+
+const skipSocialPost = (destination) => {
+  if (areSocialPostsEnabled()) return false;
+  console.log(`[SOCIAL-DISABLED] Skipping outbound ${destination} publication`);
+  return true;
+};
+
 const sanitize = (value, seen = new WeakSet()) => {
   if (Buffer.isBuffer(value)) {
     return `<Buffer ${value.length} bytes>`;
@@ -56,6 +69,8 @@ const recordPublication = (destination, payload) => {
 module.exports = {
   getLogPath,
   isDryRun,
+  areSocialPostsEnabled,
+  skipSocialPost,
   recordPublication,
   sanitize,
 };

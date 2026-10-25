@@ -3,7 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const { bskyKeys } = require('../../config/bsky');
 const sharp = require('sharp');
-const { isDryRun, recordPublication } = require('../helpers/publicationLog');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 
 const handle = bskyKeys.keys.bsky_handle;
 const password = bskyKeys.keys.bsky_password;
@@ -265,6 +265,8 @@ async function postToBluesky(message, imagePath, imageDes) {
 }
 
 async function sendPostsToBsky(messages) {
+  if (skipSocialPost('Bluesky')) return { skipped: true, reason: 'social-posts-disabled' };
+
   if (isDryRun()) {
     return Promise.all(messages.map((message) => recordPublication('bluesky', {
       account: bskyKeys.reference,

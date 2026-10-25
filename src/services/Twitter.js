@@ -1,7 +1,7 @@
 const { TwitterApi } = require('twitter-api-v2');
 const FileType = require('file-type');
 const { getFileContent } = require('../helpers');
-const { isDryRun, recordPublication } = require('../helpers/publicationLog');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 const { twitterKeys } = require('../../config/twitter');
 
 const clients = new Map();
@@ -48,6 +48,8 @@ const uploadThreadTwitter = async (tweetSeq, _tweetId = '', reference = 'main') 
   if (tweetSeq.length === 0) {
     return;
   }
+
+  if (skipSocialPost('Twitter/X')) return { skipped: true, reason: 'social-posts-disabled' };
 
   if (isDryRun()) {
     return Promise.all(tweetSeq.map((tweet, index) => recordPublication('twitter', {

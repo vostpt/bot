@@ -7,7 +7,7 @@ const { channels } = require('../../config/bot');
 const { db } = require('../database/models');
 const { getChannel, sendMessageToChannel } = require('./Discord');
 const { baseImagesURL } = require('../../config/api');
-const { isDryRun, recordPublication } = require('../helpers/publicationLog');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 
 const serviceName = 'FacebookService';
 
@@ -20,6 +20,10 @@ const getPostId = (post) => post.id.split("_")[1];
  * @param {String} reference which Facebook client to use (defaults to `main`)
  */
 const postMessageFacebook = (post, reference) => {
+    if (skipSocialPost('Facebook')) {
+        return Promise.resolve({ skipped: true, reason: 'social-posts-disabled' });
+    }
+
     if (isDryRun()) {
         return Promise.resolve(recordPublication('facebook', {
             account: reference || defaultReference,

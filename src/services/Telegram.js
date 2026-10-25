@@ -1,6 +1,6 @@
 const { TelegramClient } = require('messaging-api-telegram');
 const { telegramKeys, telegramKeysRally } = require('../../config/telegram');
-const { isDryRun, recordPublication } = require('../helpers/publicationLog');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 
 const tClient = new TelegramClient({
   accessToken: telegramKeys.key,
@@ -18,6 +18,8 @@ const tClientRally = new TelegramClient({
 * @param {Object} message
 */
 const sendMessageTelegram = async (message) => {
+  if (skipSocialPost('Telegram')) return { skipped: true, reason: 'social-posts-disabled' };
+
   if (isDryRun()) {
     return recordPublication('telegram', {
       account: 'main',
@@ -43,6 +45,7 @@ const sendMessageTelegram = async (message) => {
 
 const sendMessagesTelegram = async (messages) => {
   if (!messages.length) return;
+  if (skipSocialPost('Telegram')) return { skipped: true, reason: 'social-posts-disabled' };
 
   if (isDryRun()) {
     return Promise.all(messages.map((message) => sendMessageTelegram(message)));
@@ -71,6 +74,8 @@ const sendMessagesTelegram = async (messages) => {
 };
 
 const sendDocumentTelegram = async (message) => {
+  if (skipSocialPost('Telegram')) return { skipped: true, reason: 'social-posts-disabled' };
+
   if (isDryRun()) {
     return recordPublication('telegram', {
       account: 'main',
@@ -88,6 +93,8 @@ const sendDocumentTelegram = async (message) => {
 };
 
 const sendMessageRally = async (message) => {
+  if (skipSocialPost('Telegram')) return { skipped: true, reason: 'social-posts-disabled' };
+
   if (isDryRun()) {
     return recordPublication('telegram', {
       account: 'rally',

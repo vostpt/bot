@@ -4,6 +4,8 @@ const path = require('path');
 
 const {
   isDryRun,
+  areSocialPostsEnabled,
+  skipSocialPost,
   recordPublication,
   sanitize,
 } = require('../../src/helpers/publicationLog');
@@ -12,6 +14,7 @@ const { getChannel } = require('../../src/services/Discord');
 describe('shadow publication log', () => {
   const originalMode = process.env.PUBLISH_MODE;
   const originalLogFile = process.env.PUBLISH_LOG_FILE;
+  const originalSocialPostsEnabled = process.env.SOCIAL_POSTS_ENABLED;
   let directory;
   let logFile;
 
@@ -20,6 +23,7 @@ describe('shadow publication log', () => {
     logFile = path.join(directory, 'publications.jsonl');
     process.env.PUBLISH_MODE = 'dry-run';
     process.env.PUBLISH_LOG_FILE = logFile;
+    process.env.SOCIAL_POSTS_ENABLED = 'true';
     jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
@@ -34,6 +38,9 @@ describe('shadow publication log', () => {
 
     if (originalLogFile === undefined) delete process.env.PUBLISH_LOG_FILE;
     else process.env.PUBLISH_LOG_FILE = originalLogFile;
+
+    if (originalSocialPostsEnabled === undefined) delete process.env.SOCIAL_POSTS_ENABLED;
+    else process.env.SOCIAL_POSTS_ENABLED = originalSocialPostsEnabled;
   });
 
   test('recognizes dry-run and shadow modes', () => {
@@ -42,6 +49,16 @@ describe('shadow publication log', () => {
     expect(isDryRun()).toBe(true);
     process.env.PUBLISH_MODE = 'live';
     expect(isDryRun()).toBe(false);
+  });
+
+  test('keeps social publishing enabled by default and supports an explicit off switch', () => {
+    delete process.env.SOCIAL_POSTS_ENABLED;
+    expect(areSocialPostsEnabled()).toBe(true);
+    process.env.SOCIAL_POSTS_ENABLED = 'false';
+    expect(areSocialPostsEnabled()).toBe(false);
+    expect(skipSocialPost('Facebook')).toBe(true);
+    process.env.SOCIAL_POSTS_ENABLED = 'true';
+    expect(skipSocialPost('Facebook')).toBe(false);
   });
 
   test('writes a structured JSON line without serializing binary media', () => {

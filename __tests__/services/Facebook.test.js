@@ -67,6 +67,20 @@ describe('Facebook adapter', () => {
       .rejects.toEqual({ message: 'denied' });
   });
 
+  test('skips outbound Facebook publishing when social posts are disabled', async () => {
+    const originalValue = process.env.SOCIAL_POSTS_ENABLED;
+    process.env.SOCIAL_POSTS_ENABLED = 'false';
+
+    try {
+      await expect(Facebook.postMessageFacebook({ message: 'test' }))
+        .resolves.toEqual({ skipped: true, reason: 'social-posts-disabled' });
+      expect(mockApi).not.toHaveBeenCalled();
+    } finally {
+      if (originalValue === undefined) delete process.env.SOCIAL_POSTS_ENABLED;
+      else process.env.SOCIAL_POSTS_ENABLED = originalValue;
+    }
+  });
+
   test('propagates Discord delivery failures while polling the Facebook feed', async () => {
     mockApi.mockImplementation((_path, method, _payload, callback) => {
       expect(method).toBe('GET');
