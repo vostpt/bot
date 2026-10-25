@@ -44,6 +44,10 @@ const sendMessageTelegram = async (message) => {
 const sendMessagesTelegram = async (messages) => {
   if (!messages.length) return;
 
+  if (isDryRun()) {
+    return Promise.all(messages.map((message) => sendMessageTelegram(message)));
+  }
+
   const messageQueue = [...messages];
   const lastMessage = messageQueue.pop();
 

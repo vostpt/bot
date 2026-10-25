@@ -4,31 +4,37 @@ The goal of workflow tests is to exercise a real bot workflow from controlled
 input through message construction and destination selection, while stopping at
 the external side-effect boundary. Tests must never publish to production.
 
-## Current end-to-end example
+## Current end-to-end examples
 
-`__tests__/workflows/ipma-warning.e2e.test.js` is the first workflow-level
-example. It supplies a fixed warning from a mocked
-IPMA API and an empty mocked warning store, then runs the real warning service
-and the real dry-run publisher adapters. It reads the resulting JSONL log and
-checks the Discord, Twitter/X, Facebook, Telegram, Mastodon, and Bluesky
-destinations and payloads.
+The workflow tests under `__tests__/workflows/` use fixed source responses,
+real service/message-building code, and fake or dry-run destination boundaries.
+They currently cover IPMA warnings, daily weather, forest fires, and the
+scheduled fire-risk map, Facebook feed forwarding, and Official Journal decrees.
 
-The API and database are mocked in this first example. It therefore proves
-service orchestration, message construction, destination selection, adapter
-dry-run behavior, and log formatting. It does not prove IPMA HTML parsing,
-SQLite persistence, or the scheduled timer that invokes the workflow; those
-should be covered in separate tests.
+The IPMA warning example mocks the API and database, then checks real dry-run
+publisher output for Discord, Twitter/X, Facebook, Telegram, Mastodon, and
+Bluesky. The daily weather example supplies fixture image streams and verifies
+the expected destinations. The forest-fire example checks grouping and urgent
+Discord mentions. The fire-risk example captures the scheduled callback, mocks
+the IPMA page response, and uses the real RCM parser and image renderer before
+checking the Discord file payload. Facebook feed polling checks filtering,
+Discord forwarding, and cursor advancement; the decree workflow checks
+Discord/Mastodon/Twitter routing and repeat suppression.
+
+These tests cover workflow orchestration and destination formatting without
+posting. Database persistence and repeat-poll deduplication are still mocked;
+scheduled callbacks are invoked directly rather than waiting for real times.
 
 ## Existing coverage and gaps
 
 | Workflow | Current coverage | Remaining end-to-end coverage |
 | --- | --- | --- |
 | IPMA warning polling | Warning routing tests and dry-run publication-log example | Repeat-poll deduplication with SQLite; scheduler callback |
-| Daily weather report | Command and adapter tests | Source fixture through image/text creation to all configured destinations |
-| Forest fires | None at workflow level | Fire feed fixture, severity grouping, Discord output |
-| Fire-risk map | RCM parser test | RCM source fixture through render to Discord file payload |
-| Facebook feed polling | Facebook adapter tests | Feed fixture, persisted cursor, filtering and Discord delivery on repeat poll |
-| Official Journal decrees | None at workflow level | RSS fixture, persistence/deduplication, Discord/Mastodon/Twitter outputs |
+| Daily weather report | Fixture image streams through formatter and dry-run publishers | Repeat-run/database behavior |
+| Forest fires | Fire fixture through real grouping and dry-run Discord output | Repeat-run/database behavior if state is added |
+| Fire-risk map | Scheduled callback, mocked page, real RCM parsing/rendering, Discord file payload | Timer registration policy and upstream HTML drift fixture |
+| Facebook feed polling | Feed fixture through service, filtering, cursor advancement, dry-run Discord forwarding | Actual SQLite cursor persistence |
+| Official Journal decrees | Fixture through service, Discord/Mastodon/Twitter dry-run output, repeat suppression | Actual SQLite persistence |
 | MeteoAlarm warnings | None at workflow level | Feed fixture, DB filtering and Europe-account Twitter thread |
 | Medea messages | None at workflow level | CSV fixture, target filtering, persistence and VOSTPTia Twitter output |
 | Travel advisories | None at workflow level | Page fixtures and expected Discord summary |
@@ -67,17 +73,11 @@ waiting for the wall clock.
 
 ## Suggested implementation order
 
-1. Daily weather: it fans out to the most social destinations and gives a
-   reusable example of image and text assertions.
-2. Fire-risk map and forest-fire alerts: verify both file delivery and normal
-   text alerts in the Discord channel.
-3. Facebook feed and official decrees: verify database cursors/deduplication
-   and repeat-poll behavior.
-4. MeteoAlarm, Medea, and travel advisories: verify each source-specific parser
+1. MeteoAlarm, Medea, and travel advisories: verify each source-specific parser
    and destination/account.
-5. Earthquake scheduled jobs and Rally publications: verify thresholds,
+2. Earthquake scheduled jobs and Rally publications: verify thresholds,
    deduplication, and multi-network routing.
-6. Runtime dispatch: add focused tests for slash cooldown/permission routing,
+3. Runtime dispatch: add focused tests for slash cooldown/permission routing,
    remaining prefix triggers, scheduled-job registration, and intentionally
    disabled behavior.
 
