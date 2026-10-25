@@ -1,64 +1,83 @@
-# VOSTPT Discord bot
+# VOSTPT Bot
 
-[![Build Status](https://travis-ci.com/vostpt/bot.svg?branch=master)](https://travis-ci.com/vostpt/bot)
-[![Coverage Status](https://coveralls.io/repos/github/vostpt/bot/badge.svg?branch=master)](https://coveralls.io/github/vostpt/bot?branch=master)
+This project runs the VOSTPT Discord bot and its scheduled information feeds to
+social networks.
 
-## Installation
-Before anything else, install the dependencies:
+## Requirements and installation
+
+Use Node.js 20 or 22. Install dependencies with:
+
 ```sh
-yarn install
+npm ci
 ```
 
-or for those who prefer `npm`:
-```sh
-npm install
-```
+Create local configuration from the template:
 
-## Configuration
-After installing the dependencies, it's time for a quick configuration.
-
-Create a `.env` file in the project root.
-
-```sh
+```bash
 cp .env.example .env
 ```
 
-Add and replace values where needed:
+Fill in credentials and channel IDs for the services you want to use. The full
+list and scheduled-job switches are in `.env.example`. Keep real secrets out of
+Git.
 
-```
-#
-# Discord bot token
-#
-BOT_TOKEN=
+## Run the bot
 
-#
-# The channels to where messages should be sent
-#
-MAIN_CHANNEL_ID=
-EARTHQUAKES_CHANNEL_ID=
-FIRES_CHANNEL_ID=
-WARNINGS_CHANNEL_ID=
-TRIGGERS_CHANNEL_ID=
-
-#
-# Twitter configurations
-#
-TWITTER_CONSUMER_KEY=
-TWITTER_CONSUMER_SECRET=
-TWITTER_ACCESS_TOKEN_KEY=
-TWITTER_ACCESS_TOKEN_SECRET=
-```
-
-## Running
-If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
+Apply the local development database migrations, then start the bot:
 
 ```sh
+npx sequelize-cli db:migrate --env development
 npm start
 ```
 
-You should see an output similar to this:
+Slash commands are registered to the guild configured by `CLIENT_ID` and
+`GUILD_ID`:
+
 ```sh
-READY :: Bot started @ 2019-4-14 21:27:00
+npm run commands:deploy
 ```
 
-That's it!
+The Discord application needs the Message Content intent enabled for triggers
+and the remaining prefix commands. Corona is excluded from slash registration.
+
+## Preview posts safely
+
+To fetch current upstream data and print the publications that would be made,
+use [Shadow mode](./shadow-mode.md). It uses an isolated SQLite database and
+logs planned Discord, Twitter/X, Mastodon, Facebook, Telegram, and Bluesky
+outputs instead of publishing them.
+
+```sh
+npm run shadow
+npm run shadow -- warnings weather
+npm run shadow:watch
+```
+
+## Tests
+
+Run the full automated test suite:
+
+```sh
+npm test -- --runInBand
+```
+
+Run the offline startup and adapter smoke tests:
+
+```sh
+npm run test:smoke
+```
+
+Optional live smoke tests authenticate with selected APIs but do not publish
+posts. Enable them explicitly and choose targets as needed:
+
+```sh
+LIVE_SMOKE_TESTS=true LIVE_SMOKE_TARGETS=discord,twitter,telegram npm run test:smoke:live
+```
+
+Run lint checks:
+
+```sh
+npm run lint -- src/ config/ scripts/
+```
+
+See [Shadow mode](./shadow-mode.md) and [Testing](./testing.md) for details.

@@ -1,64 +1,85 @@
-# VOSTPT Discord bot
+# Bot VOSTPT
 
-[![Build Status](https://travis-ci.com/vostpt/bot.svg?branch=master)](https://travis-ci.com/vostpt/bot)
-[![Coverage Status](https://coveralls.io/repos/github/vostpt/bot/badge.svg?branch=master)](https://coveralls.io/github/vostpt/bot?branch=master)
+Este projeto executa o bot Discord da VOSTPT e os processos agendados que
+publicam informação nas redes sociais.
 
-## Instalação
-Antes de mais, instala as dependências:
+## Requisitos e instalação
+
+Usa Node.js 20 ou 22. Instala as dependências:
+
 ```sh
-yarn install
+npm ci
 ```
 
-Ou caso prefiras `npm`:
-```sh
-npm install
-```
+Cria a configuração local a partir do exemplo:
 
-## Configuração
-Após instalar, it's time for a quick configuration.
-
-Cria um ficheiro `.env` na raíz do projeto.
-
-```sh
+```bash
 cp .env.example .env
 ```
 
-E edita os valores necessários:
+Preenche as credenciais e os IDs dos canais necessários. A lista completa e as
+opções para ativar/desativar tarefas estão em `.env.example`. Não guardes
+segredos no Git.
 
-```
-#
-# Token do bot
-#
-BOT_TOKEN=
+## Executar o bot
 
-#
-# Os canais para onde as respetivas mensagens devem ser enviadas
-#
-MAIN_CHANNEL_ID=
-EARTHQUAKES_CHANNEL_ID=
-FIRES_CHANNEL_ID=
-WARNINGS_CHANNEL_ID=
-TRIGGERS_CHANNEL_ID=
-
-#
-# Configurações do Twitter
-#
-TWITTER_CONSUMER_KEY=
-TWITTER_CONSUMER_SECRET=
-TWITTER_ACCESS_TOKEN_KEY=
-TWITTER_ACCESS_TOKEN_SECRET=
-```
-
-## Arrancar o bot
-Se já percorreste todos os passos anteriores deves estar tudo pronto para arrancar o bot. Para isso basta executar:
+Aplica as migrações da base de dados de desenvolvimento e inicia o bot:
 
 ```sh
+npx sequelize-cli db:migrate --env development
 npm start
 ```
 
-E deve aparecer algo do género no terminal:
+Os comandos slash são registados no servidor configurado por `CLIENT_ID` e
+`GUILD_ID`:
+
 ```sh
-READY :: Bot started @ 2019-4-14 21:27:00
+npm run commands:deploy
 ```
 
-E já está!
+Para usar triggers e os comandos prefixados que ainda existem, ativa a intenção
+privilegiada Message Content na aplicação Discord. O comando Corona fica
+excluído do registo slash.
+
+## Pré-visualizar publicações em segurança
+
+Para consultar os dados atuais e imprimir as publicações que seriam feitas,
+usa o [modo shadow](./pt-shadow-mode.md). Este modo usa uma base de dados SQLite
+isolada e regista as saídas previstas para Discord, Twitter/X, Mastodon,
+Facebook, Telegram e Bluesky sem as publicar.
+
+```sh
+npm run shadow
+npm run shadow -- warnings weather
+npm run shadow:watch
+```
+
+## Testes
+
+Executa toda a suite de testes:
+
+```sh
+npm test -- --runInBand
+```
+
+Executa os testes offline de arranque e dos adaptadores:
+
+```sh
+npm run test:smoke
+```
+
+Os testes live opcionais autenticam-se nas APIs selecionadas, mas não publicam
+mensagens. Ativa-os explicitamente e escolhe os serviços:
+
+```sh
+LIVE_SMOKE_TESTS=true LIVE_SMOKE_TARGETS=discord,twitter,telegram npm run test:smoke:live
+```
+
+Verifica o estilo do código:
+
+```sh
+npm run lint -- src/ config/ scripts/
+```
+
+Consulta [Modo shadow](./pt-shadow-mode.md) e [Testes](./pt-testing.md) para
+mais detalhes.

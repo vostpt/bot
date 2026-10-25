@@ -6,6 +6,8 @@ module.exports = {
   editLinkText: 'Ajuda-nos a melhorar!',
   nav: [
     { text: 'Inicio', link: '/' },
+    { text: 'Modo shadow', link: '/pt-shadow-mode' },
+    { text: 'Testes', link: '/pt-testing' },
     { text: 'Junta-te a nós!', link: 'https://docs.google.com/forms/d/e/1FAIpQLSf6PgIPl4XrAkGLYnPOJ2KSu2cujzSBg9XiKcfG7QHoHAZgFA/viewform' },
   ],
 };

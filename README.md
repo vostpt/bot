@@ -13,15 +13,12 @@
 </p>
 
 # Installation
-Before anything else, install the dependencies:
+Use Node.js 20 or 22, then install the dependencies:
 ```sh
-yarn install
+npm ci
 ```
 
-or for those who prefer `npm`:
-```sh
-npm install
-```
+For local development, `npm install` is also supported.
 
 # Configuration
 After installing the dependencies, it's time for a quick configuration.
@@ -32,12 +29,13 @@ Create a `.env` file in the project root.
 cp .env.example .env
 ```
 
-Create the database directory and execute Sequelize migrations:
+Create the database directory and execute Sequelize migrations for a normal
+bot run:
 
 ```bash
 mkdir ./data
 #ENVIRONMENT: development | test | production
-npx sequelize-cli db:migrate --env ENVIRONMENT
+npx sequelize-cli db:migrate --env development
 ```
 
 
@@ -210,7 +208,9 @@ BSKY_PASS=
 BSKY_REPOHANDLE=
 ```
 
-You will also need a `data/auth/vostpt-bot.json` config (can be test version).
+Some production integrations require `data/auth/vostpt-bot.json`. Shadow mode
+does not connect to Discord or publish on social networks; add only the
+credentials needed to read the upstream services you want to inspect.
 
 # Running
 If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
@@ -218,6 +218,9 @@ If you went through the previous steps successfully, you should now be able to r
 ```sh
 npm start
 ```
+
+For local preview without running the Discord bot or sending posts, use the
+[shadow publishing guide](docs/en/shadow-mode.md) or run `npm run shadow`.
 
 This version requires Node.js 20 or 22. The Discord application must have the
 Message Content privileged intent enabled when triggers or the remaining prefix
@@ -244,10 +247,24 @@ Scheduled jobs can be controlled with the `JOB_*` variables documented in
 `.env.example`. Existing non-Corona production jobs default to enabled; the
 already-disabled VOST Europe scheduled posts default to disabled.
 
+### Tests and code checks
+
+Run all automated tests:
+
+```sh
+npm test -- --runInBand
+```
+
 Run the offline startup and adapter smoke tests with:
 
 ```sh
 npm run test:smoke
+```
+
+Check code style with:
+
+```sh
+npm run lint -- src/ config/ scripts/
 ```
 
 Live smoke tests authenticate against configured social APIs without creating
