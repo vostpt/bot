@@ -106,6 +106,11 @@ client.on('messageCreate', message => {
 });
 
 client.on('interactionCreate', async interaction => {
+  console.log(
+    `[Interaction] Received ${interaction.type} interaction${interaction.commandName
+      ? ` /${interaction.commandName}`
+      : ''}`
+  );
 
   if (interaction.isAutocomplete()) {
     const command = client.slashCommands.get(interaction.commandName);
@@ -123,7 +128,14 @@ client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.slashCommands.get(interaction.commandName);
-  if (!command) return;
+  if (!command) {
+    console.warn(`[Interaction] No loaded handler for /${interaction.commandName}`);
+    await interaction.reply({
+      content: 'Este comando não está disponível nesta versão do bot. Atualiza os comandos ou reinicia o bot.',
+      ephemeral: true,
+    });
+    return;
+  }
 
   try {
     if (command.limitToChannels?.length
