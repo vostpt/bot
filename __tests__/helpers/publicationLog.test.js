@@ -66,6 +66,7 @@ describe('shadow publication log', () => {
       'SOCIAL_POSTS_ENABLED', 'SOCIAL_TWITTER_ENABLED',
       'SOCIAL_FACEBOOK_ENABLED', 'SOCIAL_FACEBOOK_MAIN_ENABLED',
       'SOCIAL_FACEBOOK_RALLY_ENABLED',
+      'SOCIAL_INSTAGRAM_ENABLED', 'SOCIAL_INSTAGRAM_MAIN_ENABLED',
     ];
     const originalValues = Object.fromEntries(flagNames.map((name) => [name, process.env[name]]));
 
@@ -73,10 +74,12 @@ describe('shadow publication log', () => {
       Object.keys(originalValues).forEach((name) => delete process.env[name]);
       process.env.SOCIAL_TWITTER_ENABLED = 'false';
       process.env.SOCIAL_FACEBOOK_RALLY_ENABLED = 'false';
+      process.env.SOCIAL_INSTAGRAM_MAIN_ENABLED = 'false';
 
       expect(areSocialPostsEnabled('TWITTER', 'main')).toBe(false);
       expect(areSocialPostsEnabled('FACEBOOK', 'main')).toBe(true);
       expect(areSocialPostsEnabled('FACEBOOK', 'rally')).toBe(false);
+      expect(areSocialPostsEnabled('INSTAGRAM', 'main')).toBe(false);
       process.env.SOCIAL_FACEBOOK_ENABLED = 'false';
       expect(areSocialPostsEnabled('FACEBOOK', 'main')).toBe(false);
     } finally {

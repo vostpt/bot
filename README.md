@@ -237,9 +237,14 @@ You can also disable one network or one account/profile in `.env`. For example,
 `SOCIAL_TWITTER_ENABLED=false` disables all Twitter/X accounts, while
 `SOCIAL_TWITTER_AZORES_ENABLED=false` disables only the Azores account. The
 same pattern is available for Facebook (`MAIN`, `RALLY`), Telegram (`MAIN`,
-`RALLY`), Mastodon (`MAIN`, `DRE`), Bluesky (`MAIN`), and Twitter/X (`MAIN`,
-`AZORES`, `EUROPE`, `VOSTPTIA`, `DRE`, `RALLY`). A `false` global or network
+`RALLY`), Mastodon (`MAIN`, `DRE`), Bluesky (`MAIN`), Instagram (`MAIN`), and
+Twitter/X (`MAIN`, `AZORES`, `EUROPE`, `VOSTPTIA`, `DRE`, `RALLY`). A `false` global or network
 flag overrides narrower profile flags.
+
+Instagram has matching `SOCIAL_INSTAGRAM_ENABLED` and
+`SOCIAL_INSTAGRAM_MAIN_ENABLED` settings for consistency, but this repository
+does not currently have an Instagram publishing integration, so those flags
+have no effect on Instagram posts yet.
 
 # Discord commands
 
