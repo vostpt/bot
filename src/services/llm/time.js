@@ -1,6 +1,6 @@
 const moment = require('moment-timezone');
 
-const { parseInLisbon, ZONE } = require('./utcp/tools/context');
+const { parseInLisbon, ZONE } = require('utcp-vost');
 
 const UNITS = {
   dia: 'days',

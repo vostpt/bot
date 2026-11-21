@@ -44,7 +44,8 @@
     "sequelize": "^6.37.8",
     "sharp": "^0.33.5",
     "sqlite3": "^5.1.7",
-    "twitter-api-v2": "^1.17.2"
+    "twitter-api-v2": "^1.17.2",
+    "utcp-vost": "file:lib/utcp-vost"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",

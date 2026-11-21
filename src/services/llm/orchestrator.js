@@ -2,8 +2,7 @@ const { withMeasuredSpan } = require('../../telemetry');
 const capabilities = require('./capabilities');
 const rag = require('./rag');
 const { chat } = require('./index');
-const utcp = require('./utcp/client');
-const { isAllowed } = require('./utcp/allowlist');
+const { searchTools, callTool, isAllowed } = require('./utcp');
 const prompts = require('./prompts/vostptia');
 
 const MAX_TOOL_CALLS = 4;
@@ -130,12 +129,12 @@ const runChat = async ({
   const ragContext = rag.buildContext(ragResults);
 
   const chatFn = deps.chat || chat;
-  const searchTools = deps.searchTools || utcp.searchTools;
-  const callTool = deps.callTool || utcp.callTool;
+  const searchToolsFn = deps.searchTools || searchTools;
+  const callToolFn = deps.callTool || callTool;
 
   const candidates = Array.isArray(tools)
     ? tools
-    : await searchTools(question, MAX_SEARCH_TOOLS);
+    : await searchToolsFn(question, MAX_SEARCH_TOOLS);
 
   const allowedCandidates = candidates.filter((tool) => tool && isAllowed(tool.name));
   const system = prompts.systemPrompt();
@@ -153,7 +152,7 @@ const runChat = async ({
   const results = await Promise.all(calls.map(async ({ name, args }) => ({
     name,
     args,
-    result: await callTool(name, args),
+    result: await callToolFn(name, args),
   })));
 
   const finalMessages = serializedResults => messagesFor(system, prompts.finalPrompt({
