@@ -60,10 +60,6 @@ const parseInLisbon = (value) => {
   return moment.tz(text, ZONE);
 };
 
-/**
- * True when the requested range is entirely before the current Lisbon day.
- * Current-day data is never treated as historical.
- */
 const isPastRange = (range, now = new Date()) => {
   if (!range || typeof range !== 'object') {
     return false;
@@ -79,8 +75,6 @@ const isPastRange = (range, now = new Date()) => {
     return false;
   }
 
-  // Any past boundary means the question covers a period that cannot be
-  // answered from current-only sources such as fires/ProCiv.
   return boundaries.some((parsed) => parsed.isBefore(today));
 };
 

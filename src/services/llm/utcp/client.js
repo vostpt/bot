@@ -2,7 +2,6 @@ const path = require('path');
 
 const { withMeasuredSpan, emitLog } = require('../../../telemetry');
 
-// Side-effect imports: each plugin registers its protocol/call template.
 require('@utcp/sdk');
 require('@utcp/direct-call');
 require('@utcp/http');
@@ -32,7 +31,6 @@ const createClient = async () => {
   });
 };
 
-/** One UtcpClient per process. */
 const getClient = () => {
   if (!clientPromise) {
     clientPromise = createClient().catch((error) => {
@@ -62,7 +60,6 @@ const sanitizeArgs = (args) => {
   }
 };
 
-/** Discovery is the only way the agent sees tools. */
 const searchTools = async (query, limit = 20) => {
   const client = await getClient();
   const found = await client.searchTools(String(query || ''), limit);
@@ -70,7 +67,6 @@ const searchTools = async (query, limit = 20) => {
   return found.filter((tool) => isAllowed(tool.name));
 };
 
-/** Allowlist is checked before any tool is executed. */
 const callTool = async (name, args = {}) => {
   if (!isAllowed(name)) {
     throw new Error(`Tool não permitida: ${name}`);
@@ -79,8 +75,6 @@ const callTool = async (name, args = {}) => {
   const safeArgs = sanitizeArgs(args);
   const client = await getClient();
 
-  // The direct-call plugin spreads Object.values(args) into the callable and
-  // loses argument names. One options object keeps named arguments intact.
   const payload = DIRECT_TOOLS.has(name) ? { options: safeArgs } : safeArgs;
 
   try {

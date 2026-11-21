@@ -1,7 +1,3 @@
-/**
- * Error type used at the LLM boundary. The original status/code are kept so
- * the OpenRouter adapter can distinguish budget failures from other failures.
- */
 class LlmProviderError extends Error {
   constructor(message, options = {}) {
     super(message);

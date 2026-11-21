@@ -1,0 +1,209 @@
+:root {
+  color-scheme: dark;
+  --bg: #0c1018;
+  --panel: #141a25;
+  --panel-2: #1a2130;
+  --line: #263044;
+  --text: #e7ecf4;
+  --muted: #8895ab;
+  --accent: #ffc14d;
+  --green: #49d39d;
+  --blue: #6ea8ff;
+  --red: #ff6b6b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 15% -10%, #1b2740 0%, var(--bg) 55%);
+  color: var(--text);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(12, 16, 24, 0.85);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand h1 { font-size: 20px; margin: 0; letter-spacing: 0.3px; }
+.subtitle, .muted { color: var(--muted); }
+.subtitle { margin: 0; font-size: 12px; }
+.bee {
+  display: grid;
+  place-items: center;
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffd884, #e8952a);
+  color: #201400;
+  font-size: 22px;
+  box-shadow: 0 6px 18px rgba(255, 193, 77, 0.25);
+}
+
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.chip-live { color: var(--green); border-color: rgba(73, 211, 157, 0.4); }
+.chip-muted { color: var(--muted); }
+.refresh {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.refresh:hover { border-color: var(--accent); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 28px; }
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px 24px;
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.hero { display: flex; gap: 32px; align-items: center; justify-content: space-between; }
+.hero-main { flex: 1; min-width: 0; }
+.hero-number { font-size: 58px; font-weight: 650; line-height: 1; margin-bottom: 16px; }
+.hero-number small { font-size: 24px; color: var(--muted); margin-left: 3px; }
+.hero-side { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.stat {
+  background: var(--panel-2);
+  border-radius: 12px;
+  padding: 12px 18px;
+  min-width: 92px;
+  text-align: center;
+}
+.stat span { display: block; font-size: 24px; font-weight: 650; }
+.stat small { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.7px; }
+
+.bar {
+  height: 8px;
+  border-radius: 99px;
+  background: #0a0e15;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+.bar-large { height: 12px; max-width: 680px; }
+.bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #e8952a, var(--accent));
+  transition: width 0.6s ease;
+}
+.bar-fill.done { background: linear-gradient(90deg, #2ea77b, var(--green)); }
+.bar-fill.failed { background: linear-gradient(90deg, #b84242, var(--red)); }
+
+.current-step { margin-top: 16px; border-left: 3px solid var(--accent); }
+.current-step p { margin: 0; font-size: 16px; }
+#overall-meta { margin-top: 10px; font-size: 13px; }
+
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 28px 0 14px;
+}
+.section-heading h2 { font-size: 17px; margin: 0; }
+.section-heading .muted { font-size: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.workers { display: grid; gap: 14px; }
+.worker {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px 22px;
+}
+.worker-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.worker-key {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--accent);
+  font-size: 12px;
+}
+.worker h3 { margin: 2px 0 0; font-size: 16px; font-weight: 600; }
+.worker-pct { font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 650; white-space: nowrap; }
+.status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border: 1px solid currentColor;
+  margin-top: 8px;
+}
+.status.active { color: var(--blue); }
+.status.completed { color: var(--green); }
+.status.pending { color: var(--muted); }
+.status.failed { color: var(--red); }
+
+.worker .bar { margin: 16px 0 12px; }
+.worker .bar-fill.active { background: linear-gradient(90deg, #3d6bbf, var(--blue)); }
+.step-line { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.step-line strong { font-size: 14px; }
+.detail { color: var(--muted); font-size: 13px; margin: 6px 0 0; overflow-wrap: anywhere; }
+
+.meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.meta-row span {
+  background: var(--panel-2);
+  border-radius: 8px;
+  padding: 4px 9px;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.timeline { list-style: none; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px dashed var(--line); }
+.timeline li {
+  display: flex;
+  gap: 10px;
+  padding: 3px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.timeline time { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; min-width: 62px; }
+.timeline .tool { color: var(--accent); }
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 24px 0 8px;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .hero { flex-direction: column; align-items: stretch; }
+  .hero-side { grid-template-columns: repeat(4, 1fr); }
+  .stat { min-width: 0; padding: 10px 4px; }
+  main { padding: 18px; }
+  .topbar { padding: 14px 18px; }
+}

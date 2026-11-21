@@ -180,6 +180,8 @@ No canal definido em `LLM_ALLOWED_CHANNELS`:
 Esperado: a lista inclui `!chat`.  
 Os restantes comandos mantêm-se como antes.
 
+Nota: `!chat` sem texto não chama o LLM. O bot menciona quem escreveu e responde com `!chat <prompt>` e três exemplos de uso.
+
 ### 8.2. Pergunta simples
 
 ```text
@@ -352,3 +354,40 @@ O `.env` não deve aparecer como ficheiro novo.
 
 Para enviar traces, métricas e logs para um coletor OTLP, ver `docs/observability.md`.
 Sem `OTEL_EXPORTER_OTLP_ENDPOINT`, o bot não carrega o SDK e não exporta nada.
+
+---
+
+## 15. Agentes persistidos (`!agent` / `!agents`)
+
+Os comandos de agentes são opcionais. Activá-los apenas depois da migração da
+tabela de agentes e com `AGENTS_ENABLED=true` no `.env`. Partilham
+`LLM_ALLOWED_CHANNELS` com `!chat`.
+
+```text
+!agent --help
+!agent create --name "incendios" --prompt "Onde há fogos agora?" --now
+!agent create --name "daqui-a-30" --prompt "Resumo de ocorrências" --in "30m"
+!agent create --name "natal" --prompt "Resumo de ocorrências" --at "2026-12-25T10:00"
+!agent create --name "diario" --prompt "O que diz o Diário da República?" --rrule "FREQ=DAILY;BYHOUR=13;BYMINUTE=0"
+!agent create --name "incendios" --prompt "Onde há fogos agora?" --cron "0 13 * * *"
+!agent create --name "segunda" --prompt "Resumo de ocorrências" --cron "0 9 * * MON" --once
+!agent list
+!agents
+!agent update --name "diario" --prompt "Resumo do Diário da República"
+!agent update --name "diario" --rrule "FREQ=DAILY;BYHOUR=14;BYMINUTE=0"
+!agent cancel --name "diario"
+```
+
+Regras da CLI: `--name` e `--prompt` são obrigatórios na criação; cada criação
+aceita **uma** das cinco opções de agendamento (`--now`, `--in`, `--at`,
+`--rrule`, `--cron`). `--once` pode ser usado com `--rrule` ou `--cron` para
+executar apenas a próxima ocorrência; RRULE com `COUNT=1` também é única.
+`cancel`, `delete` e `remove` são equivalentes e apagam o agente.
+Os prompts dos outros utilizadores aparecem como `(privado)`, excepto para
+administradores do servidor. Com `LLM_CHAT_ONLY=true`, `!chat`, `!agent` e
+`!agents` continuam disponíveis.
+
+Referências para agendamentos:
+
+- RRULE: https://jkbrzt.github.io/rrule/
+- Cron: https://crontab.guru/

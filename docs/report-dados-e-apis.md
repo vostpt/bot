@@ -80,6 +80,14 @@ Definida em `config/api.js` como `baseURL`. Não requer chave nas chamadas atuai
 | `RALLYFILEPATH` (CSV) | Zonas de estacionamento do Rally e lotação | `!rally update` / `!rally upload` |
 | `data/auth/vostpt-bot.json` | Credencial Google service account | Leitura/escrita das spreadsheets COVID |
 
+### Documentação local (RAG)
+
+| Ficheiro | Conteúdo | Utilização |
+|---|---|---|
+| `rag/vost.md` | História, fundadores, projetos, parcerias e contactos da VOST Portugal | `src/services/llm/rag` pesquisa trechos por relevância e injeta-os no prompt do `!chat` |
+
+Qualquer outro ficheiro `.md` adicionado a `rag/` passa a fazer parte desta base sem alterações de código. A pesquisa é local, sem vetores nem chamadas externas.
+
 ---
 
 ## 4. Ferramentas UTCP disponíveis no `!chat`
@@ -210,3 +218,31 @@ JS
 | `portaldascomunidades.mne.gov.pt/...` | falha de handshake TLS no `curl` local | Pode ser específico do ambiente; confirmar no servidor de produção
 
 Estes resultados são uma amostra pontual, não um SLA. Redirecionamentos, geobloqueio ou indisponibilidade temporária podem alterá-los.
+
+---
+
+## 10. Exemplos de utilização
+
+```text
+   !agents
+   !chat Onde há fogo agora?
+   !agent create --name "Bombeiro" --prompt "verifica se há fogos" --now
+   !agent create --name "Diario" --prompt "resumo do Diário da República" --rrule
+ "FREQ=DAILY;BYHOUR=13;BYMINUTE=0"
+   !agent list
+   !agent cancel --name "Bombeiro"
+```
+
+Notas: `!chat` usa as ferramentas UTCP da secção 4. Os comandos `!agent`/`!agents` exigem `AGENTS_ENABLED=true` e a migração da tabela de agentes; partilham `LLM_ALLOWED_CHANNELS` com `!chat` e continuam disponíveis com `LLM_CHAT_ONLY=true`. A criação aceita apenas uma das opções `--now`, `--in`, `--at` ou `--rrule`.
+
+Perguntas sobre as próprias fontes — por exemplo `!chat A que fontes vais buscar os dados?`, `!chat Que APIs usas?` ou `!chat De onde vêm os dados?` — são respondidas de forma determinística por `src/services/llm/capabilities.js`, sem chamar o LLM e sem executar ferramentas. Isto evita o erro que ocorria quando o modelo era obrigado a produzir um plano JSON com chamadas de ferramentas para uma pergunta que não pedia dados.
+
+Exemplos de perguntas respondidas pela documentação RAG:
+
+```text
+!chat Quando foi fundada a VOST?
+!chat O que é a plataforma VERA?
+!chat Quais são os projetos internacionais da VOST?
+```
+
+A resposta inclui `Fonte: documentação da VOST` quando o trecho local foi usado.

@@ -7,7 +7,15 @@ const { runChat } = require('../services/llm/orchestrator');
 
 const ERROR_MESSAGE = 'Infelizmente não te posso responder';
 
-/** Real Discord mention for the requester; plain @name in the local pane. */
+const EMPTY_MESSAGE = [
+  'Tens de escrever algo depois de `!chat`: `!chat <prompt>`.',
+  '',
+  'Exemplos:',
+  '`!chat Onde há fogos agora?`',
+  '`!chat Houve sismos sentidos hoje?`',
+  '`!chat O que significa ANPC?`',
+].join('\n');
+
 const mentionFor = (message) => {
   const author = message && message.author;
 
@@ -27,6 +35,7 @@ const mentionFor = (message) => {
 };
 
 const errorReply = (message) => `${mentionFor(message)} ${ERROR_MESSAGE}`.trim();
+const emptyReply = (message) => `${mentionFor(message)} ${EMPTY_MESSAGE}`.trim();
 
 module.exports = {
   name: 'chat',
@@ -34,7 +43,7 @@ module.exports = {
   args: true,
   cooldown,
   limitToChannels: llmChatChannels,
-  usage: '**!chat <pergunta>** - Faz uma pergunta ao VOSTPTia com dados acessíveis via UTCP.',
+  usage: '**!chat <prompt>** - Faz uma pergunta ao VOSTPTia com dados acessíveis via UTCP.',
 
   async execute(message, args) {
     const question = Array.isArray(args) ? args.join(' ').trim() : String(args || '').trim();
@@ -52,7 +61,7 @@ module.exports = {
       try {
         if (!question) {
           count('chatRequests', { result: 'empty' });
-          await sendMessageToChannel(channel, errorReply(message));
+          await sendMessageToChannel(channel, emptyReply(message));
           return;
         }
 
@@ -62,7 +71,6 @@ module.exports = {
         try {
           history = memory.getHistory(key);
         } catch (error) {
-          // Non-critical: continue without history.
           console.warn('Memória do chat indisponível na leitura');
         }
 
@@ -77,11 +85,9 @@ module.exports = {
           memory.append(key, 'user', question);
           memory.append(key, 'assistant', answer);
         } catch (error) {
-          // Non-critical: the answer was already delivered.
           console.warn('Memória do chat indisponível na escrita');
         }
       } catch (error) {
-        // Details stay in the process log; Discord only sees the fixed phrase.
         console.error(error);
         count('chatRequests', { result: 'error' });
         emitLog('chat.failed', {
@@ -107,4 +113,6 @@ module.exports = {
 };
 
 module.exports.ERROR_MESSAGE = ERROR_MESSAGE;
+module.exports.EMPTY_MESSAGE = EMPTY_MESSAGE;
 module.exports.errorReply = errorReply;
+module.exports.emptyReply = emptyReply;

@@ -125,10 +125,6 @@ const complete = async (client, config, options, model, phase) => withSpan('llm.
   return result;
 });
 
-/**
- * OpenRouter chat adapter. Uses the OpenAI-compatible API and never sends
- * Discord messages or logs credentials.
- */
 const chat = async ({ messages, tools = [], config: suppliedConfig } = {}) => {
   const config = suppliedConfig || getLlmConfig();
 
@@ -155,7 +151,6 @@ const chat = async ({ messages, tools = [], config: suppliedConfig } = {}) => {
       throw providerError;
     }
 
-    // Budget detail stays internal: no Discord message and no credentials.
     console.warn(JSON.stringify({
       event: 'budget_exhausted',
       provider: 'openrouter',

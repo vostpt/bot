@@ -39,12 +39,6 @@ const explicitDate = (text) => {
   return { date, label: date.tz(ZONE).format('DD/MM/YYYY') };
 };
 
-/**
- * Resolves relative and absolute dates mentioned in a question.
- * All dates are interpreted in Europe/Lisbon.
- *
- * @returns {{start: String, end: String, label: String, supported: Boolean}}
- */
 const resolveDateRange = (question, now = new Date()) => {
   const text = String(question || '').toLowerCase();
   const current = moment(now).tz(ZONE);

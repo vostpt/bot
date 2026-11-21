@@ -1,7 +1,3 @@
-/**
- * Explicit allowlist of read-only tools exposed to the chat agent.
- * New tools must be added here on purpose; no write/publish tool belongs here.
- */
 const ALLOWED_TOOLS = Object.freeze([
   'vost_prociv.get_all',
   'vost_prociv.get_by_id',

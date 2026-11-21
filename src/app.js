@@ -112,8 +112,10 @@ if (fs.existsSync(triggersPath)) {
 }
 
 if (chatOnlyMode) {
+  const chatOnlyCommands = ['chat', 'agent', 'agents'];
+
   client.commands.forEach((command, name) => {
-    if (name !== 'chat') {
+    if (!chatOnlyCommands.includes(name)) {
       command.active = false;
     }
   });

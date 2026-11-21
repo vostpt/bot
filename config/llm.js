@@ -26,10 +26,6 @@ const number = (name, value, fallback, { min = 0, max = Number.MAX_SAFE_INTEGER 
   return parsed;
 };
 
-/**
- * Reads and validates LLM settings from the environment on every call.
- * Values are never logged and no bot credentials are read here.
- */
 const getLlmConfig = () => {
   const provider = process.env.LLM_PROVIDER || DEFAULT_PROVIDER;
 
@@ -67,7 +63,6 @@ const getLlmConfig = () => {
     throw new Error('LLM_MODEL não configurado');
   }
 
-  // The contract allows exactly one fallback attempt.
   config.fallback.maxAttempts = Math.min(config.fallback.maxAttempts, 1);
 
   if (config.fallback.enabled && !config.fallback.model) {

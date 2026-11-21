@@ -49,8 +49,8 @@ const cooldown = COOLDOWN.length === 0 ? 10 : COOLDOWN;
 
 const betaMode = (/true/i).test(process.env.BETA_MODE);
 
-// Temporary operational switch: only !chat is active; no triggers, other
-// commands or scheduled jobs. It also implies the chat adapter is enabled.
+// Temporary operational switch: only !chat, !agent and !agents are active;
+// no triggers, other commands or scheduled jobs. It implies chat is enabled.
 const chatOnlyMode = (/true/i).test(process.env.LLM_CHAT_ONLY);
 
 const llmChatEnabled = chatOnlyMode
@@ -61,6 +61,10 @@ const llmChatChannels = (process.env.LLM_ALLOWED_CHANNELS || '')
   .split(',')
   .map(channel => channel.trim())
   .filter(channel => channel.length > 0);
+
+const agentsEnabled = process.env.AGENTS_ENABLED === undefined
+  ? false
+  : (/true/i).test(process.env.AGENTS_ENABLED);
 
 // Terminal input for direct questions in the bot pane (no Discord roundtrip).
 const llmChatLocalInput = (/true/i).test(process.env.LLM_CHAT_LOCAL_INPUT);
@@ -75,5 +79,6 @@ module.exports = {
   llmChatEnabled,
   llmChatChannels,
   chatOnlyMode,
+  agentsEnabled,
   llmChatLocalInput,
 };

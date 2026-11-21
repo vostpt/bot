@@ -13,8 +13,6 @@ const {
   ZONE,
 } = require('./context');
 
-// Services and APIs are required lazily so existing implementations stay
-// untouched and tests can replace them with mocks.
 const services = () => require('../../..');
 const apis = () => require('../../../../api');
 
@@ -208,7 +206,6 @@ const wrappers = {
 
 let registered = false;
 
-/** Registers all direct-call callables once per process. */
 const registerCallables = () => {
   if (registered) {
     return;

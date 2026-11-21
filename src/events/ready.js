@@ -1,6 +1,8 @@
 const Jobs = require('../jobs');
 const { locale } = require('../../config/locale');
-const { betaMode, chatOnlyMode, channels: configuredChannels } = require('../../config/bot');
+const {
+  betaMode, chatOnlyMode, agentsEnabled, channels: configuredChannels,
+} = require('../../config/bot');
 const { sendMessageToChannel } = require('../services/Discord');
 
 const STARTUP_MESSAGE = 'Estou aqui';
@@ -34,6 +36,21 @@ const findStartupChannel = (client) => {
   }
 
   return available.find(channel => canSend(client, channel)) || null;
+};
+
+const restoreAgents = async (client) => {
+  if (!agentsEnabled) {
+    return;
+  }
+
+  try {
+    const { createAgentService } = require('../services/agents');
+
+    client.agents = createAgentService(client);
+    await client.agents.scheduler.restore();
+  } catch (error) {
+    console.warn('Não foi possível restaurar os agentes agendados', error && error.message);
+  }
 };
 
 const announceReady = async (client) => {
@@ -76,6 +93,7 @@ const ready = async (client) => {
   console.log(`READY :: Bot started @ ${currentDate}`);
 
   await announceReady(client);
+  await restoreAgents(client);
 };
 
 module.exports = ready;

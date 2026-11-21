@@ -1,4 +1,6 @@
 const { withMeasuredSpan } = require('../../telemetry');
+const capabilities = require('./capabilities');
+const rag = require('./rag');
 const { chat } = require('./index');
 const utcp = require('./utcp/client');
 const { isAllowed } = require('./utcp/allowlist');
@@ -70,10 +72,6 @@ const messagesFor = (system, userContent) => [
   { role: 'user', content: userContent },
 ];
 
-/**
- * Tool results are summarized instead of pasted verbatim: reasoning models
- * would otherwise spend the whole token budget before writing an answer.
- */
 const serializeResults = (results, { minimal = false } = {}) => results.map(({ name, result }) => {
   const isObject = result && typeof result === 'object';
   const summary = isObject ? {
@@ -93,7 +91,6 @@ const serializeResults = (results, { minimal = false } = {}) => results.map(({ n
   };
 });
 
-/** Retry once with more room when a reasoning model returns no answer text. */
 const askLlm = async (chatFn, messages, maxTokens, phase = 'llm') => withMeasuredSpan(`llm.${phase}`, {
   attributes: { 'llm.phase': phase },
   countKey: 'llmCalls',
@@ -114,12 +111,6 @@ const askLlm = async (chatFn, messages, maxTokens, phase = 'llm') => withMeasure
   }
 });
 
-/**
- * Single orchestrator: plans tool calls, executes validated read-only tools
- * through UTCP, then asks the LLM for a short grounded answer.
- *
- * Any failure is propagated to the command layer, which owns the error reply.
- */
 const runChat = async ({
   question,
   history = [],
@@ -130,6 +121,13 @@ const runChat = async ({
   if (typeof question !== 'string' || question.trim() === '') {
     throw new Error('Pergunta inválida');
   }
+
+  if (capabilities.isCapabilityQuestion(question)) {
+    return capabilities.result();
+  }
+
+  const ragResults = rag.search(question, { limit: 3 });
+  const ragContext = rag.buildContext(ragResults);
 
   const chatFn = deps.chat || chat;
   const searchTools = deps.searchTools || utcp.searchTools;
@@ -142,12 +140,12 @@ const runChat = async ({
   const allowedCandidates = candidates.filter((tool) => tool && isAllowed(tool.name));
   const system = prompts.systemPrompt();
 
-  // Step 1 of at most 2 LLM steps: choose tools.
   const planText = await askLlm(chatFn, messagesFor(system, prompts.planningPrompt({
     question,
     history,
     dateContext,
     tools: allowedCandidates,
+    rag: ragContext.slice(0, 2),
   })), PLANNING_MAX_TOKENS, 'plan');
 
   const calls = validateCalls(parsePlan(planText), allowedCandidates.map(({ name }) => name));
@@ -158,12 +156,12 @@ const runChat = async ({
     result: await callTool(name, args),
   })));
 
-  // Step 2 of at most 2 LLM steps: final answer grounded in the tool results.
   const finalMessages = serializedResults => messagesFor(system, prompts.finalPrompt({
     question,
     history,
     dateContext,
     results: serializedResults,
+    rag: ragContext,
   }));
 
   let finalText;
@@ -175,7 +173,6 @@ const runChat = async ({
       throw error;
     }
 
-    // Last resort: only sources, availability and counts, with more room.
     finalText = await withMeasuredSpan('llm.answer-retry', {
       attributes: { 'llm.phase': 'answer-retry' },
       countKey: 'llmCalls',

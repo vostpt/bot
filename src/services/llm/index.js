@@ -6,14 +6,6 @@ const providers = {
   openrouter,
 };
 
-/**
- * Provider-agnostic chat interface.
- *
- * @param {Object} options
- * @param {Array} options.messages OpenAI-compatible messages
- * @param {Array} options.tools optional tool definitions
- * @returns {Promise<String>} final text answer
- */
 const chat = async ({ messages, tools = [], maxTokens } = {}) => {
   if (!Array.isArray(messages) || messages.length === 0) {
     throw new LlmProviderError('Mensagens inválidas', { code: 'INVALID_MESSAGES' });

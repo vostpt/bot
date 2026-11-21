@@ -3,8 +3,6 @@ const readline = require('readline');
 const messageEvent = require('./message');
 const { llmChatChannels } = require('../../config/bot');
 
-// Use the configured channel so the existing channel allowlist does not
-// silently drop local messages.
 const CHANNEL_ID = llmChatChannels[0] || 'local-console';
 const AUTHOR_ID = 'local-user';
 
@@ -13,11 +11,6 @@ const print = (text) => {
   console.log(`[VOSTPTia] ${text}`);
 };
 
-/**
- * Local terminal input for testing the bot without Discord.
- * Plain lines are treated as `!chat <text>`; lines starting with `!` are
- * dispatched as commands. Enable with LLM_CHAT_LOCAL_INPUT=true.
- */
 const startLocalInput = (client) => {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -78,7 +71,6 @@ const startLocalInput = (client) => {
       return;
     }
 
-    // Local testing should not be throttled by the Discord cooldown.
     const timestamps = client.cooldowns && client.cooldowns.get('chat');
 
     if (timestamps && timestamps.has(AUTHOR_ID)) {
@@ -90,14 +82,12 @@ const startLocalInput = (client) => {
     try {
       await messageEvent(client, msgFor(content));
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Erro no input local:', error);
     }
 
     rl.prompt();
   });
 
-  // readline swallows Ctrl+C unless we exit explicitly.
   rl.on('SIGINT', () => {
     rl.close();
     client.destroy();

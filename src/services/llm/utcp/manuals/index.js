@@ -8,10 +8,6 @@ const groupOf = (toolName) => toolName.split('.')[0];
 
 const directGroups = [...new Set(vostManual.tools.map(({ name }) => groupOf(name)))];
 
-/**
- * Builds the manual returned by a direct-call manual callable. Tool names are
- * short here: the UTCP client adds the manual prefix during registration.
- */
 const getDirectManual = (group) => ({
   utcp_version: vostManual.utcp_version,
   manual_version: vostManual.manual_version,
