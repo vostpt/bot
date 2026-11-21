@@ -1,71 +1,95 @@
 const { splitMessageString } = require('../helpers');
+const { isDryRun, recordPublication } = require('../helpers/publicationLog');
 
 const discordApiLimit = 1950;
 
+const getChannel = async (client, channelId) => {
+  if (isDryRun() && !channelId) {
+    return { id: 'unconfigured', name: 'shadow-unconfigured' };
+  }
+
+  if (!client || !channelId) return null;
+
+  return client.channels.cache?.get(channelId) || client.channels.fetch(channelId);
+};
+
 /**
-* Send message to Discord channel
-* Returns the API response of the last message sent
-*
-* @param {Object} channel
-* @param {String} message
-* @param {String} fileUrl
-*/
+ * Send message to Discord channel
+ * Returns the API response of the last message sent
+ */
 const sendMessageToChannel = async (channel, message, fileUrl) => {
+  if (isDryRun()) {
+    return recordPublication('discord', {
+      channelId: channel?.id,
+      channelName: channel?.name,
+      text: message,
+      files: fileUrl
+        ? Array.isArray(fileUrl) ? fileUrl : [fileUrl]
+        : [],
+    });
+  }
+
   const messageArray = splitMessageString(message, discordApiLimit);
 
   const lastMessage = messageArray.pop();
 
-  const fileArray = [];
+  const files = fileUrl
+    ? Array.isArray(fileUrl)
+      ? fileUrl
+      : [fileUrl]
+    : [];
 
-  if (fileUrl) {
-    fileArray.push(fileUrl);    
+  // envia partes anteriores
+  for (const msg of messageArray) {
+    await channel.send(msg);
   }
 
-  messageArray.forEach((msgSubSet) => { channel.send(msgSubSet); });
+  // última mensagem com ficheiros (se existirem)
+  if (files.length === 0) return channel.send(lastMessage);
 
-  return await channel.send(lastMessage, { files: fileArray });
+  return channel.send({ content: lastMessage, files });
 };
 
 /**
-* Send answer to message
-*
-* @param {Object} msgInstance
-* @param {String} message
-*/
+ * Send answer to message
+ */
 const sendMessageAnswer = async (msgInstance, message, fileUrl) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
   const firstMessage = messageArray.shift();
 
-  if (fileUrl) {
-    const fileArray = Array.isArray(fileUrl)
-      ? { files: fileUrl }
-      : { files: [fileUrl] };
+  const files = fileUrl
+    ? Array.isArray(fileUrl)
+      ? fileUrl
+      : [fileUrl]
+    : [];
 
-    const answer = msgInstance.reply(firstMessage, fileArray);
-
-    return answer;
+  // reply principal (v14 format)
+  if (files.length === 0) {
+    await msgInstance.reply(firstMessage);
   } else {
-    msgInstance.reply(firstMessage);
-  }  
+    await msgInstance.reply({ content: firstMessage, files });
+  }
 
-  messageArray.forEach((msgSubSet) => { msgInstance.channel.send(msgSubSet); });
-
+  // resto vai para o canal
+  for (const msgSubSet of messageArray) {
+    await msgInstance.channel.send(msgSubSet);
+  }
 };
 
 /**
-* Send DM to the message author
-*
-* @param {Object} msgInstance
-* @param {String} message
-*/
+ * Send DM to the message author
+ */
 const sendMessageToAuthor = async (msgInstance, message) => {
   const messageArray = splitMessageString(message, discordApiLimit);
 
-  messageArray.forEach((msgSubSet) => { msgInstance.author.send(msgSubSet); });
+  for (const msg of messageArray) {
+    await msgInstance.author.send(msg);
+  }
 };
 
 module.exports = {
+  getChannel,
   sendMessageToChannel,
   sendMessageAnswer,
   sendMessageToAuthor,

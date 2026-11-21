@@ -6,9 +6,10 @@ const moment = require('moment');
 const { db, Op } = require('../database/models');
 const { JournalApi } = require('../api');
 const { channels } = require('../../config/bot');
-const { sendMessageToChannel } = require('./Discord');
+const { getChannel, sendMessageToChannel } = require('./Discord');
 const { uploadThreadTwitter } = require('./Twitter');
 const { sendPostMastodon } = require('./Mastodon');
+const { publishAll } = require('../helpers');
 
 const twitterAccounts = {
   'NEGÓCIOS ESTRANGEIROS': '@nestrangeiro_pt',
@@ -153,32 +154,27 @@ const checkNewDecrees = async (client) => {
     .map((obj) => obj.discord)
     .filter((message) => message !== '').join('\n\n');
 
-  if (msgDiscord.length > 0) {
-    const channel = client.channels.get(channels.JOURNAL_CHANNEL_ID);
-
-    sendMessageToChannel(channel, msgDiscord);
-  }
-
   const publicPosts = filterNew
     .filter(decree => decree.twitter !== undefined);
 
   const mastoPosts = publicPosts.map(obj => obj.mastodon);
 
-  mastoPosts.forEach((post) => {
+  const publishMastodon = () => Promise.all(mastoPosts.map((post) => (
     sendPostMastodon({
       status: post,
       options: {
         sensitive: false,
         language: 'pt',
       },
-    }, 'dre');
-  });
+    }, 'dre')
+  )));
 
   const tweets = publicPosts.map(obj => obj.twitter);
 
   const twLength = tweets.length;
 
-  if (twLength > 0) {
+  const publishTwitter = async () => {
+    if (twLength === 0) return;
     const interval = twLength > 15
       ? 10000
       : 1000;
@@ -190,7 +186,19 @@ const checkNewDecrees = async (client) => {
 
       return uploadThreadTwitter(tweet, '', 'dre');
     }, Promise.resolve());
-  }
+  };
+  const publishDiscord = async () => {
+    if (msgDiscord.length === 0) return;
+    const channel = await getChannel(client, channels.JOURNAL_CHANNEL_ID);
+    if (!channel) throw new Error('Discord journal channel is not configured or accessible');
+    await sendMessageToChannel(channel, msgDiscord);
+  };
+
+  return publishAll('journal', {
+    discord: publishDiscord,
+    mastodon: publishMastodon,
+    twitter: publishTwitter,
+  });
 };
 
 const clearDb = async () => {

@@ -1,9 +1,7 @@
 const axios = require('axios');
-const fs = require('fs');
 const FormData = require('form-data');
 
 const { mastodonKeys } = require('../../config/mastodon');
-const { request } = require('http');
 
 const defaultClientMasto = mastodonKeys.main;
 
@@ -24,7 +22,7 @@ const uploadMedia = async (fileObject, reference) => {
   }
 
   try {
-    const res = await axios({
+    const response = await axios({
       method: 'post',
       url,
       headers: {
@@ -32,8 +30,8 @@ const uploadMedia = async (fileObject, reference) => {
         ...formData.getHeaders(),
       },
       data: formData,
-    })
-    return res.data;
+    });
+    return response.data;
   } catch (err) {
     if (err.response) {
       console.error('Error response data:', err.response.data);
@@ -54,14 +52,14 @@ const postStatus = async (postObject, reference) => {
   const client = mastodonKeys[reference] ? mastodonKeys[reference] : defaultClientMasto;
   const url = `${client.api_url}/v1/statuses`;
   try {
-    const res = await axios({
+    return await axios({
       method: 'post',
       url,
       headers: {
         Authorization: `Bearer ${client.access_token}`,
       },
       data: postObject,
-    })
+    });
   } catch (err) {
     if (err.response) {
       console.error('Error response data:', err.response.data);

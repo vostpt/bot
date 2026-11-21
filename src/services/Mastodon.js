@@ -5,6 +5,7 @@ const {
 
 const { getImagesPath } = require('../helpers');
 const { getFileContent } = require('../helpers');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 
 /**
 * Send a message to Mastodon/Pleroma
@@ -15,6 +16,18 @@ const { getFileContent } = require('../helpers');
 */
 
 const sendPostMastodon = async (post, reference = 'main') => {
+  if (skipSocialPost('MASTODON', reference)) return { skipped: true, reason: 'social-posts-disabled' };
+
+  if (isDryRun()) {
+    return recordPublication('mastodon', {
+      account: reference,
+      text: post.status,
+      media: post.media,
+      description: post.description,
+      options: post.options,
+    });
+  }
+
   const mediaIds = [];
 
   if (post.media !== undefined) {
@@ -36,7 +49,7 @@ const sendPostMastodon = async (post, reference = 'main') => {
     mediaIds.push(result.id);
   }
 
-  postStatus({
+  return postStatus({
     status: post.status,
     media_ids: mediaIds,
     ...post.options,
@@ -52,7 +65,7 @@ const uploadThreadMastodon = async (thread, reference = 'main') => {
     const post = thread[i];
     await sendPostMastodon(post, reference);
   }
-}
+};
 
 module.exports = {
   sendPostMastodon,

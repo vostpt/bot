@@ -190,6 +190,32 @@ const splitMessageString = (msgString, charLimit = 1950, returnFirst = false) =>
 
 const parseVostDate = async (strDate) => moment(strDate, 'DDMMMYYYY', true);
 
+const publishAll = async (workflow, publishers) => {
+  const { reportCriticalError } = require('./errorReporter');
+  const entries = Object.entries(publishers);
+  const results = await Promise.allSettled(entries.map(([, publish]) => publish()));
+
+  for (let index = 0; index < results.length; index += 1) {
+    const result = results[index];
+    const [destination] = entries[index];
+    if (result.status === 'rejected') {
+      console.error(`[${workflow}] ${destination} publication failed:`, result.reason);
+      await reportCriticalError(`social:${workflow}:${destination}`, result.reason);
+    }
+  }
+
+  return Object.fromEntries(entries.map(([destination], index) => [destination, results[index]]));
+};
+
+const editReplyInChunks = async (interaction, message, limit = 1950) => {
+  const [first, ...rest] = splitMessageString(message, limit);
+  await interaction.editReply(first);
+
+  for (const chunk of rest) {
+    await interaction.followUp(chunk);
+  }
+};
+
 module.exports = {
   isSevere,
   printAliases,
@@ -201,4 +227,6 @@ module.exports = {
   getImagesPath,
   splitMessageString,
   parseVostDate,
+  publishAll,
+  editReplyInChunks,
 };

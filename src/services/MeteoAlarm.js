@@ -378,7 +378,7 @@ const tweetNewWarnings = async (country, newWarnings) => {
     status: lastTweetStr,
   }];
 
-  uploadThreadTwitter(thread, null, 'europe');
+  return uploadThreadTwitter(thread, null, 'europe');
 };
 
 /**
@@ -392,21 +392,19 @@ const getWarnings = async () => {
 
   const { countries } = MeteoAlarmApi;
 
-  countries.map(async (country) => {
+  await Promise.all(countries.map(async (country) => {
     const countryNewWarn = await Promise.all(warns[country].map((warn) => filterWarn(country, warn)))
       .then((newSrchRes) => warns[country].filter(((_warning, i) => newSrchRes[i])));
 
-    countryNewWarn.forEach(async (warning) => {
-      await db.MeteoAlarmWarnings.create({
+    await Promise.all(countryNewWarn.map((warning) => db.MeteoAlarmWarnings.create({
         ...warning,
         country,
-      });
-    });
+      })));
 
     if (countryNewWarn.length > 0) {
-      tweetNewWarnings(country, countryNewWarn);
+      await tweetNewWarnings(country, countryNewWarn);
     }
-  });
+  }));
 };
 
 /**

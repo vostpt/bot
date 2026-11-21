@@ -1,41 +1,200 @@
-/* eslint-disable global-require */
 require('dotenv').config();
 
 const fs = require('fs');
-const Discord = require('discord.js');
+const path = require('path');
+
+const {
+  Client,
+  GatewayIntentBits,
+  Collection,
+} = require('discord.js');
+
 const Events = require('./events');
 const startHttpServer = require('./server/server');
+const { cooldown: defaultCooldown } = require('../config/bot');
+const {
+  configureErrorReporter,
+  reportCriticalError,
+} = require('./helpers/errorReporter');
 
-const client = new Discord.Client();
-const commands = new Discord.Collection();
-const triggers = new Discord.Collection();
-const cooldowns = new Discord.Collection();
-
-// Load commands
-fs.readdirSync('./src/commands')
-  .filter(file => file.endsWith('.js'))
-  .forEach((file) => {
-    const command = require(`./commands/${file}`);
-    commands.set(command.name, command);
-    cooldowns.set(command.name, new Discord.Collection());
-  });
-
-// Load triggers
-fs.readdirSync('./src/triggers')
-  .filter(file => file.endsWith('.js'))
-  .forEach((file) => {
-    const trigger = require(`./triggers/${file}`);
-    triggers.set(trigger.name, trigger);
-  });
-
-client.commands = commands;
-client.triggers = triggers;
-client.cooldowns = cooldowns;
-
-client.once('ready', () => {
-  Events.ready(client);
-  startHttpServer(client);
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
 });
-client.on('message', message => Events.message(client, message));
+
+client.slashCommands = new Collection();
+client.prefixCommands = new Collection();
+client.triggers = new Collection();
+client.cooldowns = new Collection();
+
+const migratedCommands = new Set([
+  'acronym',
+  'alerts',
+  'all',
+  'corona',
+  'debug',
+  'earthquakes',
+  'op',
+  'rcm',
+  'snsAlerts',
+  'stats',
+  'vost',
+  'weather',
+]);
+const disabledSlashCommands = new Set(['corona']);
+
+const slashCommandsPath = path.join(__dirname, 'slashCommands');
+
+if (fs.existsSync(slashCommandsPath)) {
+  const slashFiles = fs.readdirSync(slashCommandsPath)
+    .filter(file => file.endsWith('.js'))
+    .filter(file => !disabledSlashCommands.has(path.basename(file, '.js').toLowerCase()));
+
+  for (const file of slashFiles) {
+    const command = require(path.join(slashCommandsPath, file));
+
+    if (!command?.data?.name) continue;
+
+    client.slashCommands.set(command.data.name, command);
+    client.cooldowns.set(command.data.name, new Collection());
+  }
+}
+
+const commandsPath = path.join(__dirname, 'commands');
+
+if (fs.existsSync(commandsPath)) {
+  const commandFiles = fs.readdirSync(commandsPath)
+    .filter(file => file.endsWith('.js'));
+
+  for (const file of commandFiles) {
+    if (migratedCommands.has(path.basename(file, '.js'))) {
+      console.warn(`Ignoring migrated prefix command: ${file}`);
+      continue;
+    }
+
+    const command = require(path.join(commandsPath, file));
+
+    if (!command?.name) continue;
+
+    client.prefixCommands.set(command.name, command);
+    client.cooldowns.set(command.name, new Collection());
+  }
+}
+
+const triggersPath = path.join(__dirname, 'triggers');
+
+if (fs.existsSync(triggersPath)) {
+  const triggerFiles = fs.readdirSync(triggersPath)
+    .filter(file => file.endsWith('.js'));
+
+  for (const file of triggerFiles) {
+    const trigger = require(path.join(triggersPath, file));
+
+    if (!trigger?.name) continue;
+
+    client.triggers.set(trigger.name, trigger);
+  }
+}
+
+client.once('ready', async () => {
+  configureErrorReporter(client);
+
+  try {
+    Events.ready(client);
+    startHttpServer(client);
+  } catch (err) {
+    console.error('[Startup] Failed to initialize bot services:', err);
+    await reportCriticalError('startup:services', err);
+  }
+});
+
+client.on('messageCreate', message => {
+  Events.message(client, message);
+});
+
+client.on('interactionCreate', async interaction => {
+  console.log(
+    `[Interaction] Received ${interaction.type} interaction${interaction.commandName
+      ? ` /${interaction.commandName}`
+      : ''}`
+  );
+
+  if (interaction.isAutocomplete()) {
+    const command = client.slashCommands.get(interaction.commandName);
+    if (!command?.autocomplete) return;
+
+    try {
+      await command.autocomplete(interaction);
+    } catch (err) {
+      console.error('Autocomplete error:', err);
+      await reportCriticalError(`discord:autocomplete:${interaction.commandName}`, err);
+    }
+
+    return;
+  }
+
+  if (!interaction.isChatInputCommand()) return;
+
+  const command = client.slashCommands.get(interaction.commandName);
+  if (!command) {
+    console.warn(`[Interaction] No loaded handler for /${interaction.commandName}`);
+    await interaction.reply({
+      content: 'Este comando não está disponível nesta versão do bot. Atualiza os comandos ou reinicia o bot.',
+      ephemeral: true,
+    });
+    return;
+  }
+
+  try {
+    if (command.limitToChannels?.length
+      && !command.limitToChannels.includes(interaction.channelId)) {
+      await interaction.reply({
+        content: 'Este comando não está disponível neste canal.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const cooldown = Number(command.cooldown ?? defaultCooldown) * 1000;
+    const timestamps = client.cooldowns.get(command.data.name);
+    const previous = timestamps.get(interaction.user.id);
+    if (cooldown > 0 && previous && Date.now() < previous + cooldown) {
+      const seconds = Math.ceil((previous + cooldown - Date.now()) / 1000);
+      await interaction.reply({
+        content: `Espera ${seconds} segundo(s) antes de voltares a usar este comando.`,
+        ephemeral: true,
+      });
+      return;
+    }
+
+    await command.execute(interaction);
+    if (cooldown > 0) {
+      timestamps.set(interaction.user.id, Date.now());
+      setTimeout(() => timestamps.delete(interaction.user.id), cooldown);
+    }
+  } catch (err) {
+    console.error(err);
+    await reportCriticalError(`discord:command:${interaction.commandName}`, err);
+
+    const payload = {
+      content: '❌ Erro ao executar comando.',
+      ephemeral: true,
+    };
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp(payload);
+    } else {
+      await interaction.reply(payload);
+    }
+  }
+});
+
+client.on('error', async (err) => {
+  console.error('[Discord] Client error:', err);
+  await reportCriticalError('discord:client', err);
+});
 
 client.login(process.env.BOT_TOKEN);

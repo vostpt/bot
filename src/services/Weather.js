@@ -1,12 +1,12 @@
 const moment = require('moment');
 const { WeatherApi } = require('../api');
 const { channels } = require('../../config/bot');
-const { sendMessageToChannel } = require('./Discord');
+const { getChannel, sendMessageToChannel } = require('./Discord');
 const { uploadThreadTwitter } = require('./Twitter');
 const { sendMessagesTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { locale } = require('../../config/locale');
-const { convertBase64 } = require('../helpers');
+const { convertBase64, publishAll } = require('../helpers');
 const { sendPostsToBsky } = require('./Bsky');
 const { uploadThreadMastodon } = require('./Mastodon');
 
@@ -75,14 +75,10 @@ const getDailyReport = async (client) => {
     }
   ];
 
-  uploadThreadTwitter(tweetsPt, '', 'main');
-
   const tweetAz = [{
     status: reports.az.text,
     media: [reports.az.base64],
   }];
-
-  uploadThreadTwitter(tweetAz, '', 'azores');
 
   const postMast = [
     {
@@ -102,67 +98,32 @@ const getDailyReport = async (client) => {
     }
   ]
 
-  uploadThreadMastodon(postMast, 'main');
-
-  const tlgMessages = [];
-
-  const resultPt = await sendMessageToChannel(client.channels.get(reports.pt.channel), reports.pt.text, reports.pt.url);
-
-  const attachmentURLsPt = resultPt.attachments.map((attachment) => attachment.url);
-
-  tlgMessages.push({
+  const tlgMessages = Object.values(reports).map((report) => ({
     chatId: telegramKeys.chat_id,
-    photoURL: attachmentURLsPt[0],
-    options: {
-      caption: reports.pt.textTlg,
-    },
-  });
-
-  const resultMad = await sendMessageToChannel(client.channels.get(reports.mad.channel), reports.mad.text, reports.mad.url);
-
-  const attachmentURLsMad = resultMad.attachments.map((attachment) => attachment.url);
-
-  tlgMessages.push({
-    chatId: telegramKeys.chat_id,
-    photoURL: attachmentURLsMad[0],
-    options: {
-      caption: reports.mad.textTlg,
-    },
-  });
-
-  const resultAz = await sendMessageToChannel(client.channels.get(reports.az.channel), reports.az.text, reports.az.url);
-
-  const attachmentURLsAz = resultAz.attachments.map((attachment) => attachment.url);
-
-  tlgMessages.push({
-    chatId: telegramKeys.chat_id,
-    photoURL: attachmentURLsAz[0],
-    options: {
-      caption: reports.az.textTlg,
-    },
-  });
-
-  await sendMessagesTelegram(tlgMessages);
-
-
-  const bskyMessages = [];
-  bskyMessages.push({
-    message: reports.pt.text.replace('@ipma_pt', 'IPMA'),
-    imageUrl: attachmentURLsPt[0],
+    photoURL: report.url,
+    options: { caption: report.textTlg },
+  }));
+  const bskyMessages = Object.values(reports).map((report) => ({
+    message: report.text.replace('@ipma_pt', 'IPMA'),
+    imageUrl: report.url,
     imageDes: imgDes,
-  });
-  bskyMessages.push({
-    message: reports.mad.text.replace('@ipma_pt', 'IPMA'),
-    imageUrl: attachmentURLsMad[0],
-    imageDes: imgDes,
-  });
-  bskyMessages.push({
-    message: reports.az.text.replace('@ipma_pt', 'IPMA'),
-    imageUrl: attachmentURLsAz[0],
-    imageDes: imgDes,
-  });
+  }));
+  const publishDiscord = async () => {
+    for (const report of Object.values(reports)) {
+      const channel = await getChannel(client, report.channel);
+      if (!channel) throw new Error(`Discord channel ${report.channel} is not accessible`);
+      await sendMessageToChannel(channel, report.text, report.url);
+    }
+  };
 
-  await sendPostsToBsky(bskyMessages);
+  return publishAll('daily-weather', {
+    discord: publishDiscord,
+    twitterMain: () => uploadThreadTwitter(tweetsPt, '', 'main'),
+    twitterAzores: () => uploadThreadTwitter(tweetAz, '', 'azores'),
+    mastodon: () => uploadThreadMastodon(postMast, 'main'),
+    telegram: () => sendMessagesTelegram(tlgMessages),
+    bluesky: () => sendPostsToBsky(bskyMessages),
+  });
 };
 
 module.exports = {

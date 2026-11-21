@@ -1,5 +1,6 @@
 const { TelegramClient } = require('messaging-api-telegram');
 const { telegramKeys, telegramKeysRally } = require('../../config/telegram');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 
 const tClient = new TelegramClient({
   accessToken: telegramKeys.key,
@@ -17,6 +18,15 @@ const tClientRally = new TelegramClient({
 * @param {Object} message
 */
 const sendMessageTelegram = async (message) => {
+  if (skipSocialPost('TELEGRAM', 'main')) return { skipped: true, reason: 'social-posts-disabled' };
+
+  if (isDryRun()) {
+    return recordPublication('telegram', {
+      account: 'main',
+      ...message,
+    });
+  }
+
   if (typeof message.photoURL !== 'undefined') {
     await tClient.sendPhoto(message.chatId, message.photoURL, { ...message.options });
 
@@ -34,9 +44,17 @@ const sendMessageTelegram = async (message) => {
 */
 
 const sendMessagesTelegram = async (messages) => {
-  const lastMessage = messages.pop();
+  if (!messages.length) return;
+  if (skipSocialPost('TELEGRAM', 'main')) return { skipped: true, reason: 'social-posts-disabled' };
 
-  await messages.reduce(async (previous, message) => {
+  if (isDryRun()) {
+    return Promise.all(messages.map((message) => sendMessageTelegram(message)));
+  }
+
+  const messageQueue = [...messages];
+  const lastMessage = messageQueue.pop();
+
+  await messageQueue.reduce(async (previous, message) => {
     await previous;
 
     await new Promise((r) => setTimeout(r, 1000));
@@ -56,6 +74,15 @@ const sendMessagesTelegram = async (messages) => {
 };
 
 const sendDocumentTelegram = async (message) => {
+  if (skipSocialPost('TELEGRAM', 'main')) return { skipped: true, reason: 'social-posts-disabled' };
+
+  if (isDryRun()) {
+    return recordPublication('telegram', {
+      account: 'main',
+      ...message,
+    });
+  }
+
   if (typeof message.document !== 'undefined') {
     await tClient.sendDocument(message.chatId, message.document, { ...message.options });
 
@@ -66,6 +93,15 @@ const sendDocumentTelegram = async (message) => {
 };
 
 const sendMessageRally = async (message) => {
+  if (skipSocialPost('TELEGRAM', 'RALLY')) return { skipped: true, reason: 'social-posts-disabled' };
+
+  if (isDryRun()) {
+    return recordPublication('telegram', {
+      account: 'rally',
+      ...message,
+    });
+  }
+
   if (typeof message.photoURL !== 'undefined') {
     await tClientRally.sendPhoto(message.chatId, message.photoURL, { ...message.options });
 

@@ -11,7 +11,7 @@ const { uploadThreadTwitter } = require('./Twitter');
 const { postMessageFacebook } = require('./Facebook');
 const { sendMessageRally } = require('./Telegram');
 const { telegramKeysRally } = require('../../config/telegram');
-const { splitMessageString } = require('../helpers');
+const { publishAll, splitMessageString } = require('../helpers');
 
 
 const capacityLevel = (capacity) => {
@@ -166,16 +166,12 @@ const publishSocialMedia = async (zoneObject, oldCapacity) => {
     status: `${emojis[newLevel]} ${postTexts['es']} ${emojis[newLevel]}\n\nhttps://rally.vost.pt\n\n#RallyPortugal2021`,
   }];
 
-  uploadThreadTwitter(thread, '', 'rally');
-
   const joinText = `${emojis[newLevel]} ${postTexts['pt']}\n\n${postTexts['en']}\n\n${postTexts['es']} ${emojis[newLevel]}\n\nhttps://rally.vost.pt\n\n#RallyPortugal2021`;
 
   const tlgMessage = {
     chatId: telegramKeysRally.chat_id,
     text: joinText,
   };
-
-  sendMessageRally(tlgMessage);
 
   const fbFileName = `rally_pt/${levels[newLevel]}_VRP21_fb.jpg`;
   
@@ -184,7 +180,11 @@ const publishSocialMedia = async (zoneObject, oldCapacity) => {
     media: fbFileName,
   }
 
-  postMessageFacebook(fbpost, 'rally');
+  return publishAll('rally-capacity', {
+    twitter: () => uploadThreadTwitter(thread, '', 'rally'),
+    telegram: () => sendMessageRally(tlgMessage),
+    facebook: () => Promise.resolve(postMessageFacebook(fbpost, 'rally')),
+  });
 };
 
 /**
@@ -214,8 +214,6 @@ const sendInfo = async (info) => {
 
   splitStrTwitter[0].media = [twFileName];
 
-  uploadThreadTwitter(splitStrTwitter, '', 'rally');
-
   const fbFileName = 'rally_pt/info_VRP21_fb.png';
 
   const fbpost = {
@@ -223,15 +221,16 @@ const sendInfo = async (info) => {
     media: fbFileName,
   }
 
-  postMessageFacebook(fbpost, 'rally');
-
-
   const tlgMessage = {
     chatId: telegramKeysRally.chat_id,
     text: info,
   };
 
-  sendMessageRally(tlgMessage);
+  return publishAll('rally-info', {
+    twitter: () => uploadThreadTwitter(splitStrTwitter, '', 'rally'),
+    facebook: () => Promise.resolve(postMessageFacebook(fbpost, 'rally')),
+    telegram: () => sendMessageRally(tlgMessage),
+  });
 };
 
 module.exports = {

@@ -4,6 +4,7 @@ node_modules/
 
 # Coverage tools
 coverage/
+logs/
 
 # Database queries
 data/
@@ -13,6 +14,9 @@ data/
 
 # Environment Files
 *.env
+.env.*
+.env_*
+!.env.example
 
 # VSCode Config Files (keep launch.json)
 

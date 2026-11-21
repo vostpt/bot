@@ -1,376 +1,344 @@
 const schedule = require('node-schedule');
 const moment = require('moment');
+const { RcmApi } = require('../api');
+const { uploadThreadTwitter } = require('../services/Twitter');
+const { splitMessageString } = require('../helpers');
+const { reportCriticalError } = require('../helpers/errorReporter');
+
+// Tracks earthquake `time` values already sent today; cleared at midnight
+const sentEarthquakesNotifications = new Set();
+
 const {
   Fires,
   Earthquakes,
   MeteoAlarm,
   Twitter,
-  Corona,
   Journal,
   Facebook,
   Ipma,
   Weather,
   Medea,
-  Viajar
+  Viajar,
 } = require('../services');
+
 const { channels } = require('../../config/bot');
-const { clientTwitter } = require('../services/Twitter');
 
 /**
- * Check if the earthquake level above threshold
+ * Jobs are enabled by default
+ * If the env variable exists and is set to "false", the job is skipped.
  *
- * @param {String} event
- * @param {Number} threshold
- */
-const eventAboveThreshold = (event, threshold = 0) => {
-  const regexp = /\*\*(\d\.\d)\*\*/;
+ * Examples:
+ * JOB_FOREST_FIRES=false
+ * JOB_WARNINGS=0
+ * JOB_FACEBOOK=no
+ * JOB_WEATHER_REPORT=off
+  */
+function isJobEnabled(envName, defaultEnabled = true) {
+  const value = process.env[envName];
 
-  const matchs = event.match(regexp) || [];
-  const [, intensity = 0] = matchs;
+  if (value === undefined) return defaultEnabled;
 
-  return intensity >= threshold;
-};
-
-/**
- * In memory Set to track already sent notifications
- */
-const sentEarthquakesNotifications = new Set();
+  return !['false', '0', 'no', 'off'].includes(value.toLowerCase());
+}
 
 /**
- * Check if notification has already been sent
- *
- * @param {String} event
+ * Schedule a job only if it is enabled.
+*/
+function scheduleIfEnabled(envName, jobName, scheduler, defaultEnabled = true) {
+  if (!isJobEnabled(envName, defaultEnabled)) {
+    console.log(`[Jobs] Skipped ${jobName} because ${envName}=${process.env[envName]}`);
+    return;
+  }
+
+  console.log(`[Jobs] Scheduling ${jobName}...`);
+  scheduler();
+}
+
+async function runJob(jobName, callback) {
+  try {
+    return await callback();
+  } catch (error) {
+    console.error(`[Jobs] ${jobName} failed:`, error);
+    await reportCriticalError(`job:${jobName}`, error);
+    return null;
+  }
+}
+
+
+/**
+ * Helper: safe channel send (v14)
  */
-const checkNotSentYet = (event) => !sentEarthquakesNotifications.has(event);
+async function sendToChannel(client, channelId, content) {
+  try {
+    const channel = await client.channels.fetch(channelId);
+    if (!channel) return console.warn(`Channel not found: ${channelId}`);
+
+    return await channel.send(content);
+  } catch (err) {
+    console.error(`Failed sending to channel ${channelId}:`, err);
+    await reportCriticalError('discord:channel-send', err, { channelId });
+    return null;
+  }
+}
+
+/**
+ * Helper: safe channel send with files
+ */
+async function sendFileToChannel(client, channelId, content, files) {
+  try {
+    const channel = await client.channels.fetch(channelId);
+    if (!channel) return console.warn(`Channel not found: ${channelId}`);
+
+    return await channel.send({
+      content,
+      files,
+    });
+  } catch (err) {
+    console.error(`Failed sending file to channel ${channelId}:`, err);
+    await reportCriticalError('discord:file-send', err, { channelId });
+    return null;
+  }
+}
 
 class Jobs {
   constructor(client) {
     this.client = client;
   }
 
-  /**
-   * Start all production (non-beta) jobs
-   */
+  // startProd() {
+  //   this.forestFires();
+  //   this.warnings();
+  //   this.fireRisk();
+  //   this.getFacebookPosts();
+  //   this.sendWeatherReport();
+  //   this.checkNewDecrees();
+  //   Jobs.clearDecreesDb();
+  //   Jobs.warningsMeteoAlarm();
+  //   Jobs.clearMeteoAlarmDb();
+  //   Jobs.scheduleVostEuTweets();
+  //   Jobs.checkMedeaMessages();
+  //   this.checkConselhoViajantes();
+  // }
   startProd() {
-    this.forestFires();
-    this.checkNewCoronaReports();
-    this.checkUpdatesCoronaReports();
-    this.warnings();
-    this.fireRisk();
-    this.getFacebookPosts();
-    this.sendWeatherReport();
-    this.checkNewDecrees();
-    Jobs.clearDecreesDb();
-    Jobs.warningsMeteoAlarm();
-    Jobs.clearMeteoAlarmDb();
-    Jobs.scheduleVostEuTweets();
-    Jobs.checkMedeaMessages();
-    this.checkConselhoViajantes();
+    scheduleIfEnabled('JOB_FOREST_FIRES', 'forest fires', () => this.forestFires());
+    scheduleIfEnabled('JOB_WARNINGS', 'IPMA warnings', () => this.warnings());
+    scheduleIfEnabled('JOB_FIRE_RISK', 'fire risk', () => this.fireRisk());
+    scheduleIfEnabled('JOB_FACEBOOK', 'Facebook posts', () => this.getFacebookPosts());
+    scheduleIfEnabled('JOB_WEATHER_REPORT', 'weather report', () => this.sendWeatherReport());
+    scheduleIfEnabled('JOB_DECREES', 'new decrees', () => this.checkNewDecrees());
+    scheduleIfEnabled('JOB_CLEAR_DECREES_DB', 'clear decrees DB', () => Jobs.clearDecreesDb());
+    scheduleIfEnabled('JOB_METEOALARM', 'MeteoAlarm warnings', () => Jobs.warningsMeteoAlarm());
+    scheduleIfEnabled('JOB_CLEAR_METEOALARM_DB', 'clear MeteoAlarm DB', () => Jobs.clearMeteoAlarmDb());
+    scheduleIfEnabled('JOB_VOST_EU_TWEETS', 'VOST EU tweets', () => Jobs.scheduleVostEuTweets(), false);
+    scheduleIfEnabled('JOB_MEDEA', 'Medea messages', () => Jobs.checkMedeaMessages());
+    scheduleIfEnabled('JOB_VIAJAR', 'Conselho Viajantes', () => this.checkConselhoViajantes());
   }
 
-  /**
-   * Start all beta jobs
-   */
+  // startBeta() {
+  //   this.earthquakes();
+  //   this.noticeableEarthquakes({ threshold: 2.5 });
+  //   Jobs.resetSentNotifications();
+  // }
+
   startBeta() {
-    this.earthquakes();
-    this.noticeableEarthquakes({ threshold: 2.5 });
-
-    Jobs.resetSentNotifications();
+    scheduleIfEnabled('JOB_EARTHQUAKES_DAILY', 'daily earthquakes', () => this.earthquakes());
+    scheduleIfEnabled('JOB_EARTHQUAKES_NOTICEABLE', 'noticeable earthquakes', () =>
+      this.noticeableEarthquakes({ threshold: 2.5 })
+    );
+    scheduleIfEnabled('JOB_EARTHQUAKES_RESET', 'reset earthquake notifications', () =>
+      Jobs.resetSentNotifications()
+    );
   }
 
-  /**
-   * Check for forest fires
-   */
+  /*
+  * Schedule jobs below
+  */
   forestFires() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(1, 56, 5);
     rule.second = 30;
 
-    schedule.scheduleJob(rule, () => Fires.getForestFires(this.client));
+    schedule.scheduleJob(rule, () => runJob('forest fires', () => Fires.getForestFires(this.client)));
   }
 
-  /**
-   * Check for warnings
-   */
   warnings() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(0, 59, 5);
 
-    schedule.scheduleJob(rule, () => Ipma.getWarnings(this.client));
+    schedule.scheduleJob(rule, () => runJob('IPMA warnings', () => Ipma.getWarnings(this.client)));
   }
 
-  /**
-   * Check for MeteoAlarm warnings
-   */
   static warningsMeteoAlarm() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(3, 59, 10);
 
-    schedule.scheduleJob(rule, () => MeteoAlarm.getWarnings());
+    schedule.scheduleJob(rule, () => runJob('MeteoAlarm warnings', () => MeteoAlarm.getWarnings()));
   }
 
-  /**
-   * Clean MeteoAlarm DB
-   */
   static clearMeteoAlarmDb() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = new schedule.Range(0, 23, 4);
 
-    schedule.scheduleJob(rule, () => MeteoAlarm.clearDb());
+    schedule.scheduleJob(rule, () => runJob('clear MeteoAlarm database', () => MeteoAlarm.clearDb()));
   }
 
-  /**
-   * Schedule VOST Europe tweets
-   */
   static scheduleVostEuTweets() {
-    const ruleWarning = new schedule.RecurrenceRule();
+    const rule1 = new schedule.RecurrenceRule();
+    rule1.hour = 8;
+    rule1.minute = 0;
 
-    ruleWarning.hour = 8;
-    ruleWarning.minute = 0;
-    ruleWarning.second = 0;
+    schedule.scheduleJob(rule1, () => Twitter.tweetVostEu(1));
 
-    schedule.scheduleJob(ruleWarning, () => Twitter.tweetVostEu(1));
+    const rule2 = new schedule.RecurrenceRule();
+    rule2.hour = 12;
+    rule2.minute = 0;
 
-    const ruleEcho = new schedule.RecurrenceRule();
-
-    ruleEcho.hour = 12;
-    ruleEcho.minute = 0;
-    ruleEcho.second = 0;
-
-    schedule.scheduleJob(ruleEcho, () => Twitter.tweetVostEu(2));
+    schedule.scheduleJob(rule2, () => Twitter.tweetVostEu(2));
   }
 
-  /**
-   * Check new messages from Medea 
-   */
   static checkMedeaMessages() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(1, 59, 1);
 
-    schedule.scheduleJob(rule, () => Medea.getMessages());
+    schedule.scheduleJob(rule, () => runJob('Medea messages', () => Medea.getMessages()));
   }
 
-  /**
-   * Check for fires probabilities for today
-   */
   fireRisk() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 7;
     rule.minute = 0;
-    rule.second = 0;
 
-    schedule.scheduleJob(rule, () => {
-      const map = Fires.getMap();
-
-      try {
-        this.client.channels.get(channels.FIRES_CHANNEL_ID).send('Risco de Incêndio para hoje', { files: [map] });
-      } catch (e) {
-        //
-      }
+    schedule.scheduleJob(rule, async () => {
+      const result = await runJob('fire risk map', () => RcmApi.fetch());
+      if (!result) return console.warn('fireRisk: falhou a gerar o mapa RCM');
+      await sendFileToChannel(
+        this.client,
+        channels.FIRES_CHANNEL_ID,
+        '🔥 Risco de Incêndio para hoje',
+        [{ attachment: result.attachment, name: result.name }]
+      );
     });
   }
 
-  /**
-   * Update new tweets made by VOST accounts
-   */
-  // TODO Not available  for now in v2 free tier, right?
-  // getTweets() {
-  //   const rule = new schedule.RecurrenceRule();
-  //
-  //   rule.minute = new schedule.Range(1, 59, 1);
-  //
-  //   schedule.scheduleJob(rule, () => {
-  //     Twitter.getVostTweetsAndSendToDiscord(this.client);
-  //   });
-  // }
-
-  /**
-   * Update new facebook posts made by VOST accounts
-   */
   getFacebookPosts() {
-    Facebook.getVostPostsAndSendToDiscord(this.client);
+    runJob('Facebook feed', () => Facebook.getVostPostsAndSendToDiscord(this.client));
 
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(1, 59, 2);
 
     schedule.scheduleJob(rule, () => {
-      Facebook.getVostPostsAndSendToDiscord(this.client);
+      runJob('Facebook feed', () => Facebook.getVostPostsAndSendToDiscord(this.client));
     });
   }
 
-  /**
-   * Send the daily extreme weather reports to Discord and social networks
-   */
-   sendWeatherReport() {
+  sendWeatherReport() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 10;
     rule.minute = 15;
-    rule.second = 0;
 
     schedule.scheduleJob(rule, () => {
-      Weather.getDailyReport(this.client);
+      runJob('daily weather report', () => Weather.getDailyReport(this.client));
     });
   }
 
-  /**
-   * Update new DGS coronavirus reports and send to Discord
-   */
-  checkNewCoronaReports() {
-    const rule = new schedule.RecurrenceRule();
-
-    rule.minute = new schedule.Range(1, 59, 3);
-    rule.second = 30;
-
-    schedule.scheduleJob(rule, () => {
-      Corona.checkNewReports(this.client);
-    });
-  }
-
-  /**
-   * Update new DGS coronavirus reports and send to Discord
-   */
-  checkUpdatesCoronaReports() {
-    const rule = new schedule.RecurrenceRule();
-
-    rule.hour = 9;
-    rule.minute = 0;
-    rule.second = 0;
-
-    schedule.scheduleJob(rule, () => {
-      Corona.checkOldReports(this.client);
-    });
-  }
-
-  /**
-   * Update new Decrees and send to Discord
-   */
   checkNewDecrees() {
     const rule = new schedule.RecurrenceRule();
-
     rule.minute = new schedule.Range(0, 59, 2);
     rule.second = 40;
 
     schedule.scheduleJob(rule, () => {
-      Journal.checkNewDecrees(this.client);
+      runJob('new decrees', () => Journal.checkNewDecrees(this.client));
     });
   }
 
-  /**
-   * Update new Decrees and send to Discord
-   */
   static clearDecreesDb() {
     const rule = new schedule.RecurrenceRule();
-
     rule.dayOfMonth = new schedule.Range(1, 28, 2);
 
-    schedule.scheduleJob(rule, () => {
-      Journal.clearDb();
-    });
+    schedule.scheduleJob(rule, () => runJob('clear decrees database', () => Journal.clearDb()));
   }
 
-  /**
-   * Checks for yesterday's earthquakes
-   */
   earthquakes() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 0;
     rule.minute = 0;
     rule.second = 10;
 
-    try {
-      schedule.scheduleJob(rule, () => {
-        const yesterday = moment().subtract(1, 'days').format('L');
-        const { events, eventsSensed } = Earthquakes.getEarthquakes(yesterday);
+    schedule.scheduleJob(rule, async () => {
+      const yesterday = moment().subtract(1, 'days').format('L');
+      const { events, eventsSensed } = await Earthquakes.getEarthquakes(yesterday);
 
-        if (eventsSensed.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) sentido(s) dia ${yesterday}:***\n${eventsSensed.join('\n')}`);
-        }
+      if (eventsSensed.length > 0) {
+        await sendToChannel(
+          this.client,
+          channels.EARTHQUAKES_CHANNEL_ID,
+          `***Sismo(s) sentido(s) dia ${yesterday}:***\n${eventsSensed.join('\n')}`
+        );
+      }
 
-        if (events.length > 0) {
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(`***Sismo(s) de ${yesterday}:***\n${events.join('\n')}`);
-        }
-      });
-    } catch (e) {
-      //
-    }
+      if (events.length > 0) {
+        await sendToChannel(
+          this.client,
+          channels.EARTHQUAKES_CHANNEL_ID,
+          `***Sismo(s) de ${yesterday}:***\n${events.join('\n')}`
+        );
+      }
+    });
   }
 
-  /**
-   * Checks for noticeable earthquakes worthing immediate annoucement
-   *
-   * @param {Object} config
-   */
   noticeableEarthquakes({ threshold } = {}) {
     const rule = new schedule.RecurrenceRule();
+    rule.minute = new schedule.Range(0, 59, 1);
 
-    rule.minute = new schedule.Range(0, 59, 1); // every minute
+    schedule.scheduleJob(rule, async () => {
+      const today = moment().format('L');
+      const earthquakes = await Earthquakes.getByDate(today);
 
-    try {
-      schedule.scheduleJob(rule, async () => {
-        const today = moment().format('L');
-        const { events, eventsSensed } = await Earthquakes.getEarthquakes(today);
+      const noticeable = earthquakes.filter(e => parseFloat(e.magnitud) >= threshold);
 
-        const noticeableEvents = events
-          .filter(checkNotSentYet)
-          .filter((event) => eventAboveThreshold(event, threshold));
+      for (const eq of noticeable) {
+        // Use time as unique ID — skip if already sent today
+        if (sentEarthquakesNotifications.has(eq.time)) continue;
+        sentEarthquakesNotifications.add(eq.time);
 
-        const noticeableSensedEvents = eventsSensed
-          .filter(checkNotSentYet)
-          .filter((event) => eventAboveThreshold(event, threshold));
+        const formattedTime = moment(eq.time).format('LT');
+        let msg;
 
-        if (noticeableSensedEvents.length > 0) {
-          const message = `***Sismo(s) sentido(s) dia ${today}:***\n${noticeableSensedEvents.join('\n')}`;
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableSensedEvents.forEach((event) => sentEarthquakesNotifications.add(event));
-
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n(${noticeableSensedEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
+        if (eq.sensed) {
+          msg = `⚠️ **Sismo sentido**\n${formattedTime}h - M${eq.magType} **${eq.magnitud}** em ${eq.obsRegion} a ${eq.depth}Km prof.\n**Sentido em ${eq.local} com Int. ${eq.degree}** ${eq.shakemapref} // ${eq.lat},${eq.lon}`;
+        } else {
+          msg = `🔔 **Sismo M${eq.magnitud}**\n${formattedTime}h - M${eq.magType} **${eq.magnitud}** em ${eq.obsRegion} a ${eq.depth}Km prof. // ${eq.lat},${eq.lon}`;
         }
 
-        if (noticeableEvents.length > 0) {
-          const message = `***Sismo(s) de ${today}:***\n${noticeableEvents.join('\n')}`;
-          this.client.channels.get(channels.EARTHQUAKES_CHANNEL_ID).send(message);
-          noticeableEvents.forEach((event) => sentEarthquakesNotifications.add(event));
-
-          clientTwitter.post('statuses/update', { status: `ℹ️⚠️#ATerraTreme\n\n${noticeableEvents.join('\n').replace('*', '')}\n\nSentiste este sismo?⚠️ℹ️` });
-        }
-      });
-    } catch (e) {
-      //
-    }
+        await sendToChannel(this.client, channels.EARTHQUAKES_CHANNEL_ID, msg);
+        const twitterText = `ℹ️⚠️ #ATerraTreme\n\n${msg.replace(/\*\*/g, '')}\n\nSentiste este sismo? ⚠️ℹ️`;
+        const thread = splitMessageString(twitterText, 280).map((status) => ({ status }));
+        await runJob('earthquake Twitter notification', () => (
+          uploadThreadTwitter(thread, '', 'main')
+        ));
+      }
+    });
   }
 
-  /**
-   * Clear yesterday's notifications
-   */
   static resetSentNotifications() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 0;
     rule.minute = 0;
 
-    schedule.scheduleJob(rule, () => sentEarthquakesNotifications.clear());
+    schedule.scheduleJob(rule, () => {
+      sentEarthquakesNotifications.clear();
+    });
   }
 
-    checkConselhoViajantes() {
+  checkConselhoViajantes() {
     const rule = new schedule.RecurrenceRule();
-
     rule.hour = 10;
     rule.minute = 0;
 
     schedule.scheduleJob(rule, () => {
-      Viajar.checkNewTravelAdvices(this.client);
+      runJob('travel advisories', () => Viajar.checkNewTravelAdvices(this.client));
     });
   }
-
 }
 
 module.exports = Jobs;

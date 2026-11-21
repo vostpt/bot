@@ -2,7 +2,7 @@ const { channels } = require('../../config/bot');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const { countries } = require('../../config/countries');
-const { sendMessageToChannel } = require('./Discord');
+const { getChannel, sendMessageToChannel } = require('./Discord');
 
 const baseUrl = 'https://portaldascomunidades.mne.gov.pt/pt/vai-viajar/conselhos-aos-viajantes/';
 
@@ -52,8 +52,9 @@ const checkNewTravelAdvices = async (client) => {
   });
 
   if (newUpdates.length > 0) {
+    const channel = await getChannel(client, channels.TRAVEL_GUIDELINES);
     sendMessageToChannel(
-      client.channels.get(channels.TRAVEL_GUIDELINES), 
+      channel,
       `***✈️✈️✈️Novos Avisos no Portal das Comunidades✈️✈️✈️***\n${formattedUpdates.join('\n')}`
     );
   }

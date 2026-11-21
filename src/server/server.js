@@ -1,21 +1,24 @@
-const { sendMessageToChannel } = require("../services/Discord");
+const { getChannel, sendMessageToChannel } = require("../services/Discord");
 const { channels } = require("../../config/bot");
 const express = require("express");
 const bodyParser = require("body-parser");
+const { reportCriticalError } = require("../helpers/errorReporter");
 
-const app = express();
-app.use(bodyParser.json());
+const getWebhookSecret = () => {
+  const token = process.env.COPERNICUS_WEBHOOK_SECRET?.trim();
+  return token || null;
+};
 
-module.exports = (client) => {
-  app.post("/copernicus", async (req, res) => {
+const isAuthorized = (rawAuth, token) => rawAuth === token || rawAuth === `Bearer ${token}`;
+
+const createWebhookHandler = (client, token) => {
+  return async (req, res) => {
     console.log("📥 Incoming /copernicus request:");
-    console.log("Headers:", req.headers);
     console.log("Body:", JSON.stringify(req.body, null, 2));
 
     const rawAuth = req.headers["authorization"];
-    const token = process.env.COPERNICUS_WEBHOOK_SECRET;
 
-    if (!rawAuth || (rawAuth !== token && rawAuth !== `Bearer ${token}`)) {
+    if (!rawAuth || !isAuthorized(rawAuth, token)) {
       return res
         .status(403)
         .send({ error: "Forbidden: Invalid or missing authorization header." });
@@ -35,17 +38,11 @@ module.exports = (client) => {
         download_link,
       } = data;
 
-      const channel = client.channels.get(channels.COPERNICUS_CHANNEL_ID);
+      const channel = await getChannel(client, channels.COPERNICUS_CHANNEL_ID);
 
       if (!channel) {
         return res.status(404).send({ error: "Discord channel not found." });
       }
-
-      const parseDate = (iso) => {
-        if (!iso) return null;
-        const d = new Date(iso);
-        return Number.isFinite(d.getTime()) ? d : null;
-      };
 
       const formattedDate = acquisition_date
         ? new Date(acquisition_date).toLocaleString("pt-PT")
@@ -85,12 +82,43 @@ O link para download ainda não está disponível`;
         .send({ message: "Alert sent to Discord successfully." });
     } catch (error) {
       console.error(error);
+      await reportCriticalError('webhook:copernicus', error);
       return res.status(500).send({ error: "Internal server error." });
     }
-  });
+  };
+};
+
+const createApp = (client, token) => {
+  const app = express();
+  app.use(bodyParser.json());
+  app.post("/copernicus", createWebhookHandler(client, token));
+
+  return app;
+};
+
+const startHttpServer = (client) => {
+  const token = getWebhookSecret();
+
+  if (!token) {
+    console.warn("⚠️ Copernicus webhook disabled: COPERNICUS_WEBHOOK_SECRET is not configured");
+    return null;
+  }
+
+  const app = createApp(client, token);
 
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`🌐 Webhook server listening on port ${PORT}`);
   });
+  server.on('error', async (error) => {
+    console.error('[Copernicus] Webhook server error:', error);
+    await reportCriticalError('webhook:server', error, { port: PORT });
+  });
+  return server;
 };
+
+module.exports = startHttpServer;
+module.exports.createApp = createApp;
+module.exports.createWebhookHandler = createWebhookHandler;
+module.exports.getWebhookSecret = getWebhookSecret;
+module.exports.isAuthorized = isAuthorized;

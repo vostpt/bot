@@ -16,6 +16,7 @@ const channels = {
   JOURNAL_CHANNEL_ID: process.env.JOURNAL_CHANNEL_ID,
   TRAVEL_GUIDELINES: process.env.TRAVEL_GUIDELINES,
   COPERNICUS_CHANNEL_ID: process.env.COPERNICUS_CHANNEL_ID,
+  ERRORS_CHANNEL_ID: process.env.ERRORS_CHANNEL_ID,
 };
 
 const coronaUpdateUsers = process.env.CORONAUPDATEUSERS;
@@ -25,7 +26,7 @@ const userLists = {
   coronaUpdate: typeof coronaUpdateUsers !== 'undefined'
     ? coronaUpdateUsers.split(',')
     : [],
-  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
+  rallyUpdate: typeof rallyUpdateUsers !== 'undefined'
     ? rallyUpdateUsers.split(',')
     : [],
 };
@@ -37,7 +38,7 @@ const roleLists = {
   coronaUpdate: typeof coronaUpdateRoles !== 'undefined'
     ? coronaUpdateRoles.split(',')
     : [],
-  rallyUpdate: typeof coronaUpdateUsers !== 'undefined'
+  rallyUpdate: typeof rallyUpdateRoles !== 'undefined'
     ? rallyUpdateRoles.split(',')
     : [],
 };

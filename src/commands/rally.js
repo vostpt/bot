@@ -43,11 +43,11 @@ module.exports = {
         return true;
       }
 
-      if (message.channel.type === 'dm') {
+      if (!message.guild || !message.member) {
         return false;
       }
 
-      const authRole = roleLists.rallyUpdate.some((role) => message.member.roles.has(role));
+      const authRole = roleLists.rallyUpdate.some((role) => message.member.roles.cache.has(role));
 
       return authRole;
     };

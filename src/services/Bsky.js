@@ -3,6 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const { bskyKeys } = require('../../config/bsky');
 const sharp = require('sharp');
+const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publicationLog');
 
 const handle = bskyKeys.keys.bsky_handle;
 const password = bskyKeys.keys.bsky_password;
@@ -264,6 +265,17 @@ async function postToBluesky(message, imagePath, imageDes) {
 }
 
 async function sendPostsToBsky(messages) {
+  if (skipSocialPost('BLUESKY', bskyKeys.reference)) return { skipped: true, reason: 'social-posts-disabled' };
+
+  if (isDryRun()) {
+    return Promise.all(messages.map((message) => recordPublication('bluesky', {
+      account: bskyKeys.reference,
+      text: message.message,
+      media: message.imageUrl,
+      description: message.imageDes,
+    })));
+  }
+
   console.log('[BSKY-BATCH] Starting batch post processing:', {
     messageCount: messages.length,
     timestamp: new Date().toISOString()
@@ -271,6 +283,7 @@ async function sendPostsToBsky(messages) {
 
   await authenticate(handle, password);
 
+  const failures = [];
   for (const message of messages) {
     try {
       await postToBluesky(message.message, message.imageUrl, message.imageDes);
@@ -281,13 +294,17 @@ async function sendPostsToBsky(messages) {
         error: error.message,
         timestamp: new Date().toISOString()
       });
-      // Continue with next message even if one fails
-      continue;
+      failures.push(error);
     }
   }
   console.log('[BSKY-BATCH] Completed batch post processing');
+
+  if (failures.length > 0) {
+    throw new AggregateError(failures, `${failures.length} Bluesky post(s) failed`);
+  }
 }
 
+/*
 (async () => {
   try {
     await authenticate(handle, password);
@@ -298,6 +315,7 @@ async function sendPostsToBsky(messages) {
     });
   }
 })();
+*/
 
 module.exports = {
   sendPostsToBsky

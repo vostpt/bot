@@ -12,16 +12,15 @@
     </a>
 </p>
 
+[Changelog](CHANGELOG.md) · [Documentation](docs/README.md) · [English documentation](docs/en/README.md)
+
 # Installation
-Before anything else, install the dependencies:
+Use Node.js 20 or 22, then install the dependencies:
 ```sh
-yarn install
+npm ci
 ```
 
-or for those who prefer `npm`:
-```sh
-npm install
-```
+For local development, `npm install` is also supported.
 
 # Configuration
 After installing the dependencies, it's time for a quick configuration.
@@ -32,12 +31,13 @@ Create a `.env` file in the project root.
 cp .env.example .env
 ```
 
-Create the database directory and execute Sequelize migrations:
+Create the database directory and execute Sequelize migrations for a normal
+bot run:
 
 ```bash
 mkdir ./data
 #ENVIRONMENT: development | test | production
-npx sequelize-cli db:migrate --env ENVIRONMENT
+npx sequelize-cli db:migrate --env development
 ```
 
 
@@ -74,6 +74,8 @@ DGSCORONA_CHANNEL_ID=
 CORONAFAQ_CHANNEL_ID=
 JOURNAL_CHANNEL_ID=
 TRAVEL_GUIDELINES=
+# Optional: receives social publication failures and other critical errors.
+ERRORS_CHANNEL_ID=
 
 
 #
@@ -210,7 +212,9 @@ BSKY_PASS=
 BSKY_REPOHANDLE=
 ```
 
-You will also need a `data/auth/vostpt-bot.json` config (can be test version).
+Some production integrations require `data/auth/vostpt-bot.json`. Shadow mode
+does not connect to Discord or publish on social networks; add only the
+credentials needed to read the upstream services you want to inspect.
 
 # Running
 If you went through the previous steps successfully, you should now be able to run **VOSTPT Discord bot** with the following command:
@@ -218,6 +222,180 @@ If you went through the previous steps successfully, you should now be able to r
 ```sh
 npm start
 ```
+
+To run the Discord bot without publishing to Twitter/X, Facebook, Telegram,
+Mastodon, or Bluesky, disable social posts for that process:
+
+```sh
+SOCIAL_POSTS_ENABLED=false npm start
+```
+
+Discord commands, scheduled Discord notifications, and source polling continue
+to work. Any outbound social post is skipped and reported in the logs. This
+setting defaults to enabled to preserve the current production behavior; add
+`SOCIAL_POSTS_ENABLED=false` to `.env` to make the choice persistent. Facebook
+feed polling may still read Facebook posts and forward them into Discord; it
+does not publish to Facebook.
+
+You can also disable one network or one account/profile in `.env`. For example,
+`SOCIAL_TWITTER_ENABLED=false` disables all Twitter/X accounts, while
+`SOCIAL_TWITTER_AZORES_ENABLED=false` disables only the Azores account. The
+same pattern is available for Facebook (`MAIN`, `RALLY`), Telegram (`MAIN`,
+`RALLY`), Mastodon (`MAIN`, `DRE`), Bluesky (`MAIN`), Instagram (`MAIN`), and
+Twitter/X (`MAIN`, `AZORES`, `EUROPE`, `VOSTPTIA`, `DRE`, `RALLY`). A `false` global or network
+flag overrides narrower profile flags.
+
+Instagram has matching `SOCIAL_INSTAGRAM_ENABLED` and
+`SOCIAL_INSTAGRAM_MAIN_ENABLED` settings for consistency, but this repository
+does not currently have an Instagram publishing integration, so those flags
+have no effect on Instagram posts yet.
+
+# Discord commands
+
+The slash commands include operational summaries and public information:
+
+- `/resumo` — combines current IPMA warnings, ProCiv occurrences, important
+  fires, and earthquakes from the last 24 hours. It labels unavailable sources
+  and is informational, not a dispatch channel.
+- `/alerts [local]` — shows active IPMA warnings, optionally filtered by a
+  district or region name (for example, `/alerts local:Lisboa`).
+- `/sismos recentes [horas]` — shows up to ten earthquakes from the last 1–168
+  hours (24 by default). `/sismos data data:DD/MM/AAAA` keeps the date lookup.
+- `/reportar` — displays official emergency contact guidance. The bot does not
+  forward reports; call 112 for immediate emergencies and 117 for rural fire
+  alerts.
+- `/dica` — shares a randomly selected preparedness tip with an ANEPC source.
+- `/cafe` — a light, unofficial team caffeine status.
+
+Deploy slash command registration after updating the bot:
+
+```sh
+npm run commands:deploy
+```
+
+For local preview without running the Discord bot or sending posts, use the
+[shadow publishing guide](docs/en/shadow-mode.md) or run `npm run shadow`.
+
+This version requires Node.js 20 or 22. The Discord application must have the
+Message Content privileged intent enabled when triggers or the remaining prefix
+commands are used.
+
+Slash commands are registered to the guild configured by `CLIENT_ID` and
+`GUILD_ID`:
+
+```sh
+npm run commands:deploy
+```
+
+They can be removed from that guild with:
+
+```sh
+npm run commands:clear
+```
+
+The Corona slash command is intentionally excluded from registration. VOST
+Europe's scheduled 08:00/12:00 Twitter posts and Twitter-to-Discord polling
+remain disabled, matching `master`.
+
+Scheduled jobs can be controlled with the `JOB_*` variables documented in
+`.env.example`. Existing non-Corona production jobs default to enabled; the
+already-disabled VOST Europe scheduled posts default to disabled.
+
+### Tests and code checks
+
+Run all automated tests:
+
+```sh
+npm test -- --runInBand
+```
+
+Run the offline startup and adapter smoke tests with:
+
+```sh
+npm run test:smoke
+```
+
+Run end-to-end workflow tests with fixtures and dry-run publishers:
+
+```sh
+npm run test:e2e
+```
+
+Check code style with:
+
+```sh
+npm run lint -- src/ config/ scripts/
+```
+
+Live smoke tests authenticate against configured social APIs without creating
+posts. They are intentionally opt-in:
+
+```sh
+LIVE_SMOKE_TESTS=true npm run test:smoke:live
+```
+
+Use `LIVE_SMOKE_TARGETS=discord,twitter` to restrict the live checks. Missing
+credentials for an explicitly requested target fail the smoke run.
+
+### Compare planned publications with production
+
+Shadow mode fetches current source data and runs the real message-building
+code, but replaces outbound Discord and social-network calls with console and
+JSON-lines log entries. It uses `data/db.shadow.sqlite`; it does not use the
+development or production databases.
+
+Run current IPMA warnings, the daily weather report, and fire events once:
+
+```sh
+npm run shadow
+```
+
+Choose specific workflows and treat all current records as unseen:
+
+```sh
+SHADOW_RESET_DB=true npm run shadow -- warnings weather fire-risk
+```
+
+Run the normal production schedule continuously without connecting a Discord
+bot or sending social posts:
+
+```sh
+npm run shadow:watch
+```
+
+Every planned publication is printed as `Would publish to facebook`,
+`twitter`, `mastodon`, `telegram`, `bluesky`, or `discord`. The same entries are
+written to `logs/publications.jsonl`; set `PUBLISH_LOG_FILE` to choose another
+file. Each JSON object includes a timestamp, run ID, destination, account or
+channel, exact post text, and media reference. Buffers and very large base64
+images are summarized so the log remains usable.
+
+For example, an orange or red IPMA warning produces output similar to:
+
+```text
+[DRY-RUN] Would publish to facebook:
+{
+  "account": "main",
+  "message": "ℹ️⚠️🟠 #AvisoLaranja ...",
+  "media": "warnings/Twitter_Post_AvisoLaranja_....png"
+}
+```
+
+This reflects the current rules: yellow IPMA warnings are not sent to Facebook,
+and the daily weather report currently has no Facebook publisher. Those absences
+are therefore expected in the shadow log and useful when comparing with prod.
+
+Available one-shot workflows are shown with:
+
+```sh
+npm run shadow -- --help
+```
+
+Shadow mode uses live upstream data, so it only logs content that the bot would
+actually consider new. Keep the shadow database to compare behavior over time,
+or use `SHADOW_RESET_DB=true` when you want to replay all currently active
+warnings. The optional `facebook-feed` workflow needs a Facebook token because
+it reads the page feed, but it still does not publish anything.
 
 Tip: use the `BETA_MODE` env variable to toggle which function in [src/jobs/index.json](src/jobs/index.js) is executed  `startProd` (`BETA_MODE=false`) for production and `startBeta`  (`BETA_MODE=true`). 
 
