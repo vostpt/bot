@@ -1,5 +1,8 @@
 # VOSTPT Bot
 
+See the [complete changelog](https://github.com/vostpt/bot/blob/master/CHANGELOG.md)
+for changes, fixes, and upgrade requirements.
+
 This project runs the VOSTPT Discord bot and its scheduled information feeds to
 social networks.
 

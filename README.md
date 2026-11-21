@@ -12,6 +12,8 @@
     </a>
 </p>
 
+[Changelog](CHANGELOG.md) · [Documentation](docs/README.md) · [English documentation](docs/en/README.md)
+
 # Installation
 Use Node.js 20 or 22, then install the dependencies:
 ```sh

@@ -23,7 +23,7 @@ const {
 
 const { channels } = require('../../config/bot');
 
-/** 
+/**
  * Jobs are enabled by default
  * If the env variable exists and is set to "false", the job is skipped.
  *
@@ -37,7 +37,7 @@ function isJobEnabled(envName, defaultEnabled = true) {
   const value = process.env[envName];
 
   if (value === undefined) return defaultEnabled;
-  
+
   return !['false', '0', 'no', 'off'].includes(value.toLowerCase());
 }
 
@@ -142,14 +142,14 @@ class Jobs {
 
   startBeta() {
     scheduleIfEnabled('JOB_EARTHQUAKES_DAILY', 'daily earthquakes', () => this.earthquakes());
-    scheduleIfEnabled('JOB_EARTHQUAKES_NOTICEABLE', 'noticeable earthquakes', () => 
+    scheduleIfEnabled('JOB_EARTHQUAKES_NOTICEABLE', 'noticeable earthquakes', () =>
       this.noticeableEarthquakes({ threshold: 2.5 })
     );
     scheduleIfEnabled('JOB_EARTHQUAKES_RESET', 'reset earthquake notifications', () =>
       Jobs.resetSentNotifications()
     );
   }
-    
+
   /*
   * Schedule jobs below
   */

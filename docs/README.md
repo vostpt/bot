@@ -3,6 +3,9 @@
 Este projeto executa o bot Discord da VOSTPT e os processos agendados que
 publicam informação nas redes sociais.
 
+Consulta o [changelog completo](https://github.com/vostpt/bot/blob/master/CHANGELOG.md)
+para alterações, correções e requisitos de atualização.
+
 ## Requisitos e instalação
 
 Usa Node.js 20 ou 22. Instala as dependências:
