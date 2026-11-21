@@ -83,6 +83,7 @@ const uploadThreadTwitter = async (tweetSeq, _tweetId = '', reference = 'main') 
     const response = await clientTwitter.v2.tweet(params);
     if (response.data.errors) {
       console.error(response.data.errors);
+      throw new Error(`Twitter rejected the post: ${JSON.stringify(response.data.errors)}`);
     }
   }
 };

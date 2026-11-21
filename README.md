@@ -72,6 +72,8 @@ DGSCORONA_CHANNEL_ID=
 CORONAFAQ_CHANNEL_ID=
 JOURNAL_CHANNEL_ID=
 TRAVEL_GUIDELINES=
+# Optional: receives social publication failures and other critical errors.
+ERRORS_CHANNEL_ID=
 
 
 #

@@ -15,7 +15,8 @@ const { sendDocumentTelegram } = require('./Telegram');
 const { telegramKeys } = require('../../config/telegram');
 const { sendPostMastodon } = require('./Mastodon');
 const { postMessageFacebook } = require('./Facebook');
-const { splitMessageString } = require('../helpers');
+const { publishAll, splitMessageString } = require('../helpers');
+const { reportCriticalError } = require('../helpers/errorReporter');
 
 /**
  * Get all reports
@@ -244,8 +245,6 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
       }
     ];
 
-    uploadThreadTwitter(thrTwitter, '', 'main');
-
     const strTelegram = `#COVID19PT Boletim DGS ${notifyDate}\n${report.resume}\n\nVariação semanal:\n${report.weekVar}\nFonte: DGS/@VOSTPT by @VOSTPT`;
 
     const tlgMessage = {
@@ -255,8 +254,6 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
         caption: strTelegram,
       },
     };
-
-    sendDocumentTelegram(tlgMessage);
 
     const post = {
       status: strFbPlr,
@@ -268,18 +265,21 @@ const sendNotification = async (report, attachmentURL, reportURL) => {
       },
     };
 
-    sendPostMastodon(post);
-
-    
     const fbpost = {
       message: strFbPlr,
       media: fileName,
-    }
+    };
 
-    postMessageFacebook(fbpost);
+    await publishAll('corona-report', {
+      twitter: () => uploadThreadTwitter(thrTwitter, '', 'main'),
+      telegram: () => sendDocumentTelegram(tlgMessage),
+      mastodon: () => sendPostMastodon(post),
+      facebook: () => postMessageFacebook(fbpost),
+    });
 
     return 0;
   } catch (e) {
+    await reportCriticalError('social:corona-report', e);
     return -1;
   }
 };

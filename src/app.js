@@ -12,6 +12,10 @@ const {
 const Events = require('./events');
 const startHttpServer = require('./server/server');
 const { cooldown: defaultCooldown } = require('../config/bot');
+const {
+  configureErrorReporter,
+  reportCriticalError,
+} = require('./helpers/errorReporter');
 
 const client = new Client({
   intents: [
@@ -95,10 +99,16 @@ if (fs.existsSync(triggersPath)) {
   }
 }
 
-client.once('ready', () => {
-  Events.ready(client);
-  startHttpServer(client);
+client.once('ready', async () => {
+  configureErrorReporter(client);
 
+  try {
+    Events.ready(client);
+    startHttpServer(client);
+  } catch (err) {
+    console.error('[Startup] Failed to initialize bot services:', err);
+    await reportCriticalError('startup:services', err);
+  }
 });
 
 client.on('messageCreate', message => {
@@ -120,6 +130,7 @@ client.on('interactionCreate', async interaction => {
       await command.autocomplete(interaction);
     } catch (err) {
       console.error('Autocomplete error:', err);
+      await reportCriticalError(`discord:autocomplete:${interaction.commandName}`, err);
     }
 
     return;
@@ -166,6 +177,7 @@ client.on('interactionCreate', async interaction => {
     }
   } catch (err) {
     console.error(err);
+    await reportCriticalError(`discord:command:${interaction.commandName}`, err);
 
     const payload = {
       content: '❌ Erro ao executar comando.',
@@ -178,6 +190,11 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply(payload);
     }
   }
+});
+
+client.on('error', async (err) => {
+  console.error('[Discord] Client error:', err);
+  await reportCriticalError('discord:client', err);
 });
 
 client.login(process.env.BOT_TOKEN);

@@ -283,6 +283,7 @@ async function sendPostsToBsky(messages) {
 
   await authenticate(handle, password);
 
+  const failures = [];
   for (const message of messages) {
     try {
       await postToBluesky(message.message, message.imageUrl, message.imageDes);
@@ -293,11 +294,14 @@ async function sendPostsToBsky(messages) {
         error: error.message,
         timestamp: new Date().toISOString()
       });
-      // Continue with next message even if one fails
-      continue;
+      failures.push(error);
     }
   }
   console.log('[BSKY-BATCH] Completed batch post processing');
+
+  if (failures.length > 0) {
+    throw new AggregateError(failures, `${failures.length} Bluesky post(s) failed`);
+  }
 }
 
 /*

@@ -2,6 +2,7 @@ const { getChannel, sendMessageToChannel } = require("../services/Discord");
 const { channels } = require("../../config/bot");
 const express = require("express");
 const bodyParser = require("body-parser");
+const { reportCriticalError } = require("../helpers/errorReporter");
 
 const getWebhookSecret = () => {
   const token = process.env.COPERNICUS_WEBHOOK_SECRET?.trim();
@@ -81,6 +82,7 @@ O link para download ainda não está disponível`;
         .send({ message: "Alert sent to Discord successfully." });
     } catch (error) {
       console.error(error);
+      await reportCriticalError('webhook:copernicus', error);
       return res.status(500).send({ error: "Internal server error." });
     }
   };
@@ -105,9 +107,14 @@ const startHttpServer = (client) => {
   const app = createApp(client, token);
 
   const PORT = process.env.PORT || 3000;
-  return app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`🌐 Webhook server listening on port ${PORT}`);
   });
+  server.on('error', async (error) => {
+    console.error('[Copernicus] Webhook server error:', error);
+    await reportCriticalError('webhook:server', error, { port: PORT });
+  });
+  return server;
 };
 
 module.exports = startHttpServer;

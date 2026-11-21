@@ -29,6 +29,10 @@ describe('social adapter smoke tests', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   afterAll(() => {
     Object.entries(originalTwitterEnvironment).forEach(([key, value]) => {
       if (value === undefined) delete process.env[key];
@@ -51,6 +55,22 @@ describe('social adapter smoke tests', () => {
       [{ text: 'first', media: undefined }],
       [{ text: 'second', media: undefined }],
     ]);
+  });
+
+  test('Twitter rejects API responses containing publication errors', async () => {
+    jest.resetModules();
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    process.env.TWITTER_CONSUMER_KEY = 'key';
+    process.env.TWITTER_CONSUMER_SECRET = 'secret';
+    process.env.TWITTER_ACCESS_TOKEN_KEY = 'token';
+    process.env.TWITTER_ACCESS_TOKEN_SECRET = 'token-secret';
+    mockTwitterClient.v2.tweet.mockResolvedValue({
+      data: { errors: [{ message: 'post rejected' }] },
+    });
+    const { uploadThreadTwitter } = require('../../src/services/Twitter');
+
+    await expect(uploadThreadTwitter([{ status: 'will fail' }]))
+      .rejects.toThrow('Twitter rejected the post');
   });
 
   test('Telegram batch sending does not mutate caller data', async () => {

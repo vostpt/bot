@@ -3,6 +3,7 @@ const moment = require('moment');
 const { RcmApi } = require('../api');
 const { uploadThreadTwitter } = require('../services/Twitter');
 const { splitMessageString } = require('../helpers');
+const { reportCriticalError } = require('../helpers/errorReporter');
 
 // Tracks earthquake `time` values already sent today; cleared at midnight
 const sentEarthquakesNotifications = new Set();
@@ -58,6 +59,7 @@ async function runJob(jobName, callback) {
     return await callback();
   } catch (error) {
     console.error(`[Jobs] ${jobName} failed:`, error);
+    await reportCriticalError(`job:${jobName}`, error);
     return null;
   }
 }
@@ -74,6 +76,8 @@ async function sendToChannel(client, channelId, content) {
     return await channel.send(content);
   } catch (err) {
     console.error(`Failed sending to channel ${channelId}:`, err);
+    await reportCriticalError('discord:channel-send', err, { channelId });
+    return null;
   }
 }
 
@@ -91,6 +95,8 @@ async function sendFileToChannel(client, channelId, content, files) {
     });
   } catch (err) {
     console.error(`Failed sending file to channel ${channelId}:`, err);
+    await reportCriticalError('discord:file-send', err, { channelId });
+    return null;
   }
 }
 
