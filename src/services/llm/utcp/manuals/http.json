@@ -1,0 +1,89 @@
+{
+  "manual_version": "1.0.0",
+  "utcp_version": "1.0.0",
+  "tools": [
+    {
+      "name": "vost_http.acronym_lookup",
+      "description": "Consulta direta da API de acrónimos da VOST (GET).",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "search": { "type": "string", "minLength": 2, "maxLength": 40 }
+        },
+        "required": ["search"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["acronimo", "vost", "http"],
+      "tool_call_template": {
+        "call_template_type": "http",
+        "http_method": "GET",
+        "content_type": "application/json",
+        "url": "https://api.vost.pt/v1/acronyms/?search={search}&exact=1"
+      }
+    },
+    {
+      "name": "vost_http.fire_risk_map",
+      "description": "Devolve o mapa de risco de incêndio do IPMA. Usa HTTPS; o URL HTTP antigo não é exposto.",
+      "inputs": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputs": { "type": "string" },
+      "tags": ["fogo", "rcm", "ipma", "mapa", "http"],
+      "tool_call_template": {
+        "call_template_type": "http",
+        "http_method": "GET",
+        "content_type": "application/octet-stream",
+        "url": "https://www.ipma.pt/resources.www/transf/clientes/11000.anpc/risco_incendio/fwi/RCM24_conc.jpg"
+      }
+    },
+    {
+      "name": "vost_http.weather_report_pt",
+      "description": "Link do relatório diário de extremos meteorológicos de Portugal Continental.",
+      "inputs": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputs": { "type": "string" },
+      "tags": ["tempo", "relatorio", "ipma", "http"],
+      "tool_call_template": {
+        "call_template_type": "http",
+        "http_method": "GET",
+        "content_type": "application/octet-stream",
+        "url": "https://raw.githubusercontent.com/vostpt/daily_weather_report/main/daily_meteo_report_pt.png"
+      }
+    },
+    {
+      "name": "vost_http.weather_report_mad",
+      "description": "Link do relatório diário de extremos meteorológicos da Madeira.",
+      "inputs": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputs": { "type": "string" },
+      "tags": ["tempo", "relatorio", "ipma", "madeira", "http"],
+      "tool_call_template": {
+        "call_template_type": "http",
+        "http_method": "GET",
+        "content_type": "application/octet-stream",
+        "url": "https://raw.githubusercontent.com/vostpt/daily_weather_report/main/daily_meteo_report_mad.png"
+      }
+    },
+    {
+      "name": "vost_http.weather_report_az",
+      "description": "Link do relatório diário de extremos meteorológicos dos Açores.",
+      "inputs": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputs": { "type": "string" },
+      "tags": ["tempo", "relatorio", "ipma", "acores", "http"],
+      "tool_call_template": {
+        "call_template_type": "http",
+        "http_method": "GET",
+        "content_type": "application/octet-stream",
+        "url": "https://raw.githubusercontent.com/vostpt/daily_weather_report/main/daily_meteo_report_az.png"
+      }
+    }
+  ]
+}

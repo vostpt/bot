@@ -1,4 +1,10 @@
-require('dotenv').config();
+/* eslint-disable global-require */
+const dotenv = require('dotenv');
+const dotenvExpand = require('dotenv-expand');
+const { initTelemetry } = require('./telemetry');
+
+dotenvExpand(dotenv.config());
+initTelemetry();
 
 const fs = require('fs');
 const path = require('path');
@@ -11,7 +17,12 @@ const {
 
 const Events = require('./events');
 const startHttpServer = require('./server/server');
-const { cooldown: defaultCooldown } = require('../config/bot');
+const {
+  cooldown: defaultCooldown,
+  chatOnlyMode,
+  llmChatLocalInput,
+} = require('../config/bot');
+const { startLocalInput } = require('./events/localInput');
 const {
   configureErrorReporter,
   reportCriticalError,
@@ -26,7 +37,8 @@ const client = new Client({
 });
 
 client.slashCommands = new Collection();
-client.prefixCommands = new Collection();
+client.commands = new Collection();
+client.prefixCommands = client.commands;
 client.triggers = new Collection();
 client.cooldowns = new Collection();
 
@@ -79,7 +91,7 @@ if (fs.existsSync(commandsPath)) {
 
     if (!command?.name) continue;
 
-    client.prefixCommands.set(command.name, command);
+    client.commands.set(command.name, command);
     client.cooldowns.set(command.name, new Collection());
   }
 }
@@ -99,12 +111,29 @@ if (fs.existsSync(triggersPath)) {
   }
 }
 
+if (chatOnlyMode) {
+  client.commands.forEach((command, name) => {
+    if (name !== 'chat') {
+      command.active = false;
+    }
+  });
+  client.triggers.clear();
+  client.slashCommands.clear();
+}
+
 client.once('ready', async () => {
   configureErrorReporter(client);
 
   try {
     Events.ready(client);
-    startHttpServer(client);
+
+    if (!chatOnlyMode) {
+      startHttpServer(client);
+    }
+
+    if (llmChatLocalInput) {
+      startLocalInput(client);
+    }
   } catch (err) {
     console.error('[Startup] Failed to initialize bot services:', err);
     await reportCriticalError('startup:services', err);
