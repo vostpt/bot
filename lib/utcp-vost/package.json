@@ -1,0 +1,22 @@
+{
+  "name": "utcp-vost",
+  "version": "1.0.0",
+  "description": "Biblioteca UTCP com manuais e tools específicos da VOST PT",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@utcp/sdk": "^1.2.0",
+    "@utcp/direct-call": "^1.1.1",
+    "@utcp/http": "^1.1.14",
+    "@utcp/text": "^1.1.0",
+    "@utcp/file": "^1.1.0",
+    "@utcp/dotenv-loader": "^1.1.0",
+    "moment-timezone": "^0.5.35"
+  },
+  "devDependencies": {
+    "jest": "^25.5.4"
+  },
+  "license": "MIT"
+}

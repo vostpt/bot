@@ -110,10 +110,17 @@ const startHttpServer = (client) => {
   const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`🌐 Webhook server listening on port ${PORT}`);
   });
-  server.on('error', async (error) => {
+
+  server.on("error", async (error) => {
+    if (error.code === "EADDRINUSE") {
+      console.warn(`⚠️ Port ${PORT} already in use; webhook server disabled`);
+      return;
+    }
+
     console.error('[Copernicus] Webhook server error:', error);
     await reportCriticalError('webhook:server', error, { port: PORT });
   });
+
   return server;
 };
 

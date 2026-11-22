@@ -1,0 +1,280 @@
+{
+  "manual_version": "1.0.0",
+  "utcp_version": "1.0.0",
+  "tools": [
+    {
+      "name": "vost_prociv.get_all",
+      "description": "Lista as ocorrências atuais da Protecção Civil (Prociv). Sem dados históricos.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 },
+          "start": { "type": "string", "description": "Início do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "end": { "type": "string", "description": "Fim do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "date": { "type": "string", "description": "Data pedida. Só existem dados atuais.", "default": "" }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["fogo", "ocorrencias", "prociv", "atual"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_prociv.get_all"
+      }
+    },
+    {
+      "name": "vost_prociv.get_by_id",
+      "description": "Devolve uma ocorrência da Protecção Civil pelo ID.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 },
+          "start": { "type": "string", "description": "Início do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "end": { "type": "string", "description": "Fim do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "date": { "type": "string", "description": "Data pedida. Só existem dados atuais.", "default": "" }
+        },
+        "required": ["id"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["fogo", "ocorrencias", "prociv", "id"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_prociv.get_by_id"
+      }
+    },
+    {
+      "name": "vost_prociv.get_by_city",
+      "description": "Procura ocorrências atuais da Protecção Civil por localidade.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "city": { "type": "string", "minLength": 2, "maxLength": 80 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 },
+          "start": { "type": "string", "description": "Início do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "end": { "type": "string", "description": "Fim do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "date": { "type": "string", "description": "Data pedida. Só existem dados atuais.", "default": "" }
+        },
+        "required": ["city"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["fogo", "ocorrencias", "prociv", "localidade"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_prociv.get_by_city"
+      }
+    },
+    {
+      "name": "vost_prociv.filter_by_status",
+      "description": "Filtra ocorrências atuais da Protecção Civil pelo estado.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "minLength": 2, "maxLength": 40 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 },
+          "start": { "type": "string", "description": "Início do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "end": { "type": "string", "description": "Fim do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "date": { "type": "string", "description": "Data pedida. Só existem dados atuais.", "default": "" }
+        },
+        "required": ["status"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["fogo", "ocorrencias", "prociv", "estado"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_prociv.filter_by_status"
+      }
+    },
+    {
+      "name": "vost_fires.get_important",
+      "description": "Lista os incêndios florestais importantes atualmente ativos.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 },
+          "start": { "type": "string", "description": "Início do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "end": { "type": "string", "description": "Fim do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "date": { "type": "string", "description": "Data pedida. Só existem dados atuais.", "default": "" }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["fogo", "incendios", "atual"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_fires.get_important"
+      }
+    },
+    {
+      "name": "vost_fires.get_by_district",
+      "description": "Lista incêndios florestais ativos de um distrito.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "district": { "type": "string", "minLength": 2, "maxLength": 60 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 },
+          "start": { "type": "string", "description": "Início do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "end": { "type": "string", "description": "Fim do intervalo pedido (ISO-8601). Só existem dados atuais.", "default": "" },
+          "date": { "type": "string", "description": "Data pedida. Só existem dados atuais.", "default": "" }
+        },
+        "required": ["district"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["fogo", "incendios", "distrito", "atual"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_fires.get_by_district"
+      }
+    },
+    {
+      "name": "vost_ipma.get_current_warnings",
+      "description": "Devolve os avisos meteorológicos atuais do IPMA sem publicar nada.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["tempo", "avisos", "ipma", "atual"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_ipma.get_current_warnings"
+      }
+    },
+    {
+      "name": "vost_meteoalarm.get_current",
+      "description": "Devolve avisos meteorológicos atuais do MeteoAlarm sem publicar nada.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "country": { "type": "string", "minLength": 2, "maxLength": 40, "default": "portugal" },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["tempo", "avisos", "meteoalarm", "europa", "atual"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_meteoalarm.get_current"
+      }
+    },
+    {
+      "name": "vost_earthquakes.get_by_date",
+      "description": "Devolve os sismos do IPMA de uma data.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "minLength": 8, "maxLength": 10 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        },
+        "required": ["date"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["sismos", "ipma", "data"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_earthquakes.get_by_date"
+      }
+    },
+    {
+      "name": "vost_weather.get_by_day",
+      "description": "Devolve a previsão meteorológica do IPMA para hoje ou amanhã.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "day": { "type": "integer", "minimum": 0, "maximum": 1, "default": 0 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["tempo", "previsao", "ipma", "atual"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_weather.get_by_day"
+      }
+    },
+    {
+      "name": "vost_acronyms.get_exact",
+      "description": "Procura a definição exata de um acrónimo na API VOST.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "acronym": { "type": "string", "minLength": 2, "maxLength": 40 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        },
+        "required": ["acronym"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["acronimo", "vost"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_acronyms.get_exact"
+      }
+    },
+    {
+      "name": "vost_sns.get_alerts",
+      "description": "Devolve os alertas atuais do SNS24.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["sns", "saude", "alertas", "atual"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_sns.get_alerts"
+      }
+    },
+    {
+      "name": "vost_corona.get_all",
+      "description": "Lista os relatórios DGS sobre COVID-19 guardados pelo bot.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["corona", "dgs", "saude", "relatorios"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_corona.get_all"
+      }
+    },
+    {
+      "name": "vost_corona.get_resume",
+      "description": "Devolve o resumo DGS disponível para uma data.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "minLength": 8, "maxLength": 10 }
+        },
+        "required": ["date"]
+      },
+      "outputs": { "type": "object" },
+      "tags": ["corona", "dgs", "saude", "resumo", "data"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_corona.get_resume"
+      }
+    },
+    {
+      "name": "vost_journal.get_recent",
+      "description": "Lista decretos e despachos recentes do Diário da República, sem gravar nem publicar.",
+      "inputs": {
+        "type": "object",
+        "properties": {
+          "date": { "type": "string", "minLength": 8, "maxLength": 10 },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10 }
+        }
+      },
+      "outputs": { "type": "object" },
+      "tags": ["dre", "diario", "decretos", "recente"],
+      "tool_call_template": {
+        "call_template_type": "direct-call",
+        "callable_name": "vost_journal.get_recent"
+      }
+    }
+  ]
+}

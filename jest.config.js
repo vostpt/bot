@@ -76,7 +76,11 @@ module.exports = {
   // ],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  // Jest 25 predates "node:" specifiers used by some installed dependencies.
+  moduleNameMapper: {
+    '^node:(.*)$': '<rootDir>/test/shims/node-$1.js',
+    '^sharp$': '<rootDir>/test/shims/sharp.js',
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -121,7 +125,7 @@ module.exports = {
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: [],
-  setupFiles: ['dotenv/config'],
+  setupFiles: ['dotenv/config', '<rootDir>/test/setup/env.js'],
 
   // Runtime social switches in a developer's .env must not change test expectations.
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],

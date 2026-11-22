@@ -8,6 +8,7 @@ const { isDryRun, skipSocialPost, recordPublication } = require('../helpers/publ
 const handle = bskyKeys.keys.bsky_handle;
 const password = bskyKeys.keys.bsky_password;
 const repohandle = bskyKeys.keys.bsky_repohandle;
+const hasCredentials = Boolean(handle && password && repohandle);
 let accessToken = null;
 
 // Function to authenticate and get a token
@@ -274,48 +275,54 @@ async function sendPostsToBsky(messages) {
       media: message.imageUrl,
       description: message.imageDes,
     })));
-  }
-
-  console.log('[BSKY-BATCH] Starting batch post processing:', {
-    messageCount: messages.length,
-    timestamp: new Date().toISOString()
-  });
-
-  await authenticate(handle, password);
-
-  const failures = [];
-  for (const message of messages) {
-    try {
-      await postToBluesky(message.message, message.imageUrl, message.imageDes);
-    } catch (error) {
-      console.error('[BSKY-BATCH-ERROR] Failed to process message in batch:', {
-        message: message.message,
-        imageUrl: message.imageUrl,
-        error: error.message,
-        timestamp: new Date().toISOString()
-      });
-      failures.push(error);
+    if (!hasCredentials) {
+      console.warn('[BSKY-DISABLED] Credenciais não configuradas; publicação ignorada');
+      return;
     }
-  }
-  console.log('[BSKY-BATCH] Completed batch post processing');
 
-  if (failures.length > 0) {
-    throw new AggregateError(failures, `${failures.length} Bluesky post(s) failed`);
-  }
-}
-
-/*
-(async () => {
-  try {
-    await authenticate(handle, password);
-  } catch (error) {
-    console.error('[BSKY-INIT-ERROR] Initial authentication failed:', {
-      error: error.message,
+    console.log('[BSKY-BATCH] Starting batch post processing:', {
+      messageCount: messages.length,
       timestamp: new Date().toISOString()
     });
+
+    await authenticate(handle, password);
+
+    const failures = [];
+    for (const message of messages) {
+      try {
+        await postToBluesky(message.message, message.imageUrl, message.imageDes);
+      } catch (error) {
+        console.error('[BSKY-BATCH-ERROR] Failed to process message in batch:', {
+          message: message.message,
+          imageUrl: message.imageUrl,
+          error: error.message,
+          timestamp: new Date().toISOString()
+        });
+        failures.push(error);
+      }
+    }
+    console.log('[BSKY-BATCH] Completed batch post processing');
+
+    if (failures.length > 0) {
+      throw new AggregateError(failures, `${failures.length} Bluesky post(s) failed`);
+    }
   }
-})();
-*/
+
+  if (hasCredentials) {
+    (async () => {
+      try {
+        await authenticate(handle, password);
+      } catch (error) {
+        console.error('[BSKY-INIT-ERROR] Initial authentication failed:', {
+          error: error.message,
+          timestamp: new Date().toISOString()
+        });
+      }
+    })();
+  } else {
+    console.warn('[BSKY-DISABLED] Credenciais não configuradas; autenticação ignorada');
+  }
+}
 
 module.exports = {
   sendPostsToBsky
